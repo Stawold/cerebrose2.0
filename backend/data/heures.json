@@ -1,0 +1,14 @@
+[
+  { "id": 1, "type1": "manual", "value1": "03:00", "type2": "digital", "value2": "03:45", "answerMinutes": [45], "answerMinutesAlt": [675] },
+  { "id": 2, "type1": "digital", "value1": "08:15", "type2": "digital", "value2": "09:30", "answerMinutes": [75], "answerMinutesAlt": [] },
+  { "id": 3, "type1": "manual", "value1": "06:30", "type2": "manual", "value2": "07:15", "answerMinutes": [45], "answerMinutesAlt": [675] },
+  { "id": 4, "type1": "digital", "value1": "11:00", "type2": "digital", "value2": "13:45", "answerMinutes": [165], "answerMinutesAlt": [] },
+  { "id": 5, "type1": "manual", "value1": "09:45", "type2": "digital", "value2": "10:00", "answerMinutes": [15], "answerMinutesAlt": [735] },
+  { "id": 6, "type1": "manual", "value1": "02:15", "type2": "manual", "value2": "03:00", "answerMinutes": [45], "answerMinutesAlt": [675] },
+  { "id": 7, "type1": "digital", "value1": "14:20", "type2": "digital", "value2": "15:05", "answerMinutes": [45], "answerMinutesAlt": [] },
+  { "id": 8, "type1": "manual", "value1": "05:00", "type2": "digital", "value2": "06:30", "answerMinutes": [90], "answerMinutesAlt": [810] },
+  { "id": 9, "type1": "manual", "value1": "01:30", "type2": "manual", "value2": "02:45", "answerMinutes": [75], "answerMinutesAlt": [795] },
+  { "id": 10, "type1": "digital", "value1": "18:10", "type2": "digital", "value2": "19:00", "answerMinutes": [50], "answerMinutesAlt": [] },
+  { "id": 11, "type1": "manual", "value1": "04:45", "type2": "manual", "value2": "05:15", "answerMinutes": [30], "answerMinutesAlt": [660] },
+  { "id": 12, "type1": "digital", "value1": "21:05", "type2": "digital", "value2": "22:40", "answerMinutes": [95], "answerMinutesAlt": [] }
+]

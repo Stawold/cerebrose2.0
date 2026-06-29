@@ -1,0 +1,8 @@
+[
+  { "id": 1, "leftColor": "red", "rightColor": "blue", "heavierColor": "red" },
+  { "id": 2, "leftColor": "green", "rightColor": "yellow", "heavierColor": "yellow" },
+  { "id": 3, "leftColor": "purple", "rightColor": "orange", "heavierColor": "purple" },
+  { "id": 4, "leftColor": "blue", "rightColor": "green", "heavierColor": "green" },
+  { "id": 5, "leftColor": "yellow", "rightColor": "purple", "heavierColor": "purple" },
+  { "id": 6, "leftColor": "orange", "rightColor": "red", "heavierColor": "orange" }
+]

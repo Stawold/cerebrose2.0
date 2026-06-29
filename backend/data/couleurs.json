@@ -1,0 +1,202 @@
+[
+  {
+    "id": 1,
+    "word": "vert",
+    "color": "vert"
+  },
+  {
+    "id": 2,
+    "word": "vert",
+    "color": "rouge"
+  },
+  {
+    "id": 3,
+    "word": "vert",
+    "color": "rouge"
+  },
+  {
+    "id": 4,
+    "word": "rouge",
+    "color": "vert"
+  },
+  {
+    "id": 5,
+    "word": "rouge",
+    "color": "bleu"
+  },
+  {
+    "id": 6,
+    "word": "rouge",
+    "color": "bleu"
+  },
+  {
+    "id": 7,
+    "word": "rouge",
+    "color": "rouge"
+  },
+  {
+    "id": 8,
+    "word": "rouge",
+    "color": "rouge"
+  },
+  {
+    "id": 9,
+    "word": "vert",
+    "color": "rouge"
+  },
+  {
+    "id": 10,
+    "word": "rouge",
+    "color": "rouge"
+  },
+  {
+    "id": 11,
+    "word": "vert",
+    "color": "rouge"
+  },
+  {
+    "id": 12,
+    "word": "bleu",
+    "color": "bleu"
+  },
+  {
+    "id": 13,
+    "word": "bleu",
+    "color": "vert"
+  },
+  {
+    "id": 14,
+    "word": "bleu",
+    "color": "rouge"
+  },
+  {
+    "id": 15,
+    "word": "vert",
+    "color": "bleu"
+  },
+  {
+    "id": 16,
+    "word": "bleu",
+    "color": "bleu"
+  },
+  {
+    "id": 17,
+    "word": "bleu",
+    "color": "vert"
+  },
+  {
+    "id": 18,
+    "word": "vert",
+    "color": "bleu"
+  },
+  {
+    "id": 19,
+    "word": "rouge",
+    "color": "bleu"
+  },
+  {
+    "id": 20,
+    "word": "vert",
+    "color": "bleu"
+  },
+  {
+    "id": 21,
+    "word": "bleu",
+    "color": "vert"
+  },
+  {
+    "id": 22,
+    "word": "rouge",
+    "color": "bleu"
+  },
+  {
+    "id": 23,
+    "word": "vert",
+    "color": "bleu"
+  },
+  {
+    "id": 24,
+    "word": "bleu",
+    "color": "vert"
+  },
+  {
+    "id": 25,
+    "word": "vert",
+    "color": "bleu"
+  },
+  {
+    "id": 26,
+    "word": "bleu",
+    "color": "bleu"
+  },
+  {
+    "id": 27,
+    "word": "rouge",
+    "color": "rouge"
+  },
+  {
+    "id": 28,
+    "word": "vert",
+    "color": "bleu"
+  },
+  {
+    "id": 29,
+    "word": "rouge",
+    "color": "rouge"
+  },
+  {
+    "id": 30,
+    "word": "vert",
+    "color": "rouge"
+  },
+  {
+    "id": 31,
+    "word": "vert",
+    "color": "bleu"
+  },
+  {
+    "id": 32,
+    "word": "rouge",
+    "color": "bleu"
+  },
+  {
+    "id": 33,
+    "word": "bleu",
+    "color": "vert"
+  },
+  {
+    "id": 34,
+    "word": "bleu",
+    "color": "bleu"
+  },
+  {
+    "id": 35,
+    "word": "rouge",
+    "color": "rouge"
+  },
+  {
+    "id": 36,
+    "word": "bleu",
+    "color": "rouge"
+  },
+  {
+    "id": 37,
+    "word": "bleu",
+    "color": "bleu"
+  },
+  {
+    "id": 38,
+    "word": "bleu",
+    "color": "bleu"
+  },
+  {
+    "id": 39,
+    "word": "bleu",
+    "color": "vert"
+  },
+  {
+    "id": 40,
+    "word": "rouge",
+    "color": "vert"
+  }
+]
