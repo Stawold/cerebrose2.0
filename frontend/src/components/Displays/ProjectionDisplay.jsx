@@ -3,6 +3,7 @@ import { emitWithAck } from '../../services/socketService';
 import { useGame } from '../../context/GameContext.jsx';
 import { getRulesText } from '../../services/gameLogic';
 import GameVisual from './GameVisual.jsx';
+import Podium from '../Common/Podium.jsx';
 
 export default function ProjectionDisplay() {
   const { state } = useGame();
@@ -21,8 +22,8 @@ export default function ProjectionDisplay() {
   if (!joined) {
     return (
       <div className="page">
-        <h1 className="title">Écran de projection</h1>
-        <p>Ouvrez cette page avec ?code=XXXXXX dans l'URL.</p>
+        <h1 className="logo" style={{ fontSize: '2.6rem' }}>Écran de projection</h1>
+        <p style={{ color: 'var(--text-muted)' }}>Ouvrez cette page avec ?code=XXXXXX dans l'URL.</p>
         <input
           type="text"
           placeholder="Code de la partie"
@@ -39,10 +40,8 @@ export default function ProjectionDisplay() {
   if (state.gameOver) {
     return (
       <div className="page">
-        <h1 className="title">Podium final 🏆</h1>
-        {state.gameOver.leaderboard.map((p, i) => (
-          <p key={p.id}>{i + 1}. {p.pseudo} — {p.total} pts</p>
-        ))}
+        <h1 className="logo" style={{ fontSize: '2.6rem' }}>Podium final 🏆</h1>
+        <Podium leaderboard={state.gameOver.leaderboard} />
       </div>
     );
   }
@@ -51,9 +50,7 @@ export default function ProjectionDisplay() {
     return (
       <div className="page">
         <h1 className="title">Résultats</h1>
-        {state.roundResults.leaderboard.map((p, i) => (
-          <p key={p.id}>{i + 1}. {p.pseudo} — {p.total} pts</p>
-        ))}
+        <Podium leaderboard={state.roundResults.leaderboard} />
       </div>
     );
   }
@@ -61,6 +58,7 @@ export default function ProjectionDisplay() {
   if (state.rules && !state.game.phase) {
     return (
       <div className="page">
+        <span className="pill-badge">Manche {state.rules.gameIndex + 1} / {state.rules.totalGames}</span>
         <h1 className="title">{state.rules.label}</h1>
         <p>{getRulesText(state.rules.game)}</p>
       </div>

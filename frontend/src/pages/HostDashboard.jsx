@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getSocket } from '../services/socketService';
 import { useGame } from '../context/GameContext.jsx';
+import Avatar from '../components/Common/Avatar.jsx';
 
 const ALL_GAMES = [
   { id: 'calculs', label: 'Calculs mentaux' },
@@ -40,30 +41,36 @@ export default function HostDashboard() {
 
   return (
     <div className="page">
-      <h1 className="title">Tableau de bord animateur</h1>
+      <h1 className="logo" style={{ fontSize: '2.4rem' }}>Tableau de bord animateur</h1>
       <div className="card">
-        <h2>Code de la partie : {code}</h2>
-        <p>Joueurs connectés : {state.party.players?.length || 0}</p>
-        <ul style={{ textAlign: 'left' }}>
+        <p style={{ color: 'var(--text-muted)', margin: 0 }}>Code de la partie</p>
+        <div className="pin-display">{code}</div>
+        <p>
+          <span className="pill-badge mint">{state.party.players?.length || 0} joueur(s) connecté(s)</span>
+        </p>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center' }}>
           {(state.party.players || []).map((p) => (
-            <li key={p.id}>{p.pseudo} {p.connected ? '' : '(déconnecté)'}</li>
+            <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <Avatar pseudo={p.pseudo} connected={p.connected} />
+              <span>{p.pseudo}</span>
+            </div>
           ))}
-        </ul>
+        </div>
       </div>
       <div className="card">
         <h2>Manches</h2>
         <div className="button-grid">
-          <button onClick={() => selectPreset(3)}>3 manches</button>
-          <button onClick={() => selectPreset(6)}>6 manches</button>
-          <button onClick={() => selectPreset(9)}>9 manches</button>
+          <button className="btn-secondary" onClick={() => selectPreset(3)}>3 manches</button>
+          <button className="btn-secondary" onClick={() => selectPreset(6)}>6 manches</button>
+          <button className="btn-secondary" onClick={() => selectPreset(9)}>9 manches</button>
         </div>
         <br />
         <div className="button-grid">
           {ALL_GAMES.map((g) => (
             <button
               key={g.id}
+              className={selected.includes(g.id) ? 'btn-pill-selected' : 'btn-secondary'}
               onClick={() => toggleGame(g.id)}
-              style={selected.includes(g.id) ? { background: 'var(--gold)', color: '#1a1a2e' } : {}}
             >
               {selected.includes(g.id) ? `${selected.indexOf(g.id) + 1}. ` : ''}{g.label}
             </button>

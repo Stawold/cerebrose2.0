@@ -2,7 +2,7 @@ import Timer from '../Common/Timer.jsx';
 
 // Big-screen visualisation shared by the host dashboard and the projection screen.
 export default function GameVisual({ game }) {
-  if (!game || !game.type) return <p>En attente...</p>;
+  if (!game || !game.type) return <p style={{ color: 'var(--text-muted)' }}>En attente...</p>;
   const { type, phase, payload, duration, serverTime } = game;
 
   return (
@@ -25,7 +25,7 @@ function renderByType(type, phase, payload) {
           {payload.words.map((w, i) => (
             <span
               key={i}
-              style={{ color: payload.faultyIndices.includes(i) ? 'var(--gold)' : 'inherit', marginRight: 6 }}
+              style={{ color: payload.faultyIndices.includes(i) ? 'var(--violet-dark)' : 'inherit', marginRight: 6 }}
             >
               {w}
             </span>
@@ -64,7 +64,7 @@ function GenericVisual({ type, item }) {
     return (
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(9, 20px)', gap: 2, justifyContent: 'center' }}>
         {item.grid.flat().map((c, i) => (
-          <div key={i} style={{ width: 20, height: 20, background: colorHex(c) }} />
+          <div key={i} style={{ width: 20, height: 20, borderRadius: 4, background: colorHex(c) }} />
         ))}
       </div>
     );
@@ -72,6 +72,6 @@ function GenericVisual({ type, item }) {
 }
 
 function colorHex(name) {
-  const map = { vert: '#00d966', rouge: '#ff6b6b', jaune: '#ffd700', violet: '#9b5de5' };
-  return map[name] || '#888';
+  const map = { vert: '#34d399', rouge: '#fb7185', jaune: '#f59e0b', violet: '#6366f1' };
+  return map[name] || '#9b9b9b';
 }

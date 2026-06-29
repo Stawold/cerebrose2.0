@@ -13,3 +13,16 @@ export const RULES_TEXT = {
 export function getRulesText(gameId) {
   return RULES_TEXT[gameId] || '';
 }
+
+const AVATAR_COLORS = ['#6366f1', '#fb7185', '#34d399', '#f59e0b', '#0ea5e9', '#a855f7'];
+
+export function avatarColor(seed) {
+  const str = String(seed || '');
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) hash = (hash * 31 + str.charCodeAt(i)) >>> 0;
+  return AVATAR_COLORS[hash % AVATAR_COLORS.length];
+}
+
+export function initials(pseudo) {
+  return (pseudo || '?').trim().slice(0, 2).toUpperCase();
+}

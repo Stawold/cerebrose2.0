@@ -69,9 +69,9 @@ export default function GameGeneric({ game }) {
         ))}
       </div>
       {showFeedback && (
-        <p style={{ color: feedback.correct ? 'var(--green)' : 'var(--red)' }}>
+        <span className={`pill-badge ${feedback.correct ? 'mint' : 'coral'}`}>
           {feedback.correct ? 'Bonne réponse !' : 'Mauvaise réponse'}
-        </p>
+        </span>
       )}
     </div>
   );

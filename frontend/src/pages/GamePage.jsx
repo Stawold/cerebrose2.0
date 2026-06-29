@@ -8,6 +8,7 @@ import GameTexte from '../components/Games/GameTexte.jsx';
 import GameMemoire from '../components/Games/GameMemoire.jsx';
 import GameGeneric from '../components/Games/GameGeneric.jsx';
 import GameAnagramme from '../components/Games/GameAnagramme.jsx';
+import Podium from '../components/Common/Podium.jsx';
 
 const PLAYER_COMPONENTS = {
   calculs: GameCalculs,
@@ -30,10 +31,8 @@ export default function GamePage() {
   if (state.gameOver) {
     return (
       <div className="page">
-        <h1 className="title">Podium final 🏆</h1>
-        {state.gameOver.leaderboard.map((p, i) => (
-          <p key={p.id}>{i + 1}. {p.pseudo} — {p.total} pts</p>
-        ))}
+        <h1 className="logo" style={{ fontSize: '2.6rem' }}>Podium final 🏆</h1>
+        <Podium leaderboard={state.gameOver.leaderboard} />
       </div>
     );
   }
@@ -42,9 +41,7 @@ export default function GamePage() {
     return (
       <div className="page">
         <h1 className="title">Résultats de la manche</h1>
-        {state.roundResults.leaderboard.map((p, i) => (
-          <p key={p.id}>{i + 1}. {p.pseudo} — {p.total} pts</p>
-        ))}
+        <Podium leaderboard={state.roundResults.leaderboard} />
         {isHost && (
           <button onClick={() => getSocket().emit('host:nextRound', { code })}>Manche suivante</button>
         )}
@@ -64,7 +61,8 @@ export default function GamePage() {
 
   return (
     <div className="page">
-      <p>En attente...</p>
+      <span className="pulse-dot" />
+      <p style={{ color: 'var(--text-muted)' }}>En attente...</p>
     </div>
   );
 }

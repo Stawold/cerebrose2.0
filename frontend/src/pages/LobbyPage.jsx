@@ -49,9 +49,10 @@ export default function LobbyPage() {
 
   return (
     <div className="page">
-      <h1 className="title">Cérébr'Ose V2.0</h1>
+      <h1 className="logo" style={{ fontSize: '3rem' }}>Cérébr'Ose</h1>
       <div className="card">
         <h2>Animateur</h2>
+        <p style={{ color: 'var(--text-muted)' }}>Créez une partie et invitez vos joueurs.</p>
         <button onClick={handleCreateParty}>Créer une partie</button>
       </div>
       <div className="card">
@@ -71,7 +72,7 @@ export default function LobbyPage() {
         />
         <br /><br />
         <button onClick={handleJoin}>Rejoindre</button>
-        {error && <p style={{ color: 'var(--red)' }}>{error}</p>}
+        {error && <p style={{ color: 'var(--coral)' }}>{error}</p>}
       </div>
     </div>
   );
