@@ -6,7 +6,11 @@ import HostDisplay from '../components/Displays/HostDisplay.jsx';
 import GameCalculs from '../components/Games/GameCalculs.jsx';
 import GameTexte from '../components/Games/GameTexte.jsx';
 import GameMemoire from '../components/Games/GameMemoire.jsx';
-import GameGeneric from '../components/Games/GameGeneric.jsx';
+import GameBalance from '../components/Games/GameBalance.jsx';
+import GameHeures from '../components/Games/GameHeures.jsx';
+import GamePFC from '../components/Games/GamePFC.jsx';
+import GameCouleurs from '../components/Games/GameCouleurs.jsx';
+import GameGrille from '../components/Games/GameGrille.jsx';
 import GameAnagramme from '../components/Games/GameAnagramme.jsx';
 import Podium from '../components/Common/Podium.jsx';
 
@@ -15,11 +19,11 @@ const PLAYER_COMPONENTS = {
   texte: GameTexte,
   memoire: GameMemoire,
   anagramme: GameAnagramme,
-  balance: GameGeneric,
-  heures: GameGeneric,
-  pfc: GameGeneric,
-  couleurs: GameGeneric,
-  grille: GameGeneric
+  balance: GameBalance,
+  heures: GameHeures,
+  pfc: GamePFC,
+  couleurs: GameCouleurs,
+  grille: GameGrille
 };
 
 export default function GamePage() {

@@ -1,0 +1,45 @@
+import { useEffect, useState } from 'react';
+import { getSocket } from '../../services/socketService';
+import { PFC_ICONS } from '../../services/gameLogic';
+import Timer from '../Common/Timer.jsx';
+
+const CHOICES = ['pierre', 'feuille', 'ciseaux'];
+
+export default function GamePFC({ game }) {
+  const { payload, duration, serverTime, feedback } = game;
+  const [sent, setSent] = useState(false);
+
+  useEffect(() => {
+    setSent(false);
+  }, [payload?.item?.id]);
+
+  function submit(choice) {
+    if (sent) return;
+    setSent(true);
+    getSocket().emit('player:answer', { value: choice });
+  }
+
+  const instruction = payload?.item?.instruction;
+
+  return (
+    <div className="page">
+      <Timer duration={duration} serverTime={serverTime} />
+      <span className={`pill-badge ${instruction === 'win' ? 'mint' : 'coral'}`}>
+        {instruction === 'win' ? 'Gagnez !' : 'Perdez !'}
+      </span>
+      <h1 className="title">Que choisissez-vous ?</h1>
+      <div className="button-grid">
+        {CHOICES.map((c) => (
+          <button key={c} disabled={sent} onClick={() => submit(c)} style={{ fontSize: '1.6rem', padding: '16px 24px' }}>
+            {PFC_ICONS[c]} {c}
+          </button>
+        ))}
+      </div>
+      {feedback && (
+        <span className={`pill-badge ${feedback.correct ? 'mint' : 'coral'}`}>
+          {feedback.correct ? 'Bonne réponse !' : 'Mauvaise réponse'}
+        </span>
+      )}
+    </div>
+  );
+}

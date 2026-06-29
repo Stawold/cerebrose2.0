@@ -26,3 +26,18 @@ export function avatarColor(seed) {
 export function initials(pseudo) {
   return (pseudo || '?').trim().slice(0, 2).toUpperCase();
 }
+
+const COLOR_HEX = {
+  red: '#ef4444', rouge: '#ef4444',
+  blue: '#3b82f6', bleu: '#3b82f6',
+  green: '#22c55e', vert: '#22c55e',
+  yellow: '#f59e0b', jaune: '#f59e0b',
+  purple: '#a855f7', violet: '#a855f7',
+  orange: '#f97316'
+};
+
+export function colorHex(name) {
+  return COLOR_HEX[String(name).toLowerCase()] || '#9b9b9b';
+}
+
+export const PFC_ICONS = { pierre: '🪨', feuille: '📄', ciseaux: '✂️' };

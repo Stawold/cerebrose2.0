@@ -1,4 +1,6 @@
 import Timer from '../Common/Timer.jsx';
+import AnalogClock from '../Common/AnalogClock.jsx';
+import { colorHex, PFC_ICONS } from '../../services/gameLogic';
 
 // Big-screen visualisation shared by the host dashboard and the projection screen.
 export default function GameVisual({ game }) {
@@ -55,11 +57,19 @@ function renderByType(type, phase, payload) {
 
 function GenericVisual({ type, item }) {
   if (!item) return null;
-  if (type === 'balance') return <p>⚖️ {item.leftColor} vs {item.rightColor}</p>;
-  if (type === 'heures') return <p>🕐 {item.value1} ({item.type1}) — 🕐 {item.value2} ({item.type2})</p>;
-  if (type === 'pfc') return <p>{item.shape.toUpperCase()} — Consigne : {item.instruction === 'win' ? 'Gagnez' : 'Perdez'}</p>;
+  if (type === 'balance') return <BalanceVisual item={item} />;
+  if (type === 'heures') return <HeuresVisual item={item} />;
+  if (type === 'pfc')
+    return (
+      <div>
+        <div style={{ fontSize: '5rem' }}>{PFC_ICONS[item.shape]}</div>
+        <span className={`pill-badge ${item.instruction === 'win' ? 'mint' : 'coral'}`}>
+          Consigne : {item.instruction === 'win' ? 'Gagnez' : 'Perdez'}
+        </span>
+      </div>
+    );
   if (type === 'couleurs')
-    return <h1 style={{ color: item.color, fontSize: '3rem' }}>{item.word.toUpperCase()}</h1>;
+    return <h1 style={{ color: colorHex(item.color), fontSize: '3.5rem' }}>{item.word.toUpperCase()}</h1>;
   if (type === 'grille')
     return (
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(9, 20px)', gap: 2, justifyContent: 'center' }}>
@@ -71,7 +81,55 @@ function GenericVisual({ type, item }) {
   return null;
 }
 
-function colorHex(name) {
-  const map = { vert: '#34d399', rouge: '#fb7185', jaune: '#f59e0b', violet: '#6366f1' };
-  return map[name] || '#9b9b9b';
+function BalanceVisual({ item }) {
+  const left = colorHex(item.leftColor);
+  const right = colorHex(item.rightColor);
+  const leftHeavier = item.heavierColor === item.leftColor;
+  return (
+    <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'center', gap: 40, height: 140 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+        <div
+          style={{
+            width: 80, height: 80, borderRadius: 16, background: left,
+            transform: leftHeavier ? 'translateY(20px)' : 'translateY(0)',
+            transition: 'transform 0.3s'
+          }}
+        />
+        <span className="pill-badge">{item.leftColor}</span>
+      </div>
+      <div style={{ fontSize: '2rem' }}>⚖️</div>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+        <div
+          style={{
+            width: 80, height: 80, borderRadius: 16, background: right,
+            transform: !leftHeavier ? 'translateY(20px)' : 'translateY(0)',
+            transition: 'transform 0.3s'
+          }}
+        />
+        <span className="pill-badge">{item.rightColor}</span>
+      </div>
+    </div>
+  );
+}
+
+function HeuresVisual({ item }) {
+  return (
+    <div style={{ display: 'flex', justifyContent: 'center', gap: 48 }}>
+      <ClockFace label="Horloge 1" type={item.type1} value={item.value1} />
+      <ClockFace label="Horloge 2" type={item.type2} value={item.value2} />
+    </div>
+  );
+}
+
+function ClockFace({ label, type, value }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+      {type === 'manual' ? (
+        <AnalogClock time={value} size={120} />
+      ) : (
+        <div className="pin-display" style={{ fontSize: '1.8rem', padding: '12px 20px' }}>{value}</div>
+      )}
+      <span className="pill-badge">{label}</span>
+    </div>
+  );
 }
