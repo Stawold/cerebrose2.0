@@ -23,16 +23,29 @@ function renderByType(type, phase, payload) {
       return <p>{payload.questions?.length} calculs envoyés aux téléphones des joueurs.</p>;
     case 'texte':
       return (
-        <p style={{ lineHeight: 2 }}>
-          {payload.words.map((w, i) => (
-            <span
-              key={i}
-              style={{ color: payload.faultyIndices.includes(i) ? 'var(--violet)' : 'inherit', marginRight: 6 }}
-            >
-              {w}
-            </span>
-          ))}
-        </p>
+        <div>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', margin: '0 0 12px' }}>
+            {payload.title} — repérez les {payload.faultyIndices?.length} fautes et corrigez-les sur votre téléphone
+          </p>
+          <p style={{ lineHeight: 2.2, textAlign: 'left', fontSize: '1.1rem' }}>
+            {payload.words.map((w, i) => {
+              const isFaulty = payload.faultyIndices?.includes(i);
+              return (
+                <span
+                  key={i}
+                  style={{
+                    color: isFaulty ? 'var(--coral)' : 'var(--text)',
+                    fontWeight: isFaulty ? 700 : 400,
+                    textDecoration: isFaulty ? 'underline wavy var(--coral)' : 'none',
+                    marginRight: 6
+                  }}
+                >
+                  {w}
+                </span>
+              );
+            })}
+          </p>
+        </div>
       );
     case 'memoire':
       if (phase === 'display') return <h1 style={{ fontSize: '3rem', letterSpacing: 8 }}>{payload.sequence}</h1>;

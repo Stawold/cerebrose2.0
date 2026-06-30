@@ -93,32 +93,59 @@ class TexteRunner extends BaseRunner {
   start() {
     this.texts = loadData(this.config.dataFile);
     this.textIndex = 0;
-    this.answeredWords = {};
+    this.playerState = {};
     this.startText();
   }
 
   startText() {
     const text = this.texts[this.textIndex];
-    this.answeredWords[this.textIndex] = {};
-    this.players.forEach((p) => { this.answeredWords[this.textIndex][p.id] = new Set(); });
+    // Reset each player: 10 attempts, no corrections found yet
+    this.players.forEach((p) => {
+      this.playerState[p.id] = { attempts: 0, found: new Set() };
+    });
     this.emitPhase('play', {
       textIndex: this.textIndex,
       title: text.title,
       words: text.words,
-      faultyIndices: text.faultyIndices
+      faultyIndices: text.faultyIndices,
+      totalCorrections: text.faultyIndices.length
     }, this.config.perTextDuration);
     this.schedule(() => this.nextText(), this.config.perTextDuration * 1000);
   }
 
-  handleAnswer(playerId, { wordIndex, value }) {
+  // Normalize for comparison: trim, lowercase, strip trailing punctuation, strip leading d'/l'
+  normalize(str) {
+    return String(str).trim().toLowerCase()
+      .replace(/[.,;:!?]/g, '')
+      .replace(/^[dl]'/, '');
+  }
+
+  handleAnswer(playerId, { value }) {
     const text = this.texts[this.textIndex];
-    const answeredSet = this.answeredWords[this.textIndex][playerId];
-    if (!answeredSet || answeredSet.has(wordIndex)) return;
-    answeredSet.add(wordIndex);
-    const correction = text.corrections[String(wordIndex)];
-    const correct = correction && String(value).trim().toLowerCase() === correction.toLowerCase();
-    this.scores[playerId] += correct ? 1 : -1;
-    this.emitFeedbackTo(playerId, correct, { wordIndex });
+    const ps = this.playerState[playerId];
+    if (!ps || ps.attempts >= 10) return;
+
+    const normalized = this.normalize(value);
+
+    // Check against all unfound corrections
+    let matchKey = null;
+    for (const [key, correction] of Object.entries(text.corrections)) {
+      if (ps.found.has(key)) continue;
+      if (this.normalize(correction) === normalized) { matchKey = key; break; }
+    }
+
+    ps.attempts += 1;
+    const correct = matchKey !== null;
+    if (correct) {
+      ps.found.add(matchKey);
+      this.scores[playerId] += 1;
+    }
+
+    this.emitFeedbackTo(playerId, correct, {
+      attemptsLeft: 10 - ps.attempts,
+      foundCount: ps.found.size,
+      totalCorrections: text.faultyIndices.length
+    });
     this.emitScores();
   }
 

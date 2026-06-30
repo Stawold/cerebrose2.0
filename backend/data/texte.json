@@ -3,44 +3,54 @@
     "id": 1,
     "title": "Texte 1",
     "words": [
-      "Le", "chien", "courre", "dans", "le", "jardin", "pendant", "que", "le", "chat",
-      "dor", "paisiblement", "sur", "le", "canapée", "en", "cuire", "marron", "clair", "aujourd'hui",
-      "il", "fait", "tres", "beau", "et", "les", "enfants", "jouent", "joyeusement", "dehors"
+      "L'école", "est", "un", "lieu", "où", "les", "enfent", "et", "les", "adolescents",
+      "acquière", "des", "connaissances,", "développent", "leurs", "compétences", "et", "apprennent", "à", "vivre",
+      "en", "sosiété.", "Chaque", "journée", "est", "rythmé", "par", "les", "courre,", "les",
+      "récréations,", "les", "devoirs", "et", "les", "échanges", "avec", "les", "enseignants", "et",
+      "les", "camarables.", "Les", "matières", "sont", "nombreuses", ":", "les", "mathématiques,", "le",
+      "français,", "l'histoire,", "les", "siensses,", "les", "langues", "étrangères,", "les", "zarts", "ou",
+      "encore", "l'éducation", "phisyque.", "Chacune", "apporte", "des", "savoirs", "différents", "et", "permet",
+      "de", "découvrir", "de", "nouveaux", "centres", "d'intérêts."
     ],
-    "faultyIndices": [2, 10, 14, 16, 22, 23, 27, 28, 5, 17],
+    "faultyIndices": [6, 10, 21, 25, 28, 41, 53, 58, 62, 75],
     "corrections": {
-      "2": "court",
-      "10": "dort",
-      "14": "canapé",
-      "16": "cuir",
-      "22": "très",
-      "23": "beau",
-      "27": "jouent",
-      "28": "joyeusement",
-      "5": "jardin",
-      "17": "marron"
+      "6":  "enfants",
+      "10": "acquièrent",
+      "21": "société",
+      "25": "rythmée",
+      "28": "cours",
+      "41": "camarades",
+      "53": "sciences",
+      "58": "arts",
+      "62": "physique",
+      "75": "intérêt"
     }
   },
   {
     "id": 2,
     "title": "Texte 2",
     "words": [
-      "Hier", "soire", "nous", "somme", "aller", "au", "cinema", "voire", "un", "film",
-      "tres", "interessant", "sur", "lhistoire", "de", "la", "musique", "classique", "francaise", "du",
-      "dix-neuvieme", "siecle", "avec", "des", "extraits", "rares", "et", "des", "anecdotes", "passionnantes"
+      "La", "période", "universitaire", "demande", "toute", "fois", "de", "la", "dicipline.", "Il",
+      "faut", "gérer", "les", "révisions,", "les", "projet", "de", "groupe,", "les", "examens",
+      "et", "parfois", "un", "emploi", "à", "temps", "partielle.", "Les", "compétences", "aquises",
+      "dépassent", "les", "connaissances", "académiques", ":", "autonomie,", "esprie", "critique,", "capacité", "d'analyse",
+      "et", "communication", "sont", "autant", "d'atout", "pour", "l'avenir.", "L'université", "prépare", "ainsi",
+      "les", "étudiants", "à", "intégrer", "le", "monde", "professionel", "tout", "en", "développant",
+      "leur", "curiosité", "intelectuele", "et", "leur", "aptitudes", "à", "apprendre", "de", "manière",
+      "indépendante", "tout", "au", "long", "de", "leur", "carrière."
     ],
-    "faultyIndices": [1, 3, 4, 6, 7, 10, 11, 13, 18, 20],
+    "faultyIndices": [5, 8, 15, 26, 29, 36, 44, 56, 62, 65],
     "corrections": {
-      "1": "soirée",
-      "3": "sommes",
-      "4": "allés",
-      "6": "cinéma",
-      "7": "voir",
-      "10": "très",
-      "11": "intéressant",
-      "13": "l'histoire",
-      "18": "française",
-      "20": "dix-neuvième"
+      "5":  "toutefois",
+      "8":  "discipline",
+      "15": "projets",
+      "26": "partiel",
+      "29": "acquises",
+      "36": "esprit",
+      "44": "atouts",
+      "56": "professionnel",
+      "62": "intellectuelle",
+      "65": "aptitude"
     }
   }
 ]

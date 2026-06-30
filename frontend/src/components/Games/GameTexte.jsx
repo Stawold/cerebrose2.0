@@ -1,55 +1,111 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { getSocket } from '../../services/socketService';
+import { useGame } from '../../context/GameContext.jsx';
 import Timer from '../Common/Timer.jsx';
 
-export default function GameTexte({ game }) {
-  const { payload, duration, serverTime, feedback } = game;
-  const [values, setValues] = useState({});
-  const [results, setResults] = useState({}); // wordIndex -> correct boolean
+const MAX_ATTEMPTS = 10;
 
+export default function GameTexte({ game }) {
+  const { state } = useGame();
+  const feedback = state.feedback;
+  const { payload, duration, serverTime } = game;
+
+  const [value, setValue] = useState('');
+  const [history, setHistory] = useState([]); // [{ word, correct }]
+  const [attemptsLeft, setAttemptsLeft] = useState(MAX_ATTEMPTS);
+  const [foundCount, setFoundCount] = useState(0);
+  const lastWord = useRef('');
+
+  const totalCorrections = payload?.totalCorrections || 10;
+  const done = attemptsLeft <= 0 || foundCount >= totalCorrections;
+
+  // Reset on new text
   useEffect(() => {
-    setValues({});
-    setResults({});
+    setValue('');
+    setHistory([]);
+    setAttemptsLeft(MAX_ATTEMPTS);
+    setFoundCount(0);
+    lastWord.current = '';
   }, [payload?.textIndex]);
 
+  // Feedback received from server
   useEffect(() => {
-    if (feedback && feedback.wordIndex !== undefined) {
-      setResults((r) => ({ ...r, [feedback.wordIndex]: feedback.correct }));
-    }
+    if (!feedback || lastWord.current === '') return;
+    setHistory((h) => [{ word: lastWord.current, correct: feedback.correct }, ...h].slice(0, MAX_ATTEMPTS));
+    if (feedback.attemptsLeft !== undefined) setAttemptsLeft(feedback.attemptsLeft);
+    if (feedback.correct && feedback.foundCount !== undefined) setFoundCount(feedback.foundCount);
+    lastWord.current = '';
   }, [feedback]);
 
-  if (!payload) return <p>Chargement du texte...</p>;
-  const { words, faultyIndices } = payload;
-
-  function submitWord(wordIndex) {
-    const value = (values[wordIndex] || '').trim();
-    if (!value) return;
-    getSocket().emit('player:answer', { wordIndex, value });
+  function submit() {
+    if (!value.trim() || done) return;
+    lastWord.current = value.trim();
+    getSocket().emit('player:answer', { value: value.trim() });
+    setValue('');
   }
 
   return (
-    <div className="page">
+    <div className="page" style={{ gap: 16 }}>
       <Timer duration={duration} serverTime={serverTime} />
-      <p style={{ lineHeight: 2.4 }}>
-        {words.map((w, i) =>
-          faultyIndices.includes(i) ? (
-            <input
-              key={i}
-              type="text"
-              size={Math.max(4, w.length)}
-              disabled={results[i] !== undefined}
-              className={results[i] === true ? 'flash-correct' : results[i] === false ? 'flash-wrong' : ''}
-              value={values[i] ?? ''}
-              onChange={(e) => setValues((v) => ({ ...v, [i]: e.target.value }))}
-              onKeyDown={(e) => e.key === 'Enter' && submitWord(i)}
-              onBlur={() => submitWord(i)}
-              style={{ margin: '0 4px' }}
-            />
-          ) : (
-            <span key={i} style={{ marginRight: 6 }}>{w}</span>
-          )
+
+      <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center' }}>
+        <span className="pill-badge mint">{foundCount} / {totalCorrections} trouvées</span>
+        <span className={`pill-badge ${attemptsLeft <= 3 ? 'coral' : 'amber'}`}>
+          {attemptsLeft} tentative{attemptsLeft !== 1 ? 's' : ''} restante{attemptsLeft !== 1 ? 's' : ''}
+        </span>
+      </div>
+
+      <div className="card" style={{ maxWidth: 440, width: '100%' }}>
+        {/* History of past answers */}
+        {history.length > 0 && (
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 20 }}>
+            {history.map((entry, i) => (
+              <span
+                key={i}
+                style={{
+                  padding: '4px 14px',
+                  borderRadius: 999,
+                  fontSize: '0.9rem',
+                  fontWeight: 700,
+                  background: entry.correct ? 'var(--mint-dim)' : 'var(--coral-dim)',
+                  color: entry.correct ? 'var(--mint)' : 'var(--coral)',
+                  border: `1px dashed ${entry.correct ? 'var(--mint)' : 'var(--coral)'}`,
+                  opacity: i === 0 ? 1 : 0.6 + (history.length - i) * 0.04
+                }}
+              >
+                {entry.word}
+              </span>
+            ))}
+          </div>
         )}
-      </p>
+
+        {done ? (
+          <p style={{ color: foundCount >= totalCorrections ? 'var(--mint)' : 'var(--text-muted)', fontWeight: 700, margin: '0 0 12px' }}>
+            {foundCount >= totalCorrections ? '🎉 Toutes les fautes trouvées !' : 'Plus de tentatives !'}
+          </p>
+        ) : (
+          <p className="section-label" style={{ marginBottom: 12 }}>
+            Lisez le texte sur l'écran, tapez une correction
+          </p>
+        )}
+
+        <input
+          type="text"
+          autoFocus
+          disabled={done}
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && submit()}
+          placeholder="Mot corrigé…"
+        />
+        <button
+          onClick={submit}
+          disabled={done}
+          style={{ width: '100%', marginTop: 12 }}
+        >
+          Valider
+        </button>
+      </div>
     </div>
   );
 }

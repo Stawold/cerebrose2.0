@@ -11,7 +11,7 @@ const GAMES = {
     label: 'Correction de texte',
     dataFile: 'texte.json',
     engine: 'texte',
-    perTextDuration: 60
+    perTextDuration: 90
   },
   memoire: {
     id: 'memoire',
