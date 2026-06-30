@@ -28,22 +28,9 @@ function renderByType(type, phase, payload) {
             {payload.title} — repérez les {payload.faultyIndices?.length} fautes et corrigez-les sur votre téléphone
           </p>
           <p style={{ lineHeight: 2.2, textAlign: 'left', fontSize: '1.1rem' }}>
-            {payload.words.map((w, i) => {
-              const isFaulty = payload.faultyIndices?.includes(i);
-              return (
-                <span
-                  key={i}
-                  style={{
-                    color: isFaulty ? 'var(--coral)' : 'var(--text)',
-                    fontWeight: isFaulty ? 700 : 400,
-                    textDecoration: isFaulty ? 'underline wavy var(--coral)' : 'none',
-                    marginRight: 6
-                  }}
-                >
-                  {w}
-                </span>
-              );
-            })}
+            {payload.words.map((w, i) => (
+              <span key={i} style={{ marginRight: 6 }}>{w}</span>
+            ))}
           </p>
         </div>
       );
