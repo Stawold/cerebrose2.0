@@ -27,7 +27,7 @@ function renderByType(type, phase, payload) {
           {payload.words.map((w, i) => (
             <span
               key={i}
-              style={{ color: payload.faultyIndices.includes(i) ? 'var(--violet-dark)' : 'inherit', marginRight: 6 }}
+              style={{ color: payload.faultyIndices.includes(i) ? 'var(--violet)' : 'inherit', marginRight: 6 }}
             >
               {w}
             </span>

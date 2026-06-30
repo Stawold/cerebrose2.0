@@ -15,7 +15,7 @@ export default function AnalogClock({ time, size = 120 }) {
 
   return (
     <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-      <circle cx={r} cy={r} r={r - 4} fill="#fff" stroke="var(--border)" strokeWidth="4" />
+      <circle cx={r} cy={r} r={r - 4} fill="var(--chalk-surface)" stroke="var(--chalk-line-strong)" strokeWidth="4" />
       {Array.from({ length: 12 }).map((_, i) => {
         const [tx, ty] = handPoint(i * 30, r * 0.85);
         return <circle key={i} cx={tx} cy={ty} r={2} fill="var(--text-faint)" />;

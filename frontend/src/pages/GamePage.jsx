@@ -34,8 +34,11 @@ export default function GamePage() {
 
   if (state.gameOver) {
     return (
-      <div className="page">
-        <h1 className="logo" style={{ fontSize: '2.6rem' }}>Podium final 🏆</h1>
+      <div className="page" style={{ gap: 20 }}>
+        <div>
+          <h1 className="logo" style={{ fontSize: '3rem' }}>Podium final</h1>
+          <p className="section-label">Bravo à tous les participants !</p>
+        </div>
         <Podium leaderboard={state.gameOver.leaderboard} />
       </div>
     );
@@ -43,11 +46,18 @@ export default function GamePage() {
 
   if (state.roundResults) {
     return (
-      <div className="page">
-        <h1 className="title">Résultats de la manche</h1>
+      <div className="page" style={{ gap: 20 }}>
+        <div>
+          <h1 className="title" style={{ color: 'var(--mint)' }}>Résultats de la manche</h1>
+          <p className="section-label" style={{ marginTop: 6 }}>
+            {state.roundResults.game && `Jeu : ${state.roundResults.game}`}
+          </p>
+        </div>
         <Podium leaderboard={state.roundResults.leaderboard} />
         {isHost && (
-          <button onClick={() => getSocket().emit('host:nextRound', { code })}>Manche suivante</button>
+          <button onClick={() => getSocket().emit('host:nextRound', { code })} style={{ marginTop: 8 }}>
+            Manche suivante →
+          </button>
         )}
       </div>
     );
@@ -66,7 +76,7 @@ export default function GamePage() {
   return (
     <div className="page">
       <span className="pulse-dot" />
-      <p style={{ color: 'var(--text-muted)' }}>En attente...</p>
+      <p style={{ color: 'var(--text-muted)', marginTop: 12 }}>En attente...</p>
     </div>
   );
 }

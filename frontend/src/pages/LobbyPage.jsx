@@ -12,8 +12,8 @@ export default function LobbyPage() {
 
   useEffect(() => {
     getSocket();
-    const savedPlayer = localStorage.getItem('cerebrose_player');
     const savedHost = localStorage.getItem('cerebrose_host');
+    const savedPlayer = localStorage.getItem('cerebrose_player');
     if (savedHost) {
       const { code: savedCode } = JSON.parse(savedHost);
       emitWithAck('host:rejoinParty', { code: savedCode }).then((res) => {
@@ -67,31 +67,49 @@ export default function LobbyPage() {
   }
 
   return (
-    <div className="page">
-      <h1 className="logo" style={{ fontSize: '3rem' }}>Cérébr'Ose</h1>
-      <div className="card">
-        <h2>Animateur</h2>
-        <p style={{ color: 'var(--text-muted)' }}>Créez une partie et invitez vos joueurs.</p>
-        <button onClick={handleCreateParty}>Créer une partie</button>
+    <div className="page" style={{ gap: 24 }}>
+      <div style={{ marginBottom: 8 }}>
+        <h1 className="logo" style={{ fontSize: '3.5rem', marginBottom: 4 }}>Cérébr'Ose</h1>
+        <p className="section-label">Le quiz qui fait travailler les neurones</p>
       </div>
-      <div className="card">
-        <h2>Joueur</h2>
+
+      <div className="card" style={{ maxWidth: 440 }}>
+        <span className="section-label">Animateur</span>
+        <h2 style={{ color: 'var(--violet)', margin: '8px 0 12px' }}>Créer une partie</h2>
+        <p style={{ color: 'var(--text-muted)', margin: '0 0 20px', fontSize: '0.95rem' }}>
+          Configurez les manches et invitez vos joueurs.
+        </p>
+        <button onClick={handleCreateParty} style={{ width: '100%' }}>
+          Créer une partie
+        </button>
+      </div>
+
+      <div className="card" style={{ maxWidth: 440 }}>
+        <span className="section-label">Joueur</span>
+        <h2 style={{ color: 'var(--coral)', margin: '8px 0 20px' }}>Rejoindre</h2>
         <input
           type="text"
-          placeholder="Pseudo"
+          placeholder="Ton pseudo"
           value={pseudo}
           onChange={(e) => setPseudo(e.target.value)}
+          style={{ marginBottom: 12 }}
         />
-        <br /><br />
         <input
           type="text"
           placeholder="Code à 6 chiffres"
           value={code}
           onChange={(e) => setCode(e.target.value)}
+          style={{ marginBottom: 16 }}
         />
-        <br /><br />
-        <button onClick={handleJoin}>Rejoindre</button>
-        {error && <p style={{ color: 'var(--coral)' }}>{error}</p>}
+        <button
+          onClick={handleJoin}
+          style={{ width: '100%', background: 'var(--coral)', color: '#0e180e', boxShadow: '0 4px 16px rgba(252,165,165,0.3)' }}
+        >
+          Rejoindre
+        </button>
+        {error && (
+          <p style={{ color: 'var(--coral)', margin: '12px 0 0', fontSize: '0.9rem' }}>{error}</p>
+        )}
       </div>
     </div>
   );
