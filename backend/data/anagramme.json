@@ -1,10 +1,10 @@
 [
   { "id": 1,  "scrambled": "THAC",       "answer": "CHAT" },
-  { "id": 2,  "scrambled": "SARB",       "answer": "BRAS" },
+  { "id": 2,  "scrambled": "TNOP",       "answer": "PONT" },
   { "id": 3,  "scrambled": "ENUL",       "answer": "LUNE" },
-  { "id": 4,  "scrambled": "EHICN",      "answer": "CHIEN" },
+  { "id": 4,  "scrambled": "ANUEG",      "answer": "NUAGE" },
   { "id": 5,  "scrambled": "LURFE",      "answer": "FLEUR" },
-  { "id": 6,  "scrambled": "ERGIT",      "answer": "TIGRE" },
+  { "id": 6,  "scrambled": "NOPIA",      "answer": "PIANO" },
   { "id": 7,  "scrambled": "VAHCLE",     "answer": "CHEVAL" },
   { "id": 8,  "scrambled": "NIRADJ",     "answer": "JARDIN" },
   { "id": 9,  "scrambled": "ELISOL",     "answer": "SOLEIL" },
