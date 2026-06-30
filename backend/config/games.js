@@ -68,7 +68,7 @@ const GAMES = {
     dataFile: 'couleurs.json',
     engine: 'generic',
     inputType: 'buttons',
-    options: ['rouge', 'bleu', 'vert'],
+    options: ['rouge', 'bleu', 'vert', 'jaune', 'violet', 'orange', 'blanc'],
     answerField: 'color',
     perItemDuration: 7,
     grayoutDuration: 3,

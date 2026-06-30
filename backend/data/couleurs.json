@@ -1,202 +1,42 @@
 [
-  {
-    "id": 1,
-    "word": "vert",
-    "color": "vert"
-  },
-  {
-    "id": 2,
-    "word": "vert",
-    "color": "rouge"
-  },
-  {
-    "id": 3,
-    "word": "vert",
-    "color": "rouge"
-  },
-  {
-    "id": 4,
-    "word": "rouge",
-    "color": "vert"
-  },
-  {
-    "id": 5,
-    "word": "rouge",
-    "color": "bleu"
-  },
-  {
-    "id": 6,
-    "word": "rouge",
-    "color": "bleu"
-  },
-  {
-    "id": 7,
-    "word": "rouge",
-    "color": "rouge"
-  },
-  {
-    "id": 8,
-    "word": "rouge",
-    "color": "rouge"
-  },
-  {
-    "id": 9,
-    "word": "vert",
-    "color": "rouge"
-  },
-  {
-    "id": 10,
-    "word": "rouge",
-    "color": "rouge"
-  },
-  {
-    "id": 11,
-    "word": "vert",
-    "color": "rouge"
-  },
-  {
-    "id": 12,
-    "word": "bleu",
-    "color": "bleu"
-  },
-  {
-    "id": 13,
-    "word": "bleu",
-    "color": "vert"
-  },
-  {
-    "id": 14,
-    "word": "bleu",
-    "color": "rouge"
-  },
-  {
-    "id": 15,
-    "word": "vert",
-    "color": "bleu"
-  },
-  {
-    "id": 16,
-    "word": "bleu",
-    "color": "bleu"
-  },
-  {
-    "id": 17,
-    "word": "bleu",
-    "color": "vert"
-  },
-  {
-    "id": 18,
-    "word": "vert",
-    "color": "bleu"
-  },
-  {
-    "id": 19,
-    "word": "rouge",
-    "color": "bleu"
-  },
-  {
-    "id": 20,
-    "word": "vert",
-    "color": "bleu"
-  },
-  {
-    "id": 21,
-    "word": "bleu",
-    "color": "vert"
-  },
-  {
-    "id": 22,
-    "word": "rouge",
-    "color": "bleu"
-  },
-  {
-    "id": 23,
-    "word": "vert",
-    "color": "bleu"
-  },
-  {
-    "id": 24,
-    "word": "bleu",
-    "color": "vert"
-  },
-  {
-    "id": 25,
-    "word": "vert",
-    "color": "bleu"
-  },
-  {
-    "id": 26,
-    "word": "bleu",
-    "color": "bleu"
-  },
-  {
-    "id": 27,
-    "word": "rouge",
-    "color": "rouge"
-  },
-  {
-    "id": 28,
-    "word": "vert",
-    "color": "bleu"
-  },
-  {
-    "id": 29,
-    "word": "rouge",
-    "color": "rouge"
-  },
-  {
-    "id": 30,
-    "word": "vert",
-    "color": "rouge"
-  },
-  {
-    "id": 31,
-    "word": "vert",
-    "color": "bleu"
-  },
-  {
-    "id": 32,
-    "word": "rouge",
-    "color": "bleu"
-  },
-  {
-    "id": 33,
-    "word": "bleu",
-    "color": "vert"
-  },
-  {
-    "id": 34,
-    "word": "bleu",
-    "color": "bleu"
-  },
-  {
-    "id": 35,
-    "word": "rouge",
-    "color": "rouge"
-  },
-  {
-    "id": 36,
-    "word": "bleu",
-    "color": "rouge"
-  },
-  {
-    "id": 37,
-    "word": "bleu",
-    "color": "bleu"
-  },
-  {
-    "id": 38,
-    "word": "bleu",
-    "color": "bleu"
-  },
-  {
-    "id": 39,
-    "word": "bleu",
-    "color": "vert"
-  },
-  {
-    "id": 40,
-    "word": "rouge",
-    "color": "vert"
-  }
+  { "id": 1,  "word": "vert",   "color": "rouge"  },
+  { "id": 2,  "word": "blanc",  "color": "jaune"  },
+  { "id": 3,  "word": "rouge",  "color": "bleu"   },
+  { "id": 4,  "word": "jaune",  "color": "violet" },
+  { "id": 5,  "word": "bleu",   "color": "orange" },
+  { "id": 6,  "word": "violet", "color": "blanc"  },
+  { "id": 7,  "word": "orange", "color": "vert"   },
+  { "id": 8,  "word": "vert",   "color": "violet" },
+  { "id": 9,  "word": "blanc",  "color": "bleu"   },
+  { "id": 10, "word": "rouge",  "color": "orange" },
+  { "id": 11, "word": "jaune",  "color": "blanc"  },
+  { "id": 12, "word": "bleu",   "color": "vert"   },
+  { "id": 13, "word": "violet", "color": "rouge"  },
+  { "id": 14, "word": "orange", "color": "jaune"  },
+  { "id": 15, "word": "vert",   "color": "blanc"  },
+  { "id": 16, "word": "rouge",  "color": "vert"   },
+  { "id": 17, "word": "jaune",  "color": "rouge"  },
+  { "id": 18, "word": "bleu",   "color": "violet" },
+  { "id": 19, "word": "violet", "color": "orange" },
+  { "id": 20, "word": "orange", "color": "bleu"   },
+  { "id": 21, "word": "vert",   "color": "jaune"  },
+  { "id": 22, "word": "blanc",  "color": "rouge"  },
+  { "id": 23, "word": "rouge",  "color": "violet" },
+  { "id": 24, "word": "jaune",  "color": "orange" },
+  { "id": 25, "word": "bleu",   "color": "blanc"  },
+  { "id": 26, "word": "violet", "color": "jaune"  },
+  { "id": 27, "word": "orange", "color": "violet" },
+  { "id": 28, "word": "vert",   "color": "orange" },
+  { "id": 29, "word": "rouge",  "color": "blanc"  },
+  { "id": 30, "word": "jaune",  "color": "vert"   },
+  { "id": 31, "word": "bleu",   "color": "rouge"  },
+  { "id": 32, "word": "violet", "color": "bleu"   },
+  { "id": 33, "word": "orange", "color": "rouge"  },
+  { "id": 34, "word": "vert",   "color": "bleu"   },
+  { "id": 35, "word": "blanc",  "color": "vert"   },
+  { "id": 36, "word": "rouge",  "color": "jaune"  },
+  { "id": 37, "word": "violet", "color": "vert"   },
+  { "id": 38, "word": "jaune",  "color": "bleu"   },
+  { "id": 39, "word": "bleu",   "color": "jaune"  },
+  { "id": 40, "word": "orange", "color": "blanc"  }
 ]

@@ -33,7 +33,8 @@ const COLOR_HEX = {
   green: '#22c55e', vert: '#22c55e',
   yellow: '#f59e0b', jaune: '#f59e0b',
   purple: '#a855f7', violet: '#a855f7',
-  orange: '#f97316'
+  orange: '#f97316',
+  blanc: '#f0ece0'
 };
 
 export function colorHex(name) {

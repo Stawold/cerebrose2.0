@@ -3,7 +3,7 @@ import { getSocket } from '../../services/socketService';
 import { colorHex } from '../../services/gameLogic';
 import Timer from '../Common/Timer.jsx';
 
-const CHOICES = ['rouge', 'bleu', 'vert'];
+const CHOICES = ['rouge', 'bleu', 'vert', 'jaune', 'violet', 'orange', 'blanc'];
 
 export default function GameCouleurs({ game }) {
   const { phase, payload, duration, serverTime } = game;
