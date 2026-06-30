@@ -37,6 +37,11 @@ function renderByType(type, phase, payload) {
     case 'memoire':
       if (phase === 'display') return <h1 style={{ fontSize: '3rem', letterSpacing: 8 }}>{payload.sequence}</h1>;
       return <p>Saisissez la séquence sur votre téléphone...</p>;
+    case 'balance':
+      if (phase === 'observe' || phase === 'answer') {
+        return <MultiBalanceVisual puzzle={payload.puzzle} phase={phase} />;
+      }
+      return null;
     case 'anagramme':
       if (phase === 'play') return <h1 style={{ fontSize: '2.5rem', letterSpacing: 6 }}>{payload.scrambled}</h1>;
       if (phase === 'result')
@@ -47,7 +52,7 @@ function renderByType(type, phase, payload) {
         );
       return null;
     default:
-      // generic-engine games: balance, heures, pfc, couleurs, grille
+      // generic-engine games: heures, pfc, couleurs, grille
       if (phase === 'observe' || phase === 'answer') {
         return <GenericVisual type={type} item={payload.item} />;
       }
@@ -57,7 +62,6 @@ function renderByType(type, phase, payload) {
 
 function GenericVisual({ type, item }) {
   if (!item) return null;
-  if (type === 'balance') return <BalanceVisual item={item} />;
   if (type === 'heures') return <HeuresVisual item={item} />;
   if (type === 'pfc')
     return (
@@ -81,33 +85,76 @@ function GenericVisual({ type, item }) {
   return null;
 }
 
-function BalanceVisual({ item }) {
-  const left = colorHex(item.leftColor);
-  const right = colorHex(item.rightColor);
-  const leftHeavier = item.heavierColor === item.leftColor;
+function MultiBalanceVisual({ puzzle, phase }) {
+  if (!puzzle) return null;
+  const cols = puzzle.balances.length <= 3 ? puzzle.balances.length : 3;
   return (
-    <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'center', gap: 40, height: 140 }}>
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
-        <div
-          style={{
-            width: 80, height: 80, borderRadius: 16, background: left,
-            transform: leftHeavier ? 'translateY(20px)' : 'translateY(0)',
-            transition: 'transform 0.3s'
-          }}
-        />
-        <span className="pill-badge">{item.leftColor}</span>
+    <div>
+      {phase === 'answer' && (
+        <p className="section-label" style={{ marginBottom: 16 }}>
+          Choisissez la boule la plus lourde sur votre téléphone
+        </p>
+      )}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: `repeat(${cols}, 1fr)`,
+        gap: 16,
+        justifyItems: 'center'
+      }}>
+        {puzzle.balances.map((b, i) => (
+          <SingleBalance key={i} balance={b} />
+        ))}
       </div>
-      <div style={{ fontSize: '2rem' }}>⚖️</div>
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
-        <div
-          style={{
-            width: 80, height: 80, borderRadius: 16, background: right,
-            transform: !leftHeavier ? 'translateY(20px)' : 'translateY(0)',
-            transition: 'transform 0.3s'
-          }}
-        />
-        <span className="pill-badge">{item.rightColor}</span>
+    </div>
+  );
+}
+
+function SingleBalance({ balance }) {
+  const { left, right, heavier } = balance;
+  const tiltLeft = heavier === 'left';
+  const tiltRight = heavier === 'right';
+
+  return (
+    <div style={{
+      border: 'var(--chalk-border)',
+      borderRadius: 12,
+      padding: '14px 18px',
+      background: 'rgba(255,255,255,0.03)',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      gap: 8,
+      minWidth: 160
+    }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+        <Pan balls={left} down={tiltLeft} up={tiltRight} />
+        <div style={{ fontSize: '1.6rem', lineHeight: 1 }}>⚖️</div>
+        <Pan balls={right} down={tiltRight} up={tiltLeft} />
       </div>
+    </div>
+  );
+}
+
+function Pan({ balls, down, up }) {
+  return (
+    <div style={{
+      display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
+      transform: down ? 'translateY(10px)' : up ? 'translateY(-10px)' : 'none',
+      transition: 'transform 0.4s ease'
+    }}>
+      <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', justifyContent: 'center', maxWidth: 80 }}>
+        {balls.map((c, i) => (
+          <div
+            key={i}
+            style={{
+              width: 22, height: 22, borderRadius: '50%',
+              background: colorHex(c),
+              boxShadow: `0 2px 6px ${colorHex(c)}66`
+            }}
+          />
+        ))}
+      </div>
+      <div style={{ width: 56, height: 2, background: 'rgba(240,236,224,0.45)', borderRadius: 1 }} />
     </div>
   );
 }

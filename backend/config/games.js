@@ -25,11 +25,10 @@ const GAMES = {
     id: 'balance',
     label: 'Balance',
     dataFile: 'balance.json',
-    engine: 'generic',
-    inputType: 'buttons',
-    options: ['red', 'blue', 'green', 'yellow', 'purple', 'orange'],
-    answerField: 'heavierColor',
-    perItemDuration: 60,
+    engine: 'balance',
+    observeDuration: 20,
+    perItemDuration: 15,
+    grayoutDuration: 3,
     speedBonus: true
   },
   heures: {

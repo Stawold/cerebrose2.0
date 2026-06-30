@@ -332,12 +332,75 @@ class AnagrammeRunner extends BaseRunner {
   }
 }
 
+class BalanceRunner extends BaseRunner {
+  start() {
+    this.puzzles = loadData(this.config.dataFile);
+    this.puzzleIndex = 0;
+    this.runPuzzle();
+  }
+
+  runPuzzle() {
+    const puzzle = this.puzzles[this.puzzleIndex];
+    this.answers = {};
+    this.emitPhase('observe', { puzzle }, this.config.observeDuration);
+    this.schedule(() => this.openAnswer(puzzle), this.config.observeDuration * 1000);
+  }
+
+  openAnswer(puzzle) {
+    this.emitPhase('answer', { puzzle }, this.config.perItemDuration);
+    this.schedule(() => this.resolvePuzzle(puzzle), this.config.perItemDuration * 1000);
+  }
+
+  handleAnswer(playerId, { value }) {
+    if (this.answers[playerId]) return;
+    this.answers[playerId] = { value, time: Date.now() };
+  }
+
+  resolvePuzzle(puzzle) {
+    const correctEntries = [];
+    this.players.forEach((p) => {
+      const entry = this.answers[p.id];
+      if (!entry) {
+        this.emitFeedbackTo(p.id, null);
+        return;
+      }
+      const correct = String(entry.value).toLowerCase() === String(puzzle.answer).toLowerCase();
+      if (correct) correctEntries.push({ id: p.id, time: entry.time });
+      this.emitFeedbackTo(p.id, correct);
+    });
+
+    correctEntries.sort((a, b) => a.time - b.time);
+    const speedPoints = [4, 3, 2];
+    correctEntries.forEach((entry, idx) => {
+      this.scores[entry.id] += idx < 3 ? speedPoints[idx] : 1;
+    });
+    this.emitScores();
+
+    const afterGrayout = () => {
+      this.puzzleIndex += 1;
+      if (this.puzzleIndex >= this.puzzles.length) {
+        this.finish();
+      } else {
+        this.runPuzzle();
+      }
+    };
+
+    if (this.config.grayoutDuration) {
+      this.emitPhase('grayout', {}, this.config.grayoutDuration);
+      this.schedule(afterGrayout, this.config.grayoutDuration * 1000);
+    } else {
+      afterGrayout();
+    }
+  }
+}
+
 const ENGINES = {
   calculs: CalculsRunner,
   texte: TexteRunner,
   memoire: MemoireRunner,
   generic: GenericRunner,
-  anagramme: AnagrammeRunner
+  anagramme: AnagrammeRunner,
+  balance: BalanceRunner
 };
 
 function createRunner(gameId, players, io, room, onFinish) {
