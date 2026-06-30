@@ -36,6 +36,8 @@ function startNextGame(io, party) {
     party.phase = 'finished';
     const leaderboard = computeLeaderboard(Array.from(party.players.values()), party.globalScores);
     io.to(party.code).emit('party:gameOver', { leaderboard });
+    // Clean up party from memory after 2 hours
+    setTimeout(() => parties.delete(party.code), 2 * 60 * 60 * 1000);
     return;
   }
   party.phase = 'rules';
@@ -63,6 +65,20 @@ function runCurrentGame(io, party) {
   party.currentRunner.start();
 }
 
+function replayPartyStateToSocket(socket, party) {
+  const gameId = party.selectedGames[party.currentGameIndex];
+  if (party.phase === 'rules' && gameId) {
+    socket.emit('party:rulesPhase', {
+      game: gameId,
+      label: GAMES[gameId].label,
+      gameIndex: party.currentGameIndex,
+      totalGames: party.selectedGames.length
+    });
+  } else if (party.phase === 'playing' && party.currentRunner) {
+    party.currentRunner.replayToSocket(socket);
+  }
+}
+
 function onGameFinish(io, party, gameId, rawScores) {
   party.phase = 'roundResults';
   const playersArr = Array.from(party.players.values());
@@ -71,6 +87,7 @@ function onGameFinish(io, party, gameId, rawScores) {
   applyRoundToGlobal(party.globalScores, ranking);
   const leaderboard = computeLeaderboard(playersArr, party.globalScores);
   party.roundHistory.push({ game: gameId, ranking });
+  party.lastRoundResults = { game: gameId, ranking, leaderboard };
   io.to(party.code).emit('party:roundResults', { game: gameId, ranking, leaderboard });
 }
 
@@ -128,6 +145,25 @@ function attachSocketHandlers(io) {
       }
       broadcastPartyUpdate(io, party);
       if (ack) ack({ ok: true, phase: party.phase, selectedGames: party.selectedGames });
+      replayPartyStateToSocket(socket, party);
+      if (party.phase === 'roundResults' && party.lastRoundResults) {
+        socket.emit('party:roundResults', party.lastRoundResults);
+      }
+    });
+
+    socket.on('host:rejoinParty', ({ code }, ack) => {
+      const party = parties.get(code);
+      if (!party) return ack && ack({ ok: false, error: 'Partie introuvable' });
+      party.hostSocketId = socket.id;
+      socket.join(code);
+      socket.data.role = 'host';
+      socket.data.code = code;
+      broadcastPartyUpdate(io, party);
+      if (ack) ack({ ok: true, phase: party.phase, selectedGames: party.selectedGames });
+      replayPartyStateToSocket(socket, party);
+      if (party.phase === 'roundResults' && party.lastRoundResults) {
+        socket.emit('party:roundResults', party.lastRoundResults);
+      }
     });
 
     socket.on('host:selectGames', ({ code, gameIds }) => {
@@ -183,6 +219,9 @@ function attachSocketHandlers(io) {
           player.connected = false;
           broadcastPartyUpdate(io, party);
         }
+      } else if (role === 'host') {
+        party.hostSocketId = null;
+        io.to(party.code).emit('party:hostDisconnected');
       }
     });
   });

@@ -12,13 +12,31 @@ export default function LobbyPage() {
 
   useEffect(() => {
     getSocket();
-    const saved = localStorage.getItem('cerebrose_player');
-    if (saved) {
-      const { code: savedCode, pseudo: savedPseudo, playerId } = JSON.parse(saved);
+    const savedPlayer = localStorage.getItem('cerebrose_player');
+    const savedHost = localStorage.getItem('cerebrose_host');
+    if (savedHost) {
+      const { code: savedCode } = JSON.parse(savedHost);
+      emitWithAck('host:rejoinParty', { code: savedCode }).then((res) => {
+        if (res && res.ok) {
+          dispatch({ type: 'SET_HOST' });
+          const phase = res.phase;
+          if (phase === 'lobby') navigate('/host', { state: { code: savedCode } });
+          else navigate('/game', { state: { code: savedCode } });
+        } else {
+          localStorage.removeItem('cerebrose_host');
+        }
+      });
+    } else if (savedPlayer) {
+      const { code: savedCode, pseudo: savedPseudo, playerId } = JSON.parse(savedPlayer);
       emitWithAck('player:rejoinParty', { code: savedCode, pseudo: savedPseudo, playerId }).then((res) => {
         if (res && res.ok) {
           dispatch({ type: 'SET_PLAYER_IDENTITY', playerId, pseudo: savedPseudo });
-          navigate('/rules');
+          const phase = res.phase;
+          if (phase === 'playing' || phase === 'roundResults') navigate('/game', { state: { code: savedCode } });
+          else if (phase === 'finished') { localStorage.removeItem('cerebrose_player'); }
+          else navigate('/rules', { state: { code: savedCode } });
+        } else {
+          localStorage.removeItem('cerebrose_player');
         }
       });
     }
@@ -28,6 +46,7 @@ export default function LobbyPage() {
     const res = await emitWithAck('host:createParty', {});
     if (res && res.ok) {
       dispatch({ type: 'SET_HOST' });
+      localStorage.setItem('cerebrose_host', JSON.stringify({ code: res.code }));
       navigate('/host', { state: { code: res.code } });
     }
   }

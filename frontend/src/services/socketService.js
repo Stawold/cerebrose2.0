@@ -6,7 +6,13 @@ let socket = null;
 
 export function getSocket() {
   if (!socket) {
-    socket = io(SOCKET_URL, { autoConnect: true });
+    socket = io(SOCKET_URL, {
+      autoConnect: true,
+      reconnection: true,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
+      reconnectionAttempts: Infinity
+    });
   }
   return socket;
 }

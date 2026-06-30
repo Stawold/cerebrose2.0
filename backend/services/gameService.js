@@ -18,17 +18,27 @@ class BaseRunner {
     this.onFinish = onFinish;
     this.scores = {};
     this.timers = [];
+    this.lastPhase = null;
     this.players.forEach((p) => { this.scores[p.id] = 0; });
   }
 
   emitPhase(phase, payload, duration) {
-    this.io.to(this.room).emit('game:phase', {
+    const data = {
       game: this.gameId,
       phase,
       payload,
       duration: duration || 0,
       serverTime: Date.now()
-    });
+    };
+    this.lastPhase = data;
+    this.io.to(this.room).emit('game:phase', data);
+  }
+
+  replayToSocket(socket) {
+    if (this.lastPhase) {
+      socket.emit('game:phase', { ...this.lastPhase, serverTime: Date.now() });
+      socket.emit('game:scoreUpdate', { scores: this.scores });
+    }
   }
 
   emitScores() {
