@@ -54,12 +54,23 @@ class BaseRunner {
   schedule(fn, ms) {
     const t = setTimeout(fn, ms);
     this.timers.push(t);
+    this.advanceFn = fn;
     return t;
   }
 
   clearTimers() {
     this.timers.forEach(clearTimeout);
     this.timers = [];
+  }
+
+  // Test-mode helper: force the current phase to end immediately, as if its
+  // timer had fired. No-op if nothing is scheduled.
+  skip() {
+    const fn = this.advanceFn;
+    if (!fn) return;
+    this.advanceFn = null;
+    this.clearTimers();
+    fn();
   }
 
   finish() {

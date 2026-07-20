@@ -13,6 +13,7 @@ app.get('/health', (_req, res) => res.json({ ok: true }));
 app.get('/games', (_req, res) => {
   res.json(Object.values(GAMES).map((g) => ({ id: g.id, label: g.label })));
 });
+app.use('/admin', require('./routes/admin'));
 
 const server = http.createServer(app);
 const io = new Server(server, {

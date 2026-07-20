@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { emitWithAck, getSocket } from '../services/socketService';
 import { useGame } from '../context/GameContext.jsx';
 
@@ -111,6 +111,10 @@ export default function LobbyPage() {
           <p style={{ color: 'var(--coral)', margin: '12px 0 0', fontSize: '0.9rem' }}>{error}</p>
         )}
       </div>
+
+      <Link to="/test-lab" style={{ color: 'var(--text-faint)', fontSize: '0.85rem' }}>
+        Outil de test &amp; contenu →
+      </Link>
     </div>
   );
 }
