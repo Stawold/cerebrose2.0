@@ -4,6 +4,7 @@ import { useGame } from '../context/GameContext.jsx';
 import { emitWithAck, getSocket } from '../services/socketService';
 import { fetchGamesConfig, fetchGameData, saveGameData } from '../services/adminService';
 import Podium from '../components/Common/Podium.jsx';
+import GameVisual from '../components/Displays/GameVisual.jsx';
 import GameCalculs from '../components/Games/GameCalculs.jsx';
 import GameTexte from '../components/Games/GameTexte.jsx';
 import GameMemoire from '../components/Games/GameMemoire.jsx';
@@ -115,8 +116,24 @@ function PlayTester({ games }) {
             <Podium leaderboard={state.roundResults.leaderboard} />
             <button style={{ marginTop: 16 }} onClick={stop}>Nouveau test</button>
           </div>
-        ) : state.game.type && state.game.phase && PlayerComponent ? (
-          <PlayerComponent game={state.game} />
+        ) : state.game.type && state.game.phase ? (
+          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.2fr) minmax(0, 1fr)', gap: 16, alignItems: 'start' }}>
+            <div>
+              <span className="section-label">Écran de diffusion (projection)</span>
+              <div style={{ marginTop: 8 }}>
+                <GameVisual game={state.game} />
+                <p style={{ marginTop: 12, color: 'var(--text-muted)', fontSize: '0.9rem' }}>
+                  Score : {Object.values(state.game.scores || {})[0] ?? 0}
+                </p>
+              </div>
+            </div>
+            <div>
+              <span className="section-label">Écran joueur</span>
+              <div style={{ marginTop: 8 }}>
+                {PlayerComponent ? <PlayerComponent game={state.game} /> : <p style={{ color: 'var(--text-muted)' }}>Pas de composant joueur dédié.</p>}
+              </div>
+            </div>
+          </div>
         ) : (
           <p style={{ color: 'var(--text-muted)' }}>Chargement du jeu…</p>
         )}
