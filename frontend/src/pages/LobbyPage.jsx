@@ -112,8 +112,20 @@ export default function LobbyPage() {
         )}
       </div>
 
-      <Link to="/test-lab" style={{ color: 'var(--text-faint)', fontSize: '0.85rem' }}>
-        Outil de test &amp; contenu →
+      <Link
+        to="/test-lab"
+        style={{
+          display: 'inline-block',
+          textDecoration: 'none',
+          color: 'var(--text)',
+          fontWeight: 600,
+          fontSize: '0.9rem',
+          padding: '10px 20px',
+          borderRadius: 999,
+          border: '2px dashed var(--chalk-line-strong)'
+        }}
+      >
+        🧪 Outil de test &amp; contenu
       </Link>
     </div>
   );
