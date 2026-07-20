@@ -2,7 +2,15 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useGame } from '../context/GameContext.jsx';
 import { emitWithAck, getSocket } from '../services/socketService';
-import { fetchGamesConfig, fetchGameData, saveGameData } from '../services/adminService';
+import {
+  fetchGamesConfig,
+  fetchGameData,
+  saveGameData,
+  getAdminPassword,
+  setAdminPassword,
+  clearAdminPassword,
+  verifyAdminPassword
+} from '../services/adminService';
 import Podium from '../components/Common/Podium.jsx';
 import GameVisual from '../components/Displays/GameVisual.jsx';
 import GameCalculs from '../components/Games/GameCalculs.jsx';
@@ -31,13 +39,25 @@ export default function TestLab() {
   const [tab, setTab] = useState('play');
   const [games, setGames] = useState([]);
   const [gamesError, setGamesError] = useState('');
+  const [authed, setAuthed] = useState(null); // null = checking, false = login needed, true = in
 
   useEffect(() => {
     getSocket();
+    if (!getAdminPassword()) {
+      setAuthed(false);
+      return;
+    }
+    verifyAdminPassword()
+      .then(() => setAuthed(true))
+      .catch(() => setAuthed(false));
+  }, []);
+
+  useEffect(() => {
+    if (!authed) return;
     fetchGamesConfig()
       .then(setGames)
       .catch((err) => setGamesError(err.message));
-  }, []);
+  }, [authed]);
 
   return (
     <div className="page" style={{ gap: 20, alignItems: 'stretch', maxWidth: 900, margin: '0 auto' }}>
@@ -49,20 +69,73 @@ export default function TestLab() {
         <Link to="/" style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>← Retour à l'accueil</Link>
       </div>
 
-      {gamesError && <p style={{ color: 'var(--coral)' }}>{gamesError}</p>}
+      {authed !== true ? (
+        <AdminLogin onSuccess={() => setAuthed(true)} />
+      ) : (
+        <>
+          {gamesError && <p style={{ color: 'var(--coral)' }}>{gamesError}</p>}
 
-      <div style={{ display: 'flex', gap: 8 }}>
-        <button className={tab === 'play' ? '' : 'btn-secondary'} onClick={() => setTab('play')}>
-          Tester un jeu
-        </button>
-        <button className={tab === 'data' ? '' : 'btn-secondary'} onClick={() => setTab('data')}>
-          Contenu des jeux
-        </button>
-      </div>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button className={tab === 'play' ? '' : 'btn-secondary'} onClick={() => setTab('play')}>
+              Tester un jeu
+            </button>
+            <button className={tab === 'data' ? '' : 'btn-secondary'} onClick={() => setTab('data')}>
+              Contenu des jeux
+            </button>
+            <button
+              className="btn-secondary"
+              style={{ marginLeft: 'auto' }}
+              onClick={() => { clearAdminPassword(); setAuthed(false); }}
+            >
+              Verrouiller
+            </button>
+          </div>
 
-      {tab === 'play' && <PlayTester games={games} />}
-      {tab === 'data' && <DataEditor games={games} />}
+          {tab === 'play' && <PlayTester games={games} />}
+          {tab === 'data' && <DataEditor games={games} />}
+        </>
+      )}
     </div>
+  );
+}
+
+function AdminLogin({ onSuccess }) {
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [checking, setChecking] = useState(false);
+
+  async function submit(e) {
+    e.preventDefault();
+    setError('');
+    setChecking(true);
+    setAdminPassword(password);
+    try {
+      await verifyAdminPassword();
+      onSuccess();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setChecking(false);
+    }
+  }
+
+  return (
+    <form onSubmit={submit} className="card" style={{ maxWidth: 380 }}>
+      <span className="section-label">Accès protégé</span>
+      <h2 style={{ margin: '8px 0 16px' }}>Mot de passe admin</h2>
+      <input
+        type="password"
+        autoFocus
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        placeholder="Mot de passe"
+        style={{ marginBottom: 12 }}
+      />
+      <button type="submit" disabled={checking || !password} style={{ width: '100%' }}>
+        {checking ? 'Vérification…' : 'Entrer'}
+      </button>
+      {error && <p style={{ color: 'var(--coral)', marginTop: 12 }}>{error}</p>}
+    </form>
   );
 }
 
@@ -78,7 +151,7 @@ function PlayTester({ games }) {
 
   async function launch(gameId) {
     setError('');
-    const res = await emitWithAck('test:startSolo', { gameId });
+    const res = await emitWithAck('test:startSolo', { gameId, password: getAdminPassword() });
     if (!res || !res.ok) {
       setError((res && res.error) || 'Impossible de démarrer le test');
       return;

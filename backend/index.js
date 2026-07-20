@@ -1,9 +1,21 @@
+const fs = require('fs');
+const path = require('path');
 const http = require('http');
 const express = require('express');
 const cors = require('cors');
 const { Server } = require('socket.io');
 const { attachSocketHandlers } = require('./services/socketManager');
 const { GAMES } = require('./config/games');
+
+// Minimal .env loader (no extra dependency): lets ADMIN_PASSWORD etc. live
+// in a local, gitignored file instead of the source code.
+const envPath = path.join(__dirname, '.env');
+if (fs.existsSync(envPath)) {
+  fs.readFileSync(envPath, 'utf-8').split('\n').forEach((line) => {
+    const match = line.match(/^\s*([^#=\s]+)\s*=\s*(.*)\s*$/);
+    if (match && process.env[match[1]] === undefined) process.env[match[1]] = match[2];
+  });
+}
 
 const app = express();
 app.use(cors());

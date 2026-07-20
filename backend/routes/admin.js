@@ -2,10 +2,16 @@ const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const { GAMES } = require('../config/games');
+const { verifyAdminPassword } = require('../services/adminAuth');
 
 const DATA_DIR = path.join(__dirname, '..', 'data');
 
 const router = express.Router();
+
+router.use((req, res, next) => {
+  if (verifyAdminPassword(req.get('x-admin-password'))) return next();
+  res.status(401).json({ error: 'Mot de passe admin invalide ou manquant' });
+});
 
 function dataFilePath(gameId) {
   const config = GAMES[gameId];
