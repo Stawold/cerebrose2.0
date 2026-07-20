@@ -117,19 +117,24 @@ function PlayTester({ games }) {
             <button style={{ marginTop: 16 }} onClick={stop}>Nouveau test</button>
           </div>
         ) : state.game.type && state.game.phase ? (
-          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.2fr) minmax(0, 1fr)', gap: 16, alignItems: 'start' }}>
-            <div>
-              <span className="section-label">Écran de diffusion (projection)</span>
-              <div style={{ marginTop: 8 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+            <div className="test-lab-screen">
+              <span className="test-lab-screen-label" style={{ color: 'var(--violet)' }}>
+                📽️ Écran de diffusion (projection)
+              </span>
+              <div className="test-lab-screen-body">
                 <GameVisual game={state.game} />
-                <p style={{ marginTop: 12, color: 'var(--text-muted)', fontSize: '0.9rem' }}>
+                <p style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
                   Score : {Object.values(state.game.scores || {})[0] ?? 0}
                 </p>
               </div>
             </div>
-            <div>
-              <span className="section-label">Écran joueur</span>
-              <div style={{ marginTop: 8 }}>
+
+            <div className="test-lab-screen">
+              <span className="test-lab-screen-label" style={{ color: 'var(--coral)' }}>
+                📱 Écran joueur
+              </span>
+              <div className="test-lab-screen-body">
                 {PlayerComponent ? <PlayerComponent game={state.game} /> : <p style={{ color: 'var(--text-muted)' }}>Pas de composant joueur dédié.</p>}
               </div>
             </div>
