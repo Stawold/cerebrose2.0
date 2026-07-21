@@ -8,6 +8,7 @@ import ProjectionDisplay from './components/Displays/ProjectionDisplay.jsx';
 import RulesOverview from './pages/RulesOverview.jsx';
 import TestLab from './pages/TestLab.jsx';
 import SecretTestLabLauncher from './components/Common/SecretTestLabLauncher.jsx';
+import MenuExitButton from './components/Common/MenuExitButton.jsx';
 
 export default function App() {
   return (
@@ -23,6 +24,7 @@ export default function App() {
           <Route path="/regles" element={<RulesOverview />} />
           <Route path="/test-lab" element={<TestLab />} />
         </Routes>
+        <MenuExitButton />
         <SecretTestLabLauncher />
       </BrowserRouter>
     </GameProvider>

@@ -15,4 +15,10 @@ function verifyAdminPassword(candidate) {
   return safeEqual(candidate || '', expected);
 }
 
-module.exports = { verifyAdminPassword };
+// True once the server has an ADMIN_PASSWORD configured at all — lets callers
+// tell "wrong password" apart from "backend/.env is missing/not set up".
+function isAdminPasswordConfigured() {
+  return Boolean(process.env.ADMIN_PASSWORD);
+}
+
+module.exports = { verifyAdminPassword, isAdminPasswordConfigured };

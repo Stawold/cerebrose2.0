@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const { GAMES } = require('../config/games');
-const { verifyAdminPassword } = require('../services/adminAuth');
+const { verifyAdminPassword, isAdminPasswordConfigured } = require('../services/adminAuth');
 
 const DATA_DIR = path.join(__dirname, '..', 'data');
 
@@ -10,7 +10,12 @@ const router = express.Router();
 
 router.use((req, res, next) => {
   if (verifyAdminPassword(req.get('x-admin-password'))) return next();
-  res.status(401).json({ error: 'Mot de passe admin invalide ou manquant' });
+  if (!isAdminPasswordConfigured()) {
+    return res.status(401).json({
+      error: "ADMIN_PASSWORD n'est pas configuré côté serveur — copiez backend/.env.example en backend/.env, renseignez ADMIN_PASSWORD, puis redémarrez le backend."
+    });
+  }
+  res.status(401).json({ error: 'Mot de passe admin invalide' });
 });
 
 function dataFilePath(gameId) {

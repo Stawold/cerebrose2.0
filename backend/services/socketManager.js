@@ -2,7 +2,7 @@ const { randomUUID } = require('crypto');
 const { GAMES } = require('../config/games');
 const { createRunner } = require('./gameService');
 const { computeRoundRanking, applyRoundToGlobal, computeLeaderboard } = require('./scoringService');
-const { verifyAdminPassword } = require('./adminAuth');
+const { verifyAdminPassword, isAdminPasswordConfigured } = require('./adminAuth');
 
 const parties = new Map();
 
@@ -213,7 +213,12 @@ function attachSocketHandlers(io) {
     // --- Test mode: lets a single socket act as its own party of one, to
     // try out a game's flow/content without a real multiplayer session. ---
     socket.on('test:startSolo', ({ gameId, password }, ack) => {
-      if (!verifyAdminPassword(password)) return ack && ack({ ok: false, error: 'Mot de passe admin invalide' });
+      if (!verifyAdminPassword(password)) {
+        const error = isAdminPasswordConfigured()
+          ? 'Mot de passe admin invalide'
+          : "ADMIN_PASSWORD n'est pas configuré côté serveur — copiez backend/.env.example en backend/.env, renseignez ADMIN_PASSWORD, puis redémarrez le backend.";
+        return ack && ack({ ok: false, error });
+      }
       if (!GAMES[gameId]) return ack && ack({ ok: false, error: 'Jeu inconnu' });
       const code = generateCode();
       const playerId = randomUUID();
