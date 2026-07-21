@@ -2,6 +2,7 @@ const { randomUUID } = require('crypto');
 const { GAMES } = require('../config/games');
 const { createRunner } = require('./gameService');
 const { computeRoundRanking, applyRoundToGlobal, computeLeaderboard } = require('./scoringService');
+const { verifyAdminPassword } = require('./adminAuth');
 
 const parties = new Map();
 
@@ -209,10 +210,57 @@ function attachSocketHandlers(io) {
       party.currentRunner.handleAnswer(playerId, payload);
     });
 
+    // --- Test mode: lets a single socket act as its own party of one, to
+    // try out a game's flow/content without a real multiplayer session. ---
+    socket.on('test:startSolo', ({ gameId, password }, ack) => {
+      if (!verifyAdminPassword(password)) return ack && ack({ ok: false, error: 'Mot de passe admin invalide' });
+      if (!GAMES[gameId]) return ack && ack({ ok: false, error: 'Jeu inconnu' });
+      const code = generateCode();
+      const playerId = randomUUID();
+      const party = {
+        code,
+        hostSocketId: socket.id,
+        players: new Map([[playerId, { id: playerId, pseudo: 'Testeur', socketId: socket.id, connected: true }]]),
+        selectedGames: [gameId],
+        currentGameIndex: 0,
+        currentRunner: null,
+        globalScores: {},
+        roundHistory: [],
+        phase: 'lobby',
+        isTest: true
+      };
+      parties.set(code, party);
+      socket.join(code);
+      socket.data.role = 'player';
+      socket.data.code = code;
+      socket.data.playerId = playerId;
+      runCurrentGame(io, party);
+      if (ack) ack({ ok: true, code, playerId });
+    });
+
+    socket.on('test:skip', ({ code }) => {
+      const party = parties.get(code);
+      if (!party || !party.isTest || socket.id !== party.hostSocketId) return;
+      if (party.currentRunner) party.currentRunner.skip();
+    });
+
+    socket.on('test:endSolo', ({ code }) => {
+      const party = parties.get(code);
+      if (!party || !party.isTest || socket.id !== party.hostSocketId) return;
+      if (party.currentRunner) party.currentRunner.clearTimers();
+      socket.leave(code);
+      parties.delete(code);
+    });
+
     socket.on('disconnect', () => {
       const { code, role, playerId } = socket.data;
       const party = parties.get(code);
       if (!party) return;
+      if (party.isTest) {
+        if (party.currentRunner) party.currentRunner.clearTimers();
+        parties.delete(code);
+        return;
+      }
       if (role === 'player' && playerId) {
         const player = party.players.get(playerId);
         if (player) {

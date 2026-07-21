@@ -46,6 +46,8 @@ function reducer(state, action) {
       return { ...state, roundResults: action.payload };
     case 'GAME_OVER':
       return { ...state, gameOver: action.payload, party: { ...state.party, phase: 'finished' } };
+    case 'RESET':
+      return initialState;
     default:
       return state;
   }
