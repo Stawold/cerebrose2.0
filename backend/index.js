@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const { Server } = require('socket.io');
 const { attachSocketHandlers } = require('./services/socketManager');
+const { loadData } = require('./services/gameService');
 const { GAMES } = require('./config/games');
 
 const app = express();
@@ -11,7 +12,23 @@ app.use(express.json());
 
 app.get('/health', (_req, res) => res.json({ ok: true }));
 app.get('/games', (_req, res) => {
-  res.json(Object.values(GAMES).map((g) => ({ id: g.id, label: g.label })));
+  // Timing/scoring config only — safe to expose publicly, used by the
+  // pre-game "Règles" recap so it stays in sync with the real server config.
+  res.json(Object.values(GAMES).map((g) => {
+    let itemCount = null;
+    try { itemCount = loadData(g.dataFile).length; } catch { itemCount = null; }
+    return {
+      id: g.id,
+      label: g.label,
+      itemCount,
+      totalDuration: g.totalDuration ?? null,
+      perItemDuration: g.perItemDuration ?? null,
+      perTextDuration: g.perTextDuration ?? null,
+      displayDuration: g.displayDuration ?? null,
+      inputDuration: g.inputDuration ?? null,
+      observeDuration: g.observeDuration ?? null
+    };
+  }));
 });
 
 const server = http.createServer(app);

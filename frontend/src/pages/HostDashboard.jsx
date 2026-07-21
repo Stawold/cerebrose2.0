@@ -2,18 +2,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { getSocket } from '../services/socketService';
 import { useGame } from '../context/GameContext.jsx';
 import Avatar from '../components/Common/Avatar.jsx';
-
-const ALL_GAMES = [
-  { id: 'calculs', label: 'Calculs mentaux' },
-  { id: 'texte', label: 'Correction de texte' },
-  { id: 'memoire', label: 'Mémoire des chiffres' },
-  { id: 'balance', label: 'Balance' },
-  { id: 'heures', label: "Différence d'heures" },
-  { id: 'pfc', label: 'Pierre Feuille Ciseaux' },
-  { id: 'anagramme', label: 'Anagramme' },
-  { id: 'couleurs', label: 'Test des couleurs' },
-  { id: 'grille', label: 'Grille spatiale' }
-];
+import { GAMES_LIST as ALL_GAMES } from '../services/gameLogic';
 
 export default function HostDashboard() {
   const { state, dispatch } = useGame();
@@ -52,6 +41,13 @@ export default function HostDashboard() {
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
           <span className="pill-badge mint">{playerCount} joueur{playerCount !== 1 ? 's' : ''} connecté{playerCount !== 1 ? 's' : ''}</span>
         </div>
+        <button
+          className="btn-secondary"
+          onClick={() => window.open(`/projection?code=${code}`, '_blank', 'noopener')}
+          style={{ width: '100%', marginBottom: 16 }}
+        >
+          🖥️ Ouvrir l'écran de projection (à mettre sur le grand écran)
+        </button>
         {playerCount > 0 && (
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center' }}>
             {(state.party.players || []).map((p) => (

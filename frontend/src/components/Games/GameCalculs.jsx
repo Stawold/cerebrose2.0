@@ -1,10 +1,14 @@
 import { useState } from 'react';
 import { getSocket } from '../../services/socketService';
+import { useGame } from '../../context/GameContext.jsx';
 import { feedbackClass } from '../Common/Feedback.jsx';
 import Timer from '../Common/Timer.jsx';
+import { useAutoSubmitOnExpiry } from '../../services/useAutoSubmitOnExpiry';
 
 export default function GameCalculs({ game }) {
-  const { payload, duration, serverTime, feedback } = game;
+  const { state } = useGame();
+  const feedback = state.feedback;
+  const { payload, duration, serverTime } = game;
   const [index, setIndex] = useState(0);
   const [value, setValue] = useState('');
   const questions = payload?.questions || [];
@@ -17,6 +21,8 @@ export default function GameCalculs({ game }) {
     setTimeout(() => setIndex((i) => Math.min(i + 1, questions.length - 1)), 400);
   }
 
+  useAutoSubmitOnExpiry(duration, serverTime, () => { if (value.trim()) submit(); });
+
   if (!current) return <p>Aucun calcul disponible.</p>;
   const isCurrentFeedback = feedback && feedback.questionId === current.id;
 
@@ -28,6 +34,10 @@ export default function GameCalculs({ game }) {
       <input
         type="number"
         autoFocus
+        autoComplete="off"
+        autoCorrect="off"
+        autoCapitalize="off"
+        spellCheck={false}
         className={isCurrentFeedback ? feedbackClass(feedback) : ''}
         value={value}
         onChange={(e) => setValue(e.target.value)}

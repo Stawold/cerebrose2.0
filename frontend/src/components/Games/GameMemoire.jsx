@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { getSocket } from '../../services/socketService';
 import Timer from '../Common/Timer.jsx';
+import { useAutoSubmitOnExpiry } from '../../services/useAutoSubmitOnExpiry';
 
 export default function GameMemoire({ game }) {
   const { phase, payload, duration, serverTime } = game;
@@ -17,6 +18,8 @@ export default function GameMemoire({ game }) {
     getSocket().emit('player:answer', { value: value.trim() });
     setSent(true);
   }
+
+  useAutoSubmitOnExpiry(duration, serverTime, () => { if (phase === 'input' && value.trim()) submit(); });
 
   if (phase === 'display') {
     return (
@@ -36,6 +39,10 @@ export default function GameMemoire({ game }) {
         type="text"
         inputMode="numeric"
         autoFocus
+        autoComplete="off"
+        autoCorrect="off"
+        autoCapitalize="off"
+        spellCheck={false}
         disabled={sent}
         value={value}
         onChange={(e) => setValue(e.target.value)}

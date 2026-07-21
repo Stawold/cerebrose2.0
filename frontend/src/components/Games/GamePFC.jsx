@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react';
 import { getSocket } from '../../services/socketService';
+import { useGame } from '../../context/GameContext.jsx';
 import { PFC_ICONS } from '../../services/gameLogic';
 import Timer from '../Common/Timer.jsx';
 
 const CHOICES = ['pierre', 'feuille', 'ciseaux'];
 
 export default function GamePFC({ game }) {
-  const { payload, duration, serverTime, feedback } = game;
+  const { state } = useGame();
+  const feedback = state.feedback;
+  const { payload, duration, serverTime } = game;
   const [sent, setSent] = useState(false);
 
   useEffect(() => {

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { getSocket } from '../../services/socketService';
 import { useGame } from '../../context/GameContext.jsx';
 import Timer from '../Common/Timer.jsx';
+import { useAutoSubmitOnExpiry } from '../../services/useAutoSubmitOnExpiry';
 
 const MAX_ATTEMPTS = 10;
 
@@ -44,6 +45,8 @@ export default function GameTexte({ game }) {
     setValue('');
   }
 
+  useAutoSubmitOnExpiry(duration, serverTime, () => { if (value.trim() && !done) submit(); });
+
   return (
     <div className="page" style={{ gap: 16 }}>
       <Timer duration={duration} serverTime={serverTime} />
@@ -55,10 +58,53 @@ export default function GameTexte({ game }) {
         </span>
       </div>
 
-      <div className="card" style={{ maxWidth: 440, width: '100%' }}>
-        {/* History of past answers */}
+      <div className="card" style={{ maxWidth: 640, width: '100%', display: 'flex', gap: 20, flexWrap: 'wrap', alignItems: 'flex-start' }}>
+        <div style={{ flex: '1 1 260px', minWidth: 220 }}>
+          {done ? (
+            <p style={{ color: foundCount >= totalCorrections ? 'var(--mint)' : 'var(--text-muted)', fontWeight: 700, margin: '0 0 12px' }}>
+              {foundCount >= totalCorrections ? '🎉 Toutes les fautes trouvées !' : 'Plus de tentatives !'}
+            </p>
+          ) : (
+            <p className="section-label" style={{ marginBottom: 12 }}>
+              Lisez le texte sur l'écran, tapez une correction
+            </p>
+          )}
+
+          <input
+            type="text"
+            autoFocus
+            autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="off"
+            spellCheck={false}
+            disabled={done}
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && submit()}
+            placeholder="Mot corrigé…"
+            style={{ background: '#fff', color: '#1b2e1b', borderStyle: 'solid', borderColor: 'var(--chalk-line-strong)' }}
+          />
+          <button
+            onClick={submit}
+            disabled={done}
+            style={{ width: '100%', marginTop: 12 }}
+          >
+            Valider
+          </button>
+        </div>
+
+        {/* Side column: color-coded history of past answers */}
         {history.length > 0 && (
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 20 }}>
+          <div style={{
+            flex: '0 0 140px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 8,
+            maxHeight: 260,
+            overflowY: 'auto',
+            paddingLeft: 16,
+            borderLeft: '2px dashed var(--chalk-line-strong)'
+          }}>
             {history.map((entry, i) => (
               <span
                 key={i}
@@ -67,6 +113,7 @@ export default function GameTexte({ game }) {
                   borderRadius: 999,
                   fontSize: '0.9rem',
                   fontWeight: 700,
+                  textAlign: 'center',
                   background: entry.correct ? 'var(--mint-dim)' : 'var(--coral-dim)',
                   color: entry.correct ? 'var(--mint)' : 'var(--coral)',
                   border: `1px dashed ${entry.correct ? 'var(--mint)' : 'var(--coral)'}`,
@@ -78,33 +125,6 @@ export default function GameTexte({ game }) {
             ))}
           </div>
         )}
-
-        {done ? (
-          <p style={{ color: foundCount >= totalCorrections ? 'var(--mint)' : 'var(--text-muted)', fontWeight: 700, margin: '0 0 12px' }}>
-            {foundCount >= totalCorrections ? '🎉 Toutes les fautes trouvées !' : 'Plus de tentatives !'}
-          </p>
-        ) : (
-          <p className="section-label" style={{ marginBottom: 12 }}>
-            Lisez le texte sur l'écran, tapez une correction
-          </p>
-        )}
-
-        <input
-          type="text"
-          autoFocus
-          disabled={done}
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && submit()}
-          placeholder="Mot corrigé…"
-        />
-        <button
-          onClick={submit}
-          disabled={done}
-          style={{ width: '100%', marginTop: 12 }}
-        >
-          Valider
-        </button>
       </div>
     </div>
   );

@@ -1,4 +1,5 @@
-import { useLocation } from 'react-router-dom';
+import { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useGame } from '../context/GameContext.jsx';
 import { getSocket } from '../services/socketService';
 import RulesExplanation from './RulesExplanation.jsx';
@@ -29,17 +30,57 @@ const PLAYER_COMPONENTS = {
 export default function GamePage() {
   const { state } = useGame();
   const location = useLocation();
+  const navigate = useNavigate();
   const code = location.state?.code || state.party.code;
   const isHost = state.ui.isHost;
+  const [reviewRound, setReviewRound] = useState(null); // index into roundHistory, or null for the final podium
+
+  function backToMenu() {
+    localStorage.removeItem('cerebrose_host');
+    localStorage.removeItem('cerebrose_player');
+    navigate('/');
+  }
 
   if (state.gameOver) {
+    const roundHistory = state.gameOver.roundHistory || [];
+    const round = reviewRound !== null ? roundHistory[reviewRound] : null;
+    const roundLeaderboard = round
+      ? round.ranking.map((r) => ({ id: r.id, pseudo: r.pseudo, total: r.points }))
+      : null;
+
     return (
       <div className="page" style={{ gap: 20 }}>
         <div>
-          <h1 className="logo" style={{ fontSize: '3rem' }}>Podium final</h1>
-          <p className="section-label">Bravo à tous les participants !</p>
+          <h1 className="logo" style={{ fontSize: '3rem' }}>
+            {round ? `Résultats : ${round.game}` : 'Podium final'}
+          </h1>
+          {!round && <p className="section-label">Bravo à tous les participants !</p>}
         </div>
-        <Podium leaderboard={state.gameOver.leaderboard} />
+
+        <Podium leaderboard={round ? roundLeaderboard : state.gameOver.leaderboard} />
+
+        {roundHistory.length > 0 && (
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center' }}>
+            <button
+              className={reviewRound === null ? '' : 'btn-secondary'}
+              onClick={() => setReviewRound(null)}
+            >
+              Classement final
+            </button>
+            {roundHistory.map((r, i) => (
+              <button
+                key={i}
+                className={reviewRound === i ? '' : 'btn-secondary'}
+                onClick={() => setReviewRound(i)}
+                style={{ fontSize: '0.85rem' }}
+              >
+                {i + 1}. {r.game}
+              </button>
+            ))}
+          </div>
+        )}
+
+        <button onClick={backToMenu} style={{ marginTop: 8 }}>← Retour au menu</button>
       </div>
     );
   }

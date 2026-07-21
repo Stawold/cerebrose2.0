@@ -8,7 +8,7 @@ export default function GameVisual({ game }) {
   const { type, phase, payload, duration, serverTime } = game;
 
   return (
-    <div className="card" style={{ maxWidth: 800 }}>
+    <div className="card" style={{ maxWidth: type === 'texte' ? 'min(94vw, 1100px)' : 800 }}>
       <h2>{type}</h2>
       {duration > 0 && <Timer duration={duration} serverTime={serverTime} />}
       {renderByType(type, phase, payload)}
@@ -24,13 +24,17 @@ function renderByType(type, phase, payload) {
     case 'texte':
       return (
         <div>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', margin: '0 0 12px' }}>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', margin: '0 0 12px', textAlign: 'center' }}>
             {payload.title} — repérez les {payload.faultyIndices?.length} fautes et corrigez-les sur votre téléphone
           </p>
-          <p style={{ lineHeight: 2.2, textAlign: 'left', fontSize: '1.1rem' }}>
-            {payload.words.map((w, i) => (
-              <span key={i} style={{ marginRight: 6 }}>{w}</span>
-            ))}
+          <p style={{
+            lineHeight: 1.7,
+            textAlign: 'center',
+            fontSize: 'clamp(0.8rem, 1.7vw, 1.15rem)',
+            wordSpacing: '0.15em',
+            overflowWrap: 'break-word'
+          }}>
+            {payload.words.join(' ')}
           </p>
         </div>
       );

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { emitWithAck, getSocket } from '../services/socketService';
 import { useGame } from '../context/GameContext.jsx';
 
@@ -89,6 +89,10 @@ export default function LobbyPage() {
         <h2 style={{ color: 'var(--coral)', margin: '8px 0 20px' }}>Rejoindre</h2>
         <input
           type="text"
+          autoComplete="off"
+          autoCorrect="off"
+          autoCapitalize="off"
+          spellCheck={false}
           placeholder="Ton pseudo"
           value={pseudo}
           onChange={(e) => setPseudo(e.target.value)}
@@ -96,6 +100,10 @@ export default function LobbyPage() {
         />
         <input
           type="text"
+          autoComplete="off"
+          autoCorrect="off"
+          autoCapitalize="off"
+          spellCheck={false}
           placeholder="Code à 6 chiffres"
           value={code}
           onChange={(e) => setCode(e.target.value)}
@@ -111,6 +119,22 @@ export default function LobbyPage() {
           <p style={{ color: 'var(--coral)', margin: '12px 0 0', fontSize: '0.9rem' }}>{error}</p>
         )}
       </div>
+
+      <Link
+        to="/regles"
+        style={{
+          display: 'inline-block',
+          textDecoration: 'none',
+          color: 'var(--text)',
+          fontWeight: 600,
+          fontSize: '0.9rem',
+          padding: '10px 20px',
+          borderRadius: 999,
+          border: '2px dashed var(--chalk-line-strong)'
+        }}
+      >
+        📖 Règles des jeux
+      </Link>
     </div>
   );
 }

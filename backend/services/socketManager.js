@@ -35,7 +35,7 @@ function startNextGame(io, party) {
   if (party.currentGameIndex >= party.selectedGames.length) {
     party.phase = 'finished';
     const leaderboard = computeLeaderboard(Array.from(party.players.values()), party.globalScores);
-    io.to(party.code).emit('party:gameOver', { leaderboard });
+    io.to(party.code).emit('party:gameOver', { leaderboard, roundHistory: party.roundHistory });
     // Clean up party from memory after 2 hours
     setTimeout(() => parties.delete(party.code), 2 * 60 * 60 * 1000);
     return;

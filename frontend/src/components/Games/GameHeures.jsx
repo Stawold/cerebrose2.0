@@ -1,10 +1,14 @@
 import { useEffect, useState } from 'react';
 import { getSocket } from '../../services/socketService';
+import { useGame } from '../../context/GameContext.jsx';
 import { feedbackClass } from '../Common/Feedback.jsx';
 import Timer from '../Common/Timer.jsx';
+import { useAutoSubmitOnExpiry } from '../../services/useAutoSubmitOnExpiry';
 
 export default function GameHeures({ game }) {
-  const { phase, duration, serverTime, feedback } = game;
+  const { state } = useGame();
+  const feedback = state.feedback;
+  const { phase, duration, serverTime } = game;
   const [value, setValue] = useState('');
   const [sent, setSent] = useState(false);
 
@@ -12,6 +16,8 @@ export default function GameHeures({ game }) {
     setValue('');
     setSent(false);
   }, [phase]);
+
+  useAutoSubmitOnExpiry(duration, serverTime, () => { if (phase === 'answer' && value.trim()) submit(); });
 
   if (phase === 'observe') {
     return (
@@ -36,6 +42,10 @@ export default function GameHeures({ game }) {
       <input
         type="number"
         autoFocus
+        autoComplete="off"
+        autoCorrect="off"
+        autoCapitalize="off"
+        spellCheck={false}
         disabled={sent}
         className={feedback ? feedbackClass(feedback) : ''}
         value={value}

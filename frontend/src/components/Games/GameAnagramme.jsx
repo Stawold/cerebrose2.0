@@ -1,15 +1,36 @@
 import { useEffect, useState } from 'react';
 import { getSocket } from '../../services/socketService';
-import { feedbackClass } from '../Common/Feedback.jsx';
+import { useGame } from '../../context/GameContext.jsx';
 import Timer from '../Common/Timer.jsx';
+import { useAutoSubmitOnExpiry } from '../../services/useAutoSubmitOnExpiry';
 
 export default function GameAnagramme({ game }) {
-  const { phase, payload, duration, serverTime, feedback } = game;
+  const { state } = useGame();
+  const feedback = state.feedback;
+  const { phase, payload, duration, serverTime } = game;
   const [value, setValue] = useState('');
+  const [wrongFlash, setWrongFlash] = useState(false);
 
   useEffect(() => {
     setValue('');
+    setWrongFlash(false);
   }, [payload?.scrambled]);
+
+  // Wrong guess: brief red flash, then clear the field so the player retypes.
+  useEffect(() => {
+    if (!feedback || feedback.correct !== false) return undefined;
+    setValue('');
+    setWrongFlash(true);
+    const t = setTimeout(() => setWrongFlash(false), 400);
+    return () => clearTimeout(t);
+  }, [feedback]);
+
+  function submit() {
+    if (!value.trim()) return;
+    getSocket().emit('player:answer', { value: value.trim() });
+  }
+
+  useAutoSubmitOnExpiry(duration, serverTime, () => { if (phase === 'play' && value.trim()) submit(); });
 
   if (phase === 'result') {
     return (
@@ -22,11 +43,6 @@ export default function GameAnagramme({ game }) {
     );
   }
 
-  function submit() {
-    if (!value.trim()) return;
-    getSocket().emit('player:answer', { value: value.trim() });
-  }
-
   return (
     <div className="page">
       <Timer duration={duration} serverTime={serverTime} />
@@ -34,7 +50,11 @@ export default function GameAnagramme({ game }) {
       <input
         type="text"
         autoFocus
-        className={feedback ? feedbackClass(feedback) : ''}
+        autoComplete="off"
+        autoCorrect="off"
+        autoCapitalize="off"
+        spellCheck={false}
+        className={wrongFlash ? 'flash-wrong' : ''}
         value={value}
         onChange={(e) => setValue(e.target.value)}
         onKeyDown={(e) => e.key === 'Enter' && submit()}

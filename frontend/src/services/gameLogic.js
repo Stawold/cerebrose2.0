@@ -1,6 +1,6 @@
 export const RULES_TEXT = {
   calculs: 'Résolvez le plus de calculs possible en 240 secondes, à votre rythme. +1 point par bonne réponse.',
-  texte: 'Deux textes truffés de fautes (10 chacun). Tapez le mot fautif tel qu\'il apparaît. +1 si juste, -1 si faux. 60s par texte.',
+  texte: 'Deux textes truffés de fautes (10 chacun). Tapez le mot fautif tel qu\'il apparaît. +1 si juste, -1 si faux. 90s par texte.',
   memoire: 'Mémorisez la suite de chiffres affichée à l\'écran (20s), puis retapez-la de mémoire (10s). +1 si exact.',
   balance: 'Plusieurs balances montrent les poids relatifs de boules colorées. Déduisez quelle boule est la plus lourde et appuyez sur sa couleur. Plus vous êtes rapide, plus vous gagnez de points (4/3/2/1).',
   heures: 'Observez les deux horloges (6s) puis indiquez la différence en minutes (20s).',
@@ -12,6 +12,39 @@ export const RULES_TEXT = {
 
 export function getRulesText(gameId) {
   return RULES_TEXT[gameId] || '';
+}
+
+export const GAMES_LIST = [
+  { id: 'calculs', label: 'Calculs mentaux' },
+  { id: 'texte', label: 'Correction de texte' },
+  { id: 'memoire', label: 'Mémoire des chiffres' },
+  { id: 'balance', label: 'Balance' },
+  { id: 'heures', label: "Différence d'heures" },
+  { id: 'pfc', label: 'Pierre Feuille Ciseaux' },
+  { id: 'anagramme', label: 'Anagramme' },
+  { id: 'couleurs', label: 'Test des couleurs' },
+  { id: 'grille', label: 'Grille spatiale' }
+];
+
+// Human-readable timing/scoring summary built from the public /games stats
+// endpoint, so it can't drift out of sync with the real server config.
+export function describeGameStats(gameId, stats) {
+  if (!stats) return '';
+  const { itemCount, totalDuration, perItemDuration, perTextDuration, displayDuration, inputDuration, observeDuration } = stats;
+  switch (gameId) {
+    case 'calculs':
+      return `${itemCount} calculs disponibles — ${totalDuration}s au total`;
+    case 'texte':
+      return `${itemCount} textes — ${perTextDuration}s chacun`;
+    case 'memoire':
+      return `${itemCount} séquences — ${displayDuration}s d'observation puis ${inputDuration}s de saisie`;
+    case 'balance':
+      return `${itemCount} balances — ${observeDuration}s d'observation puis ${perItemDuration}s de réponse`;
+    case 'heures':
+      return `${itemCount} paires d'horloges — ${observeDuration}s d'observation puis ${perItemDuration}s de réponse`;
+    default:
+      return `${itemCount} manches — ${perItemDuration}s de réponse chacune`;
+  }
 }
 
 const AVATAR_COLORS = ['#6366f1', '#fb7185', '#34d399', '#f59e0b', '#0ea5e9', '#a855f7'];

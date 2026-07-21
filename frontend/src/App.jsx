@@ -5,6 +5,7 @@ import LobbyPage from './pages/LobbyPage.jsx';
 import HostDashboard from './pages/HostDashboard.jsx';
 import GamePage from './pages/GamePage.jsx';
 import ProjectionDisplay from './components/Displays/ProjectionDisplay.jsx';
+import RulesOverview from './pages/RulesOverview.jsx';
 
 export default function App() {
   return (
@@ -17,6 +18,7 @@ export default function App() {
           <Route path="/rules" element={<GamePage />} />
           <Route path="/game" element={<GamePage />} />
           <Route path="/projection" element={<ProjectionDisplay />} />
+          <Route path="/regles" element={<RulesOverview />} />
         </Routes>
       </BrowserRouter>
     </GameProvider>
