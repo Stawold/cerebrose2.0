@@ -6,6 +6,7 @@ const cors = require('cors');
 const { Server } = require('socket.io');
 const { attachSocketHandlers } = require('./services/socketManager');
 const { loadData } = require('./services/gameService');
+const { getHallOfFame } = require('./services/hallOfFameService');
 const { GAMES } = require('./config/games');
 
 // Minimal .env loader (no extra dependency): lets ADMIN_PASSWORD etc. live
@@ -41,6 +42,9 @@ app.get('/games', (_req, res) => {
       observeDuration: g.observeDuration ?? null
     };
   }));
+});
+app.get('/hall-of-fame', (_req, res) => {
+  res.json(getHallOfFame());
 });
 app.use('/admin', require('./routes/admin'));
 

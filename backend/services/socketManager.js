@@ -2,6 +2,7 @@ const { randomUUID } = require('crypto');
 const { GAMES } = require('../config/games');
 const { createRunner } = require('./gameService');
 const { computeRoundRanking, applyRoundToGlobal, computeLeaderboard } = require('./scoringService');
+const { recordGameResult } = require('./hallOfFameService');
 const { verifyAdminPassword, isAdminPasswordConfigured } = require('./adminAuth');
 
 const parties = new Map();
@@ -88,6 +89,7 @@ function onGameFinish(io, party, gameId, rawScores) {
   applyRoundToGlobal(party.globalScores, ranking);
   const leaderboard = computeLeaderboard(playersArr, party.globalScores);
   party.roundHistory.push({ game: gameId, ranking });
+  recordGameResult(gameId, ranking.map((r) => ({ pseudo: r.pseudo, rawScore: r.rawScore })));
   party.lastRoundResults = { game: gameId, ranking, leaderboard };
   io.to(party.code).emit('party:roundResults', { game: gameId, ranking, leaderboard });
 }

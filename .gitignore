@@ -141,3 +141,6 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+# Runtime data written by the server itself (not curated game content)
+backend/hallOfFame.json

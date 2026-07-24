@@ -120,21 +120,38 @@ export default function LobbyPage() {
         )}
       </div>
 
-      <Link
-        to="/regles"
-        style={{
-          display: 'inline-block',
-          textDecoration: 'none',
-          color: 'var(--text)',
-          fontWeight: 600,
-          fontSize: '0.9rem',
-          padding: '10px 20px',
-          borderRadius: 999,
-          border: '2px dashed var(--chalk-line-strong)'
-        }}
-      >
-        📖 Règles des jeux
-      </Link>
+      <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
+        <Link
+          to="/regles"
+          style={{
+            display: 'inline-block',
+            textDecoration: 'none',
+            color: 'var(--text)',
+            fontWeight: 600,
+            fontSize: '0.9rem',
+            padding: '10px 20px',
+            borderRadius: 999,
+            border: '2px dashed var(--chalk-line-strong)'
+          }}
+        >
+          📖 Règles des jeux
+        </Link>
+        <Link
+          to="/hall-of-fame"
+          style={{
+            display: 'inline-block',
+            textDecoration: 'none',
+            color: 'var(--text)',
+            fontWeight: 600,
+            fontSize: '0.9rem',
+            padding: '10px 20px',
+            borderRadius: 999,
+            border: '2px dashed var(--chalk-line-strong)'
+          }}
+        >
+          🏆 Hall of Fame
+        </Link>
+      </div>
     </div>
   );
 }

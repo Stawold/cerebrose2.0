@@ -6,6 +6,7 @@ import HostDashboard from './pages/HostDashboard.jsx';
 import GamePage from './pages/GamePage.jsx';
 import ProjectionDisplay from './components/Displays/ProjectionDisplay.jsx';
 import RulesOverview from './pages/RulesOverview.jsx';
+import HallOfFame from './pages/HallOfFame.jsx';
 import TestLab from './pages/TestLab.jsx';
 import SecretTestLabLauncher from './components/Common/SecretTestLabLauncher.jsx';
 import MenuExitButton from './components/Common/MenuExitButton.jsx';
@@ -22,6 +23,7 @@ export default function App() {
           <Route path="/game" element={<GamePage />} />
           <Route path="/projection" element={<ProjectionDisplay />} />
           <Route path="/regles" element={<RulesOverview />} />
+          <Route path="/hall-of-fame" element={<HallOfFame />} />
           <Route path="/test-lab" element={<TestLab />} />
         </Routes>
         <MenuExitButton />

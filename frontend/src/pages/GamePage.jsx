@@ -86,6 +86,8 @@ export default function GamePage() {
   }
 
   if (state.roundResults) {
+    const sessionTop10 = (state.roundResults.ranking || []).slice(0, 10);
+
     return (
       <div className="page" style={{ gap: 20 }}>
         <div>
@@ -93,6 +95,25 @@ export default function GamePage() {
           <p className="section-label" style={{ marginTop: 6 }}>
             {state.roundResults.game && `Jeu : ${state.roundResults.game}`}
           </p>
+        </div>
+
+        {sessionTop10.length > 0 && (
+          <div className="card" style={{ maxWidth: 440, width: '100%' }}>
+            <span className="section-label">Top 10 de la manche (score de ce jeu)</span>
+            <div className="rank-list" style={{ marginTop: 12 }}>
+              {sessionTop10.map((r, i) => (
+                <div className="rank-row" key={r.id}>
+                  <span className="rank-number">{i + 1}</span>
+                  <span>{r.pseudo}</span>
+                  <span className="score">{r.rawScore} ({r.points} pts)</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div>
+          <span className="section-label">Classement général de la session</span>
         </div>
         <Podium leaderboard={state.roundResults.leaderboard} />
         {isHost && (
