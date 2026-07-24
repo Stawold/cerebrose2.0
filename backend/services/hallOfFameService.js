@@ -42,4 +42,9 @@ function getHallOfFame() {
   return result;
 }
 
-module.exports = { recordGameResult, getHallOfFame };
+function getGameHallOfFame(gameId) {
+  const data = load();
+  return data[gameId] || [];
+}
+
+module.exports = { recordGameResult, getHallOfFame, getGameHallOfFame };

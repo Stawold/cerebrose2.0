@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { emitWithAck } from '../../services/socketService';
 import { useGame } from '../../context/GameContext.jsx';
-import { getRulesText } from '../../services/gameLogic';
+import { getRulesText, GAMES_LIST } from '../../services/gameLogic';
 import GameVisual from './GameVisual.jsx';
 import Podium from '../Common/Podium.jsx';
+import RankReveal from './RankReveal.jsx';
 
 export default function ProjectionDisplay() {
   const { state } = useGame();
@@ -46,13 +47,49 @@ export default function ProjectionDisplay() {
     );
   }
 
-  if (state.roundResults) {
-    return (
-      <div className="page">
-        <h1 className="title">Résultats</h1>
-        <Podium leaderboard={state.roundResults.leaderboard} />
-      </div>
-    );
+  if (state.reveal.stage) {
+    const { stage, game, ranking, hallOfFame, leaderboard } = state.reveal;
+    const gameLabel = GAMES_LIST.find((g) => g.id === game)?.label || game;
+
+    if (stage === 'pending') {
+      return (
+        <div className="page">
+          <h1 className="title">Manche terminée : {gameLabel}</h1>
+          <span className="pulse-dot" />
+          <p style={{ color: 'var(--text-muted)' }}>En attente de l'animateur...</p>
+        </div>
+      );
+    }
+
+    if (stage === 'results') {
+      const entries = ranking.map((r) => ({ rank: r.rank, pseudo: r.pseudo, value: r.rawScore }));
+      return (
+        <div className="page">
+          <h1 className="title" style={{ marginBottom: 20 }}>Résultats : {gameLabel}</h1>
+          <RankReveal entries={entries} limit={10} valueLabel="pts" resetKey={`results-${game}`} />
+        </div>
+      );
+    }
+
+    if (stage === 'hallOfFame') {
+      const entries = hallOfFame.map((e, i) => ({ rank: i + 1, pseudo: e.pseudo, value: e.score }));
+      return (
+        <div className="page">
+          <h1 className="title" style={{ marginBottom: 20 }}>🏆 Hall of Fame : {gameLabel}</h1>
+          <RankReveal entries={entries} limit={5} valueLabel="pts" resetKey={`hof-${game}`} />
+        </div>
+      );
+    }
+
+    if (stage === 'leaderboard') {
+      const entries = leaderboard.map((p, i) => ({ rank: i + 1, pseudo: p.pseudo, value: p.total }));
+      return (
+        <div className="page">
+          <h1 className="title" style={{ marginBottom: 20 }}>Classement général</h1>
+          <RankReveal entries={entries} limit={10} valueLabel="pts" resetKey={`leaderboard-${game}`} />
+        </div>
+      );
+    }
   }
 
   if (state.rules && !state.game.phase) {

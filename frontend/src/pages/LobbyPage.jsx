@@ -32,7 +32,7 @@ export default function LobbyPage() {
         if (res && res.ok) {
           dispatch({ type: 'SET_PLAYER_IDENTITY', playerId, pseudo: savedPseudo });
           const phase = res.phase;
-          if (phase === 'playing' || phase === 'roundResults') navigate('/game', { state: { code: savedCode } });
+          if (phase === 'playing' || phase === 'roundFinished') navigate('/game', { state: { code: savedCode } });
           else if (phase === 'finished') { localStorage.removeItem('cerebrose_player'); }
           else navigate('/rules', { state: { code: savedCode } });
         } else {

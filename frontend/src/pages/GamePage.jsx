@@ -85,44 +85,87 @@ export default function GamePage() {
     );
   }
 
-  if (state.roundResults) {
-    const sessionTop10 = (state.roundResults.ranking || []).slice(0, 10);
+  if (state.reveal.stage) {
+    const { stage, game, ranking, leaderboard } = state.reveal;
+    const myId = state.ui.playerId;
 
-    return (
-      <div className="page" style={{ gap: 20 }}>
-        <div>
-          <h1 className="title" style={{ color: 'var(--mint)' }}>Résultats de la manche</h1>
-          <p className="section-label" style={{ marginTop: 6 }}>
-            {state.roundResults.game && `Jeu : ${state.roundResults.game}`}
-          </p>
+    if (isHost) {
+      return (
+        <div className="page" style={{ gap: 20 }}>
+          <h1 className="title" style={{ color: 'var(--mint)' }}>Manche terminée : {game}</h1>
+          <p className="section-label">Regardez l'écran de projection avec vos joueurs</p>
+          {stage === 'pending' && (
+            <button onClick={() => getSocket().emit('host:revealRoundResults', { code })}>
+              Afficher les résultats →
+            </button>
+          )}
+          {stage === 'results' && (
+            <button onClick={() => getSocket().emit('host:revealHallOfFame', { code })}>
+              Afficher le Hall of Fame →
+            </button>
+          )}
+          {stage === 'hallOfFame' && (
+            <button onClick={() => getSocket().emit('host:revealLeaderboard', { code })}>
+              Afficher le classement général →
+            </button>
+          )}
+          {stage === 'leaderboard' && (
+            <button onClick={() => getSocket().emit('host:nextRound', { code })}>
+              Manche suivante →
+            </button>
+          )}
         </div>
+      );
+    }
 
-        {sessionTop10.length > 0 && (
-          <div className="card" style={{ maxWidth: 440, width: '100%' }}>
-            <span className="section-label">Top 10 de la manche (score de ce jeu)</span>
-            <div className="rank-list" style={{ marginTop: 12 }}>
-              {sessionTop10.map((r, i) => (
-                <div className="rank-row" key={r.id}>
-                  <span className="rank-number">{i + 1}</span>
-                  <span>{r.pseudo}</span>
-                  <span className="score">{r.rawScore} ({r.points} pts)</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        <div>
-          <span className="section-label">Classement général de la session</span>
+    if (stage === 'pending') {
+      return (
+        <div className="page">
+          <span className="pulse-dot" />
+          <p style={{ color: 'var(--text-muted)', marginTop: 12 }}>Manche terminée, en attente de l'animateur...</p>
         </div>
-        <Podium leaderboard={state.roundResults.leaderboard} />
-        {isHost && (
-          <button onClick={() => getSocket().emit('host:nextRound', { code })} style={{ marginTop: 8 }}>
-            Manche suivante →
-          </button>
-        )}
-      </div>
-    );
+      );
+    }
+
+    // 'results' and 'hallOfFame' show the same player screen — per design,
+    // players see nothing new while the host reveals the Hall of Fame.
+    if (stage === 'results' || stage === 'hallOfFame') {
+      const mine = (ranking || []).find((r) => r.id === myId);
+      return (
+        <div className="page" style={{ gap: 16 }}>
+          <h1 className="title" style={{ color: 'var(--mint)' }}>Votre score</h1>
+          {mine ? (
+            <>
+              <p style={{ fontSize: '3rem', fontWeight: 800, margin: 0 }}>{mine.rawScore} pts</p>
+              <p className="section-label">
+                Vous êtes {mine.rank}{mine.rank === 1 ? 'er' : 'e'} sur {ranking.length}
+              </p>
+              <span className="pill-badge amber">+{mine.points} points de classement</span>
+            </>
+          ) : (
+            <p style={{ color: 'var(--text-muted)' }}>Score indisponible</p>
+          )}
+        </div>
+      );
+    }
+
+    if (stage === 'leaderboard') {
+      const rank = (leaderboard || []).findIndex((p) => p.id === myId) + 1;
+      const mine = (leaderboard || []).find((p) => p.id === myId);
+      return (
+        <div className="page" style={{ gap: 16 }}>
+          <h1 className="title" style={{ color: 'var(--violet)' }}>Classement général</h1>
+          {mine ? (
+            <>
+              <p style={{ fontSize: '3rem', fontWeight: 800, margin: 0 }}>{mine.total} pts</p>
+              <p className="section-label">Vous êtes {rank}{rank === 1 ? 'er' : 'e'} sur {leaderboard.length}</p>
+            </>
+          ) : (
+            <p style={{ color: 'var(--text-muted)' }}>Classement indisponible</p>
+          )}
+        </div>
+      );
+    }
   }
 
   if (state.rules && !state.game.phase) {

@@ -183,10 +183,10 @@ function PlayTester({ games }) {
           </div>
         </div>
 
-        {state.roundResults ? (
+        {state.reveal.stage === 'leaderboard' ? (
           <div>
             <h2 style={{ color: 'var(--mint)' }}>Test terminé</h2>
-            <Podium leaderboard={state.roundResults.leaderboard} />
+            <Podium leaderboard={state.reveal.leaderboard} />
             <button style={{ marginTop: 16 }} onClick={stop}>Nouveau test</button>
           </div>
         ) : state.game.type && state.game.phase ? (

@@ -2,7 +2,7 @@ const { randomUUID } = require('crypto');
 const { GAMES } = require('../config/games');
 const { createRunner } = require('./gameService');
 const { computeRoundRanking, applyRoundToGlobal, computeLeaderboard } = require('./scoringService');
-const { recordGameResult } = require('./hallOfFameService');
+const { recordGameResult, getGameHallOfFame } = require('./hallOfFameService');
 const { verifyAdminPassword, isAdminPasswordConfigured } = require('./adminAuth');
 
 const parties = new Map();
@@ -78,11 +78,26 @@ function replayPartyStateToSocket(socket, party) {
     });
   } else if (party.phase === 'playing' && party.currentRunner) {
     party.currentRunner.replayToSocket(socket);
+  } else if (party.phase === 'roundFinished' && party.pendingReveal) {
+    socket.emit('party:roundFinished', { game: party.pendingReveal.game });
+    const stages = ['results', 'hallOfFame', 'leaderboard'];
+    const reached = stages.indexOf(party.revealStage);
+    if (reached >= 0) {
+      socket.emit('party:revealResults', { game: party.pendingReveal.game, ranking: party.pendingReveal.ranking });
+    }
+    if (reached >= 1) {
+      socket.emit('party:revealHallOfFame', { game: party.pendingReveal.game, entries: party.pendingReveal.hallOfFame });
+    }
+    if (reached >= 2) {
+      socket.emit('party:revealLeaderboard', { leaderboard: party.pendingReveal.leaderboard });
+    }
   }
 }
 
+// Each round's results are computed all at once when the game engine finishes,
+// but only handed to clients stage by stage as the host reveals them (see the
+// host:reveal* handlers below) — nothing is broadcast here.
 function onGameFinish(io, party, gameId, rawScores) {
-  party.phase = 'roundResults';
   const playersArr = Array.from(party.players.values());
   const roundPlayers = playersArr.map((p) => ({ id: p.id, pseudo: p.pseudo, rawScore: rawScores[p.id] || 0 }));
   const ranking = computeRoundRanking(roundPlayers);
@@ -90,8 +105,47 @@ function onGameFinish(io, party, gameId, rawScores) {
   const leaderboard = computeLeaderboard(playersArr, party.globalScores);
   party.roundHistory.push({ game: gameId, ranking });
   recordGameResult(gameId, ranking.map((r) => ({ pseudo: r.pseudo, rawScore: r.rawScore })));
-  party.lastRoundResults = { game: gameId, ranking, leaderboard };
-  io.to(party.code).emit('party:roundResults', { game: gameId, ranking, leaderboard });
+
+  party.phase = 'roundFinished';
+  party.revealStage = null; // null | 'results' | 'hallOfFame' | 'leaderboard'
+  party.pendingReveal = {
+    game: gameId,
+    ranking,
+    leaderboard,
+    hallOfFame: getGameHallOfFame(gameId)
+  };
+  io.to(party.code).emit('party:roundFinished', { game: gameId });
+
+  // Solo test parties have no separate host/player split to stage a reveal
+  // for — skip straight through all three stages.
+  if (party.isTest) {
+    revealResults(io, party);
+    revealHallOfFame(io, party);
+    revealLeaderboard(io, party);
+  }
+}
+
+function revealResults(io, party) {
+  party.revealStage = 'results';
+  io.to(party.code).emit('party:revealResults', {
+    game: party.pendingReveal.game,
+    ranking: party.pendingReveal.ranking
+  });
+}
+
+function revealHallOfFame(io, party) {
+  party.revealStage = 'hallOfFame';
+  io.to(party.code).emit('party:revealHallOfFame', {
+    game: party.pendingReveal.game,
+    entries: party.pendingReveal.hallOfFame
+  });
+}
+
+function revealLeaderboard(io, party) {
+  party.revealStage = 'leaderboard';
+  io.to(party.code).emit('party:revealLeaderboard', {
+    leaderboard: party.pendingReveal.leaderboard
+  });
 }
 
 function attachSocketHandlers(io) {
@@ -149,9 +203,6 @@ function attachSocketHandlers(io) {
       broadcastPartyUpdate(io, party);
       if (ack) ack({ ok: true, phase: party.phase, selectedGames: party.selectedGames });
       replayPartyStateToSocket(socket, party);
-      if (party.phase === 'roundResults' && party.lastRoundResults) {
-        socket.emit('party:roundResults', party.lastRoundResults);
-      }
     });
 
     socket.on('host:rejoinParty', ({ code }, ack) => {
@@ -164,9 +215,6 @@ function attachSocketHandlers(io) {
       broadcastPartyUpdate(io, party);
       if (ack) ack({ ok: true, phase: party.phase, selectedGames: party.selectedGames });
       replayPartyStateToSocket(socket, party);
-      if (party.phase === 'roundResults' && party.lastRoundResults) {
-        socket.emit('party:roundResults', party.lastRoundResults);
-      }
     });
 
     socket.on('host:selectGames', ({ code, gameIds }) => {
@@ -190,9 +238,29 @@ function attachSocketHandlers(io) {
       runCurrentGame(io, party);
     });
 
+    socket.on('host:revealRoundResults', ({ code }) => {
+      const party = parties.get(code);
+      if (!party || socket.id !== party.hostSocketId || !party.pendingReveal) return;
+      revealResults(io, party);
+    });
+
+    socket.on('host:revealHallOfFame', ({ code }) => {
+      const party = parties.get(code);
+      if (!party || socket.id !== party.hostSocketId || !party.pendingReveal) return;
+      revealHallOfFame(io, party);
+    });
+
+    socket.on('host:revealLeaderboard', ({ code }) => {
+      const party = parties.get(code);
+      if (!party || socket.id !== party.hostSocketId || !party.pendingReveal) return;
+      revealLeaderboard(io, party);
+    });
+
     socket.on('host:nextRound', ({ code }) => {
       const party = parties.get(code);
       if (!party || socket.id !== party.hostSocketId) return;
+      party.pendingReveal = null;
+      party.revealStage = null;
       startNextGame(io, party);
     });
 

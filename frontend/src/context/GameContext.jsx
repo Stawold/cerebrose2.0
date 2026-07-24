@@ -5,7 +5,9 @@ const initialState = {
   party: { code: null, players: [], selectedGames: [], phase: 'idle' },
   rules: null, // { game, label, gameIndex, totalGames }
   game: { type: null, phase: null, payload: null, duration: 0, scores: {} },
-  roundResults: null, // { game, ranking, leaderboard }
+  // Host-controlled reveal sequence shown between two games:
+  // stage: null | 'pending' (round over, waiting for host) | 'results' | 'hallOfFame' | 'leaderboard'
+  reveal: { stage: null, game: null, ranking: null, hallOfFame: null, leaderboard: null },
   gameOver: null, // { leaderboard }
   feedback: null,
   ui: { isHost: false, playerId: null, pseudo: null, connected: true }
@@ -22,7 +24,7 @@ function reducer(state, action) {
     case 'PARTY_UPDATE':
       return { ...state, party: { ...state.party, ...action.payload } };
     case 'RULES_PHASE':
-      return { ...state, rules: action.payload, roundResults: null, game: initialState.game };
+      return { ...state, rules: action.payload, reveal: initialState.reveal, game: initialState.game };
     case 'GAME_START':
       return { ...state, game: { type: action.payload.game, phase: null, payload: null, duration: 0, scores: {} } };
     case 'GAME_PHASE':
@@ -42,8 +44,18 @@ function reducer(state, action) {
       return { ...state, game: { ...state.game, scores: action.payload.scores } };
     case 'ANSWER_FEEDBACK':
       return { ...state, feedback: action.payload };
-    case 'ROUND_RESULTS':
-      return { ...state, roundResults: action.payload };
+    case 'ROUND_FINISHED':
+      return {
+        ...state,
+        reveal: { stage: 'pending', game: action.payload.game, ranking: null, hallOfFame: null, leaderboard: null },
+        game: initialState.game
+      };
+    case 'REVEAL_RESULTS':
+      return { ...state, reveal: { ...state.reveal, stage: 'results', ranking: action.payload.ranking } };
+    case 'REVEAL_HALL_OF_FAME':
+      return { ...state, reveal: { ...state.reveal, stage: 'hallOfFame', hallOfFame: action.payload.entries } };
+    case 'REVEAL_LEADERBOARD':
+      return { ...state, reveal: { ...state.reveal, stage: 'leaderboard', leaderboard: action.payload.leaderboard } };
     case 'GAME_OVER':
       return { ...state, gameOver: action.payload, party: { ...state.party, phase: 'finished' } };
     case 'RESET':
@@ -70,7 +82,10 @@ export function GameProvider({ children }) {
       'game:phase': (payload) => dispatch({ type: 'GAME_PHASE', payload }),
       'game:scoreUpdate': (payload) => dispatch({ type: 'SCORE_UPDATE', payload }),
       'game:answerFeedback': (payload) => dispatch({ type: 'ANSWER_FEEDBACK', payload }),
-      'party:roundResults': (payload) => dispatch({ type: 'ROUND_RESULTS', payload }),
+      'party:roundFinished': (payload) => dispatch({ type: 'ROUND_FINISHED', payload }),
+      'party:revealResults': (payload) => dispatch({ type: 'REVEAL_RESULTS', payload }),
+      'party:revealHallOfFame': (payload) => dispatch({ type: 'REVEAL_HALL_OF_FAME', payload }),
+      'party:revealLeaderboard': (payload) => dispatch({ type: 'REVEAL_LEADERBOARD', payload }),
       'party:gameOver': (payload) => dispatch({ type: 'GAME_OVER', payload })
     };
     Object.entries(handlers).forEach(([event, handler]) => socket.on(event, handler));
