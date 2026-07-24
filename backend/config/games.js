@@ -89,8 +89,9 @@ const GAMES = {
   }
 };
 
-const RANKING_POINTS = [100, 80, 60, 50];
-const RANKING_POINTS_DEFAULT = 40;
+// Rank 1 → 100, rank 2 → 80, ... rank 14 → 5. Rank 15 and beyond → RANKING_POINTS_DEFAULT.
+const RANKING_POINTS = [100, 80, 70, 60, 50, 45, 40, 35, 30, 25, 20, 15, 10, 5];
+const RANKING_POINTS_DEFAULT = 1;
 
 function pointsForRank(rank) {
   if (rank >= 1 && rank <= RANKING_POINTS.length) return RANKING_POINTS[rank - 1];
