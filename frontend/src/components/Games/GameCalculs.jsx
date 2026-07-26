@@ -3,6 +3,7 @@ import { getSocket } from '../../services/socketService';
 import { useGame } from '../../context/GameContext.jsx';
 import { feedbackClass } from '../Common/Feedback.jsx';
 import Timer from '../Common/Timer.jsx';
+import ProgressBadge from '../Common/ProgressBadge.jsx';
 import { useAutoSubmitOnExpiry } from '../../services/useAutoSubmitOnExpiry';
 
 export default function GameCalculs({ game }) {
@@ -29,7 +30,7 @@ export default function GameCalculs({ game }) {
   return (
     <div className="page">
       <Timer duration={duration} serverTime={serverTime} />
-      <p>{index + 1} / {questions.length}</p>
+      <ProgressBadge progress={{ index, total: questions.length }} />
       <h1 className="title">{current.operation} = ?</h1>
       <input
         type="number"

@@ -9,25 +9,27 @@ function loadData(fileName) {
 
 // Base class: handles broadcasting helpers shared by every runner.
 class BaseRunner {
-  constructor(gameId, players, io, room, onFinish) {
+  constructor(gameId, players, io, room, onFinish, getHostSocketId) {
     this.config = GAMES[gameId];
     this.gameId = gameId;
     this.players = players; // [{ id, socketId, pseudo }]
     this.io = io;
     this.room = room;
     this.onFinish = onFinish;
+    this.getHostSocketId = getHostSocketId;
     this.scores = {};
     this.timers = [];
     this.lastPhase = null;
     this.players.forEach((p) => { this.scores[p.id] = 0; });
   }
 
-  emitPhase(phase, payload, duration) {
+  emitPhase(phase, payload, duration, progress) {
     const data = {
       game: this.gameId,
       phase,
       payload,
       duration: duration || 0,
+      progress: progress || null, // { index, total } — current item/question number
       serverTime: Date.now()
     };
     this.lastPhase = data;
@@ -49,6 +51,14 @@ class BaseRunner {
     const player = this.players.find((p) => p.id === playerId);
     if (!player) return;
     this.io.to(player.socketId).emit('game:answerFeedback', { correct, ...extra });
+  }
+
+  // Host-only channel: the current item's correct answer(s), so the host can
+  // reveal/confirm them to players on request. Never broadcast to the room.
+  emitHostAnswer(text) {
+    const hostSocketId = this.getHostSocketId && this.getHostSocketId();
+    if (!hostSocketId) return;
+    this.io.to(hostSocketId).emit('game:hostAnswer', { text });
   }
 
   schedule(fn, ms) {
@@ -85,6 +95,7 @@ class CalculsRunner extends BaseRunner {
     this.answered = {}; // playerId -> Set of questionId already scored
     this.players.forEach((p) => { this.answered[p.id] = new Set(); });
     this.emitPhase('play', { questions: this.questions }, this.config.totalDuration);
+    this.emitHostAnswer(this.questions.map((q) => `${q.operation} = ${q.answer}`).join('\n'));
     this.schedule(() => this.finish(), this.config.totalDuration * 1000);
   }
 
@@ -120,7 +131,8 @@ class TexteRunner extends BaseRunner {
       words: text.words,
       faultyIndices: text.faultyIndices,
       totalCorrections: text.faultyIndices.length
-    }, this.config.perTextDuration);
+    }, this.config.perTextDuration, { index: this.textIndex, total: this.texts.length });
+    this.emitHostAnswer(Object.values(text.corrections).join(', '));
     this.schedule(() => this.nextText(), this.config.perTextDuration * 1000);
   }
 
@@ -180,14 +192,17 @@ class MemoireRunner extends BaseRunner {
   showSequence() {
     const seq = this.sequences[this.seqIndex];
     this.answeredThisSeq = new Set();
-    this.emitPhase('display', { length: seq.length, sequence: seq.sequence }, this.config.displayDuration);
+    const progress = { index: this.seqIndex, total: this.sequences.length };
+    this.emitPhase('display', { length: seq.length, sequence: seq.sequence }, this.config.displayDuration, progress);
+    this.emitHostAnswer(`Séquence : ${seq.sequence}`);
     this.schedule(() => this.startInput(), this.config.displayDuration * 1000);
   }
 
   startInput() {
     const seq = this.sequences[this.seqIndex];
     this.currentAnswer = seq.sequence;
-    this.emitPhase('input', { length: seq.length }, this.config.inputDuration);
+    const progress = { index: this.seqIndex, total: this.sequences.length };
+    this.emitPhase('input', { length: seq.length }, this.config.inputDuration, progress);
     this.schedule(() => this.nextSequence(), this.config.inputDuration * 1000);
   }
 
@@ -196,6 +211,7 @@ class MemoireRunner extends BaseRunner {
     this.answeredThisSeq.add(playerId);
     const correct = String(value).trim() === this.currentAnswer;
     if (correct) this.scores[playerId] += 1;
+    this.emitFeedbackTo(playerId, correct);
     this.emitScores();
   }
 
@@ -216,11 +232,22 @@ class GenericRunner extends BaseRunner {
     this.runItem();
   }
 
+  answerText(item) {
+    if (this.config.inputType === 'number') {
+      const target = item[this.config.answerField] || [];
+      const alt = this.config.altAnswerField ? (item[this.config.altAnswerField] || []) : [];
+      return [...target, ...alt].join(' ou ');
+    }
+    return String(item[this.config.answerField]);
+  }
+
   runItem() {
     const item = this.items[this.itemIndex];
     this.answers = {}; // playerId -> { value, time }
+    const progress = { index: this.itemIndex, total: this.items.length };
+    this.emitHostAnswer(`Réponse : ${this.answerText(item)}`);
     if (this.config.observeDuration) {
-      this.emitPhase('observe', { item }, this.config.observeDuration);
+      this.emitPhase('observe', { item }, this.config.observeDuration, progress);
       this.schedule(() => this.openAnswering(item), this.config.observeDuration * 1000);
     } else {
       this.openAnswering(item);
@@ -228,11 +255,12 @@ class GenericRunner extends BaseRunner {
   }
 
   openAnswering(item) {
+    const progress = { index: this.itemIndex, total: this.items.length };
     this.emitPhase('answer', {
       item,
       inputType: this.config.inputType,
       options: this.config.options || null
-    }, this.config.perItemDuration);
+    }, this.config.perItemDuration, progress);
     this.schedule(() => this.resolveItem(item), this.config.perItemDuration * 1000);
   }
 
@@ -306,7 +334,9 @@ class AnagrammeRunner extends BaseRunner {
   runWord() {
     const word = this.words[this.wordIndex];
     this.winner = null;
-    this.emitPhase('play', { scrambled: word.scrambled }, this.config.perItemDuration);
+    const progress = { index: this.wordIndex, total: this.words.length };
+    this.emitPhase('play', { scrambled: word.scrambled }, this.config.perItemDuration, progress);
+    this.emitHostAnswer(`Mot : ${word[this.config.answerField]}`);
     this.itemTimer = this.schedule(() => this.endWord(null), this.config.perItemDuration * 1000);
   }
 
@@ -353,12 +383,15 @@ class BalanceRunner extends BaseRunner {
   runPuzzle() {
     const puzzle = this.puzzles[this.puzzleIndex];
     this.answers = {};
-    this.emitPhase('observe', { puzzle }, this.config.observeDuration);
+    const progress = { index: this.puzzleIndex, total: this.puzzles.length };
+    this.emitPhase('observe', { puzzle }, this.config.observeDuration, progress);
+    this.emitHostAnswer(`Boule la plus lourde : ${puzzle.answer}`);
     this.schedule(() => this.openAnswer(puzzle), this.config.observeDuration * 1000);
   }
 
   openAnswer(puzzle) {
-    this.emitPhase('answer', { puzzle }, this.config.perItemDuration);
+    const progress = { index: this.puzzleIndex, total: this.puzzles.length };
+    this.emitPhase('answer', { puzzle }, this.config.perItemDuration, progress);
     this.schedule(() => this.resolvePuzzle(puzzle), this.config.perItemDuration * 1000);
   }
 
@@ -414,11 +447,11 @@ const ENGINES = {
   balance: BalanceRunner
 };
 
-function createRunner(gameId, players, io, room, onFinish) {
+function createRunner(gameId, players, io, room, onFinish, getHostSocketId) {
   const config = GAMES[gameId];
   if (!config) throw new Error(`Unknown game: ${gameId}`);
   const Runner = ENGINES[config.engine];
-  return new Runner(gameId, players, io, room, onFinish);
+  return new Runner(gameId, players, io, room, onFinish, getHostSocketId);
 }
 
 module.exports = { createRunner, loadData };

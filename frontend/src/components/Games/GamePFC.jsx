@@ -3,13 +3,14 @@ import { getSocket } from '../../services/socketService';
 import { useGame } from '../../context/GameContext.jsx';
 import { PFC_ICONS } from '../../services/gameLogic';
 import Timer from '../Common/Timer.jsx';
+import ProgressBadge from '../Common/ProgressBadge.jsx';
 
 const CHOICES = ['pierre', 'feuille', 'ciseaux'];
 
 export default function GamePFC({ game }) {
   const { state } = useGame();
   const feedback = state.feedback;
-  const { payload, duration, serverTime } = game;
+  const { payload, duration, serverTime, progress } = game;
   const [sent, setSent] = useState(false);
 
   useEffect(() => {
@@ -27,6 +28,7 @@ export default function GamePFC({ game }) {
   return (
     <div className="page">
       <Timer duration={duration} serverTime={serverTime} />
+      <ProgressBadge progress={progress} />
       <span className={`pill-badge ${instruction === 'win' ? 'mint' : 'coral'}`}>
         {instruction === 'win' ? 'Gagnez !' : 'Perdez !'}
       </span>

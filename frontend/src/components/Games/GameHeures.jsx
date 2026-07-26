@@ -3,12 +3,13 @@ import { getSocket } from '../../services/socketService';
 import { useGame } from '../../context/GameContext.jsx';
 import { feedbackClass } from '../Common/Feedback.jsx';
 import Timer from '../Common/Timer.jsx';
+import ProgressBadge from '../Common/ProgressBadge.jsx';
 import { useAutoSubmitOnExpiry } from '../../services/useAutoSubmitOnExpiry';
 
 export default function GameHeures({ game }) {
   const { state } = useGame();
   const feedback = state.feedback;
-  const { phase, duration, serverTime } = game;
+  const { phase, duration, serverTime, progress } = game;
   const [value, setValue] = useState('');
   const [sent, setSent] = useState(false);
 
@@ -23,6 +24,7 @@ export default function GameHeures({ game }) {
     return (
       <div className="page">
         <Timer duration={duration} serverTime={serverTime} />
+        <ProgressBadge progress={progress} />
         <span className="pulse-dot" />
         <h1 className="title">Observez les deux horloges à l'écran...</h1>
       </div>
@@ -38,6 +40,7 @@ export default function GameHeures({ game }) {
   return (
     <div className="page">
       <Timer duration={duration} serverTime={serverTime} />
+      <ProgressBadge progress={progress} />
       <h1 className="title">Quelle est la différence, en minutes ?</h1>
       <input
         type="number"

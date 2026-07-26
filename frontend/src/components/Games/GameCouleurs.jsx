@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react';
 import { getSocket } from '../../services/socketService';
 import { colorHex } from '../../services/gameLogic';
 import Timer from '../Common/Timer.jsx';
+import ProgressBadge from '../Common/ProgressBadge.jsx';
 
 const CHOICES = ['rouge', 'bleu', 'vert', 'jaune', 'violet', 'orange', 'blanc'];
 
 export default function GameCouleurs({ game }) {
-  const { phase, payload, duration, serverTime } = game;
+  const { phase, payload, duration, serverTime, progress } = game;
   const [sent, setSent] = useState(false);
 
   useEffect(() => {
@@ -24,6 +25,7 @@ export default function GameCouleurs({ game }) {
   return (
     <div className="page">
       <Timer duration={duration} serverTime={serverTime} />
+      <ProgressBadge progress={progress} />
       <h1 className="title">Dans quelle couleur le mot est-il écrit ?</h1>
       <div className="button-grid">
         {CHOICES.map((c) => (

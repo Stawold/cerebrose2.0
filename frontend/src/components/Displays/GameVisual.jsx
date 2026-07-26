@@ -1,15 +1,17 @@
 import Timer from '../Common/Timer.jsx';
 import AnalogClock from '../Common/AnalogClock.jsx';
+import ProgressBadge from '../Common/ProgressBadge.jsx';
 import { colorHex, PFC_ICONS } from '../../services/gameLogic';
 
 // Big-screen visualisation shared by the host dashboard and the projection screen.
 export default function GameVisual({ game }) {
   if (!game || !game.type) return <p style={{ color: 'var(--text-muted)' }}>En attente...</p>;
-  const { type, phase, payload, duration, serverTime } = game;
+  const { type, phase, payload, duration, serverTime, progress } = game;
 
   return (
     <div className="card" style={{ maxWidth: type === 'texte' ? 'min(94vw, 1100px)' : 800 }}>
       <h2>{type}</h2>
+      <ProgressBadge progress={progress} />
       {duration > 0 && <Timer duration={duration} serverTime={serverTime} />}
       {renderByType(type, phase, payload)}
     </div>

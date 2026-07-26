@@ -62,7 +62,7 @@ function runCurrentGame(io, party) {
   party.phase = 'playing';
   party.currentRunner = createRunner(gameId, players, io, party.code, (rawScores) => {
     onGameFinish(io, party, gameId, rawScores);
-  });
+  }, () => party.hostSocketId);
   io.to(party.code).emit('party:gameStart', { game: gameId, label: GAMES[gameId].label });
   party.currentRunner.start();
 }

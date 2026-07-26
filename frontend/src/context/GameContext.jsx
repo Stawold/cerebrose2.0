@@ -10,6 +10,7 @@ const initialState = {
   reveal: { stage: null, game: null, ranking: null, hallOfFame: null, leaderboard: null },
   gameOver: null, // { leaderboard }
   feedback: null,
+  hostAnswer: null, // { text } — host-only, current item's correct answer(s)
   ui: { isHost: false, playerId: null, pseudo: null, connected: true }
 };
 
@@ -24,9 +25,9 @@ function reducer(state, action) {
     case 'PARTY_UPDATE':
       return { ...state, party: { ...state.party, ...action.payload } };
     case 'RULES_PHASE':
-      return { ...state, rules: action.payload, reveal: initialState.reveal, game: initialState.game };
+      return { ...state, rules: action.payload, reveal: initialState.reveal, game: initialState.game, hostAnswer: null };
     case 'GAME_START':
-      return { ...state, game: { type: action.payload.game, phase: null, payload: null, duration: 0, scores: {} } };
+      return { ...state, game: { type: action.payload.game, phase: null, payload: null, duration: 0, scores: {} }, hostAnswer: null };
     case 'GAME_PHASE':
       return {
         ...state,
@@ -36,6 +37,7 @@ function reducer(state, action) {
           phase: action.payload.phase,
           payload: action.payload.payload,
           duration: action.payload.duration,
+          progress: action.payload.progress,
           serverTime: action.payload.serverTime
         },
         feedback: null
@@ -44,6 +46,8 @@ function reducer(state, action) {
       return { ...state, game: { ...state.game, scores: action.payload.scores } };
     case 'ANSWER_FEEDBACK':
       return { ...state, feedback: action.payload };
+    case 'HOST_ANSWER':
+      return { ...state, hostAnswer: action.payload };
     case 'ROUND_FINISHED':
       return {
         ...state,
@@ -82,6 +86,7 @@ export function GameProvider({ children }) {
       'game:phase': (payload) => dispatch({ type: 'GAME_PHASE', payload }),
       'game:scoreUpdate': (payload) => dispatch({ type: 'SCORE_UPDATE', payload }),
       'game:answerFeedback': (payload) => dispatch({ type: 'ANSWER_FEEDBACK', payload }),
+      'game:hostAnswer': (payload) => dispatch({ type: 'HOST_ANSWER', payload }),
       'party:roundFinished': (payload) => dispatch({ type: 'ROUND_FINISHED', payload }),
       'party:revealResults': (payload) => dispatch({ type: 'REVEAL_RESULTS', payload }),
       'party:revealHallOfFame': (payload) => dispatch({ type: 'REVEAL_HALL_OF_FAME', payload }),

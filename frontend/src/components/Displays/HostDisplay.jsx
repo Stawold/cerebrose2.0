@@ -1,7 +1,11 @@
+import { useGame } from '../../context/GameContext.jsx';
 import GameVisual from './GameVisual.jsx';
 import ScoreBoard from '../Common/ScoreBoard.jsx';
 
 export default function HostDisplay({ game, players }) {
+  const { state } = useGame();
+  const hostAnswer = state.hostAnswer;
+
   return (
     <div className="page" style={{ gap: 20 }}>
       <div>
@@ -12,6 +16,15 @@ export default function HostDisplay({ game, players }) {
       </div>
       <GameVisual game={game} />
       <ScoreBoard players={players} scores={game.scores} />
+
+      {hostAnswer?.text && (
+        <div className="card" style={{ maxWidth: 440, width: '100%', borderColor: 'var(--amber)' }}>
+          <span className="section-label" style={{ color: 'var(--amber)' }}>
+            👁️ Réponse (visible uniquement par vous)
+          </span>
+          <p style={{ margin: '8px 0 0', whiteSpace: 'pre-line', fontWeight: 600 }}>{hostAnswer.text}</p>
+        </div>
+      )}
     </div>
   );
 }

@@ -3,11 +3,12 @@ import { getSocket } from '../../services/socketService';
 import { useGame } from '../../context/GameContext.jsx';
 import { colorHex } from '../../services/gameLogic';
 import Timer from '../Common/Timer.jsx';
+import ProgressBadge from '../Common/ProgressBadge.jsx';
 
 export default function GameBalance({ game }) {
   const { state } = useGame();
   const feedback = state.feedback;
-  const { phase, payload, duration, serverTime } = game;
+  const { phase, payload, duration, serverTime, progress } = game;
   const [sent, setSent] = useState(false);
 
   useEffect(() => {
@@ -18,6 +19,7 @@ export default function GameBalance({ game }) {
     return (
       <div className="page">
         <Timer duration={duration} serverTime={serverTime} />
+        <ProgressBadge progress={progress} />
         <span className="pulse-dot" />
         <h1 className="title">Observez les balances à l'écran...</h1>
         <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
@@ -41,6 +43,7 @@ export default function GameBalance({ game }) {
   return (
     <div className="page" style={{ gap: 20 }}>
       <Timer duration={duration} serverTime={serverTime} />
+      <ProgressBadge progress={progress} />
       <h1 className="title">Quelle boule est la plus lourde ?</h1>
 
       <div className="button-grid">

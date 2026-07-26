@@ -10,6 +10,7 @@ import HallOfFame from './pages/HallOfFame.jsx';
 import TestLab from './pages/TestLab.jsx';
 import SecretTestLabLauncher from './components/Common/SecretTestLabLauncher.jsx';
 import MenuExitButton from './components/Common/MenuExitButton.jsx';
+import BrandMark from './components/Common/BrandMark.jsx';
 
 export default function App() {
   return (
@@ -26,6 +27,7 @@ export default function App() {
           <Route path="/hall-of-fame" element={<HallOfFame />} />
           <Route path="/test-lab" element={<TestLab />} />
         </Routes>
+        <BrandMark />
         <MenuExitButton />
         <SecretTestLabLauncher />
       </BrowserRouter>

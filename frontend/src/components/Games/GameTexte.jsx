@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { getSocket } from '../../services/socketService';
 import { useGame } from '../../context/GameContext.jsx';
 import Timer from '../Common/Timer.jsx';
+import ProgressBadge from '../Common/ProgressBadge.jsx';
 import { useAutoSubmitOnExpiry } from '../../services/useAutoSubmitOnExpiry';
 
 const MAX_ATTEMPTS = 10;
@@ -9,12 +10,13 @@ const MAX_ATTEMPTS = 10;
 export default function GameTexte({ game }) {
   const { state } = useGame();
   const feedback = state.feedback;
-  const { payload, duration, serverTime } = game;
+  const { payload, duration, serverTime, progress } = game;
 
   const [value, setValue] = useState('');
   const [history, setHistory] = useState([]); // [{ word, correct }]
   const [attemptsLeft, setAttemptsLeft] = useState(MAX_ATTEMPTS);
   const [foundCount, setFoundCount] = useState(0);
+  const [flash, setFlash] = useState('');
   const lastWord = useRef('');
 
   const totalCorrections = payload?.totalCorrections || 10;
@@ -35,7 +37,10 @@ export default function GameTexte({ game }) {
     setHistory((h) => [{ word: lastWord.current, correct: feedback.correct }, ...h].slice(0, MAX_ATTEMPTS));
     if (feedback.attemptsLeft !== undefined) setAttemptsLeft(feedback.attemptsLeft);
     if (feedback.correct && feedback.foundCount !== undefined) setFoundCount(feedback.foundCount);
+    setFlash(feedback.correct ? 'flash-correct' : 'flash-wrong');
+    const t = setTimeout(() => setFlash(''), 500);
     lastWord.current = '';
+    return () => clearTimeout(t);
   }, [feedback]);
 
   function submit() {
@@ -52,6 +57,7 @@ export default function GameTexte({ game }) {
       <Timer duration={duration} serverTime={serverTime} />
 
       <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center' }}>
+        <ProgressBadge progress={progress} />
         <span className="pill-badge mint">{foundCount} / {totalCorrections} trouvées</span>
         <span className={`pill-badge ${attemptsLeft <= 3 ? 'coral' : 'amber'}`}>
           {attemptsLeft} tentative{attemptsLeft !== 1 ? 's' : ''} restante{attemptsLeft !== 1 ? 's' : ''}
@@ -82,6 +88,7 @@ export default function GameTexte({ game }) {
             onChange={(e) => setValue(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && submit()}
             placeholder="Mot corrigé…"
+            className={flash}
             style={{ background: '#fff', color: '#1b2e1b', borderStyle: 'solid', borderColor: 'var(--chalk-line-strong)' }}
           />
           <button
