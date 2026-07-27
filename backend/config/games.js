@@ -28,9 +28,9 @@ const GAMES = {
     label: 'Mémoire des chiffres',
     engine: 'memoire',
     difficulties: {
-      normal: { dataFile: 'memoire.json', displayDuration: 2, inputDuration: 10, wrongPenalty: false },
-      difficile: { dataFile: 'memoire_difficile.json', displayDuration: 2, inputDuration: 10, wrongPenalty: false },
-      hardcore: { dataFile: 'memoire_hardcore.json', displayDuration: 2, inputDuration: 10, wrongPenalty: true }
+      normal: { dataFile: 'memoire.json', displayDuration: 20, inputDuration: 10, wrongPenalty: false },
+      difficile: { dataFile: 'memoire_difficile.json', displayDuration: 20, inputDuration: 10, wrongPenalty: false },
+      hardcore: { dataFile: 'memoire_hardcore.json', displayDuration: 20, inputDuration: 10, wrongPenalty: true }
     }
   },
   balance: {
@@ -38,9 +38,9 @@ const GAMES = {
     label: 'Balance',
     engine: 'balance',
     difficulties: {
-      normal: { dataFile: 'balance.json', observeDuration: 2, perItemDuration: 15, grayoutDuration: 3, pointsMode: 'speed' },
-      difficile: { dataFile: 'balance_difficile.json', observeDuration: 2, perItemDuration: 15, grayoutDuration: 3, pointsMode: 'fixed', fixedPoints: [4, 1, 2, 4, 1, 2] },
-      hardcore: { dataFile: 'balance_hardcore.json', observeDuration: 2, perItemDuration: 15, grayoutDuration: 3, pointsMode: 'fixed', fixedPoints: [3, 3, 3, 3, 3, 3] }
+      normal: { dataFile: 'balance.json', observeDuration: 20, perItemDuration: 15, grayoutDuration: 3, pointsMode: 'speed' },
+      difficile: { dataFile: 'balance_difficile.json', observeDuration: 20, perItemDuration: 15, grayoutDuration: 3, pointsMode: 'fixed', fixedPoints: [4, 1, 2, 4, 1, 2] },
+      hardcore: { dataFile: 'balance_hardcore.json', observeDuration: 20, perItemDuration: 15, grayoutDuration: 3, pointsMode: 'fixed', fixedPoints: [3, 3, 3, 3, 3, 3] }
     }
   },
   heures: {
