@@ -1,0 +1,202 @@
+[
+  {
+    "id": 1,
+    "operation": "346 - 159",
+    "answer": "187"
+  },
+  {
+    "id": 2,
+    "operation": "999 + 680",
+    "answer": "1679"
+  },
+  {
+    "id": 3,
+    "operation": "180 + 187",
+    "answer": "367"
+  },
+  {
+    "id": 4,
+    "operation": "849 - 597",
+    "answer": "252"
+  },
+  {
+    "id": 5,
+    "operation": "57 / 3",
+    "answer": "19"
+  },
+  {
+    "id": 6,
+    "operation": "24 / 4",
+    "answer": "6"
+  },
+  {
+    "id": 7,
+    "operation": "775 - 586",
+    "answer": "189"
+  },
+  {
+    "id": 8,
+    "operation": "18 x 12",
+    "answer": "216"
+  },
+  {
+    "id": 9,
+    "operation": "14 x 18",
+    "answer": "252"
+  },
+  {
+    "id": 10,
+    "operation": "993 - 721",
+    "answer": "272"
+  },
+  {
+    "id": 11,
+    "operation": "16 x 13",
+    "answer": "208"
+  },
+  {
+    "id": 12,
+    "operation": "18 x 13",
+    "answer": "234"
+  },
+  {
+    "id": 13,
+    "operation": "830 - 419",
+    "answer": "411"
+  },
+  {
+    "id": 14,
+    "operation": "16 x 15",
+    "answer": "240"
+  },
+  {
+    "id": 15,
+    "operation": "548 + 629",
+    "answer": "1177"
+  },
+  {
+    "id": 16,
+    "operation": "562 + 223",
+    "answer": "785"
+  },
+  {
+    "id": 17,
+    "operation": "353 - 330",
+    "answer": "23"
+  },
+  {
+    "id": 18,
+    "operation": "36 / 3",
+    "answer": "12"
+  },
+  {
+    "id": 19,
+    "operation": "40 / 2",
+    "answer": "20"
+  },
+  {
+    "id": 20,
+    "operation": "90 / 10",
+    "answer": "9"
+  },
+  {
+    "id": 21,
+    "operation": "19 x 13",
+    "answer": "247"
+  },
+  {
+    "id": 22,
+    "operation": "8 / 2",
+    "answer": "4"
+  },
+  {
+    "id": 23,
+    "operation": "824 + 746",
+    "answer": "1570"
+  },
+  {
+    "id": 24,
+    "operation": "10 x 13",
+    "answer": "130"
+  },
+  {
+    "id": 25,
+    "operation": "11 x 10",
+    "answer": "110"
+  },
+  {
+    "id": 26,
+    "operation": "28 / 7",
+    "answer": "4"
+  },
+  {
+    "id": 27,
+    "operation": "626 - 343",
+    "answer": "283"
+  },
+  {
+    "id": 28,
+    "operation": "385 + 785",
+    "answer": "1170"
+  },
+  {
+    "id": 29,
+    "operation": "597 - 319",
+    "answer": "278"
+  },
+  {
+    "id": 30,
+    "operation": "652 + 235",
+    "answer": "887"
+  },
+  {
+    "id": 31,
+    "operation": "840 + 684",
+    "answer": "1524"
+  },
+  {
+    "id": 32,
+    "operation": "19 x 17",
+    "answer": "323"
+  },
+  {
+    "id": 33,
+    "operation": "903 - 348",
+    "answer": "555"
+  },
+  {
+    "id": 34,
+    "operation": "584 + 926",
+    "answer": "1510"
+  },
+  {
+    "id": 35,
+    "operation": "516 + 294",
+    "answer": "810"
+  },
+  {
+    "id": 36,
+    "operation": "15 / 3",
+    "answer": "5"
+  },
+  {
+    "id": 37,
+    "operation": "774 - 541",
+    "answer": "233"
+  },
+  {
+    "id": 38,
+    "operation": "105 / 7",
+    "answer": "15"
+  },
+  {
+    "id": 39,
+    "operation": "16 x 17",
+    "answer": "272"
+  },
+  {
+    "id": 40,
+    "operation": "10 / 2",
+    "answer": "5"
+  }
+]

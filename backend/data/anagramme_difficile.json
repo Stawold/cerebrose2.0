@@ -1,0 +1,122 @@
+[
+  {
+    "id": 1,
+    "scrambled": "RTIE",
+    "answers": [
+      "TIRE",
+      "RITE"
+    ]
+  },
+  {
+    "id": 2,
+    "scrambled": "REAM",
+    "answers": [
+      "AMER",
+      "RAME"
+    ]
+  },
+  {
+    "id": 3,
+    "scrambled": "REGA",
+    "answers": [
+      "GARE",
+      "RAGE"
+    ]
+  },
+  {
+    "id": 4,
+    "scrambled": "IRVE",
+    "answers": [
+      "RIVE",
+      "VIRE"
+    ]
+  },
+  {
+    "id": 5,
+    "scrambled": "IOSR",
+    "answers": [
+      "SOIR",
+      "ROIS"
+    ]
+  },
+  {
+    "id": 6,
+    "scrambled": "PRTO",
+    "answers": [
+      "PORT",
+      "TROP"
+    ]
+  },
+  {
+    "id": 7,
+    "scrambled": "DERI",
+    "answers": [
+      "RIDE",
+      "DIRE"
+    ]
+  },
+  {
+    "id": 8,
+    "scrambled": "NECIH",
+    "answers": [
+      "CHIEN",
+      "NICHE"
+    ]
+  },
+  {
+    "id": 9,
+    "scrambled": "HAMERC",
+    "answers": [
+      "MARCHE",
+      "CHARME"
+    ]
+  },
+  {
+    "id": 10,
+    "scrambled": "RAEIMN",
+    "answers": [
+      "MARINE",
+      "MANIER"
+    ]
+  },
+  {
+    "id": 11,
+    "scrambled": "ENZ",
+    "answers": [
+      "NEZ",
+      "ZEN"
+    ]
+  },
+  {
+    "id": 12,
+    "scrambled": "LSE",
+    "answers": [
+      "SEL",
+      "LES"
+    ]
+  },
+  {
+    "id": 13,
+    "scrambled": "EPTA",
+    "answers": [
+      "PATE",
+      "TAPE"
+    ]
+  },
+  {
+    "id": 14,
+    "scrambled": "OMDE",
+    "answers": [
+      "MODE",
+      "DOME"
+    ]
+  },
+  {
+    "id": 15,
+    "scrambled": "IAGRN",
+    "answers": [
+      "GRAIN",
+      "GARNI"
+    ]
+  }
+]

@@ -1,0 +1,356 @@
+[
+  {
+    "id": 1,
+    "colors": [
+      "orange",
+      "jaune",
+      "rouge"
+    ],
+    "balances": [
+      {
+        "left": [
+          "orange"
+        ],
+        "right": [
+          "jaune"
+        ],
+        "heavier": "left"
+      },
+      {
+        "left": [
+          "jaune"
+        ],
+        "right": [
+          "rouge"
+        ],
+        "heavier": "left"
+      },
+      {
+        "left": [
+          "orange",
+          "rouge"
+        ],
+        "right": [
+          "jaune"
+        ],
+        "heavier": "left"
+      }
+    ],
+    "answer": "orange"
+  },
+  {
+    "id": 2,
+    "colors": [
+      "vert",
+      "bleu",
+      "rouge",
+      "orange"
+    ],
+    "balances": [
+      {
+        "left": [
+          "vert"
+        ],
+        "right": [
+          "rouge",
+          "bleu"
+        ],
+        "heavier": "right"
+      },
+      {
+        "left": [
+          "rouge"
+        ],
+        "right": [
+          "orange"
+        ],
+        "heavier": "left"
+      },
+      {
+        "left": [
+          "vert"
+        ],
+        "right": [
+          "bleu"
+        ],
+        "heavier": "left"
+      },
+      {
+        "left": [
+          "vert",
+          "bleu"
+        ],
+        "right": [
+          "orange"
+        ],
+        "heavier": "left"
+      },
+      {
+        "left": [
+          "bleu"
+        ],
+        "right": [
+          "rouge"
+        ],
+        "heavier": "left"
+      }
+    ],
+    "answer": "vert"
+  },
+  {
+    "id": 3,
+    "colors": [
+      "rouge",
+      "jaune",
+      "orange",
+      "violet"
+    ],
+    "balances": [
+      {
+        "left": [
+          "jaune"
+        ],
+        "right": [
+          "orange"
+        ],
+        "heavier": "left"
+      },
+      {
+        "left": [
+          "orange"
+        ],
+        "right": [
+          "violet"
+        ],
+        "heavier": "left"
+      },
+      {
+        "left": [
+          "violet",
+          "rouge"
+        ],
+        "right": [
+          "jaune"
+        ],
+        "heavier": "left"
+      },
+      {
+        "left": [
+          "rouge"
+        ],
+        "right": [
+          "jaune"
+        ],
+        "heavier": "left"
+      }
+    ],
+    "answer": "rouge"
+  },
+  {
+    "id": 4,
+    "colors": [
+      "vert",
+      "violet",
+      "jaune",
+      "bleu",
+      "rouge"
+    ],
+    "balances": [
+      {
+        "left": [
+          "violet"
+        ],
+        "right": [
+          "jaune"
+        ],
+        "heavier": "left"
+      },
+      {
+        "left": [
+          "rouge",
+          "vert"
+        ],
+        "right": [
+          "violet"
+        ],
+        "heavier": "left"
+      },
+      {
+        "left": [
+          "rouge"
+        ],
+        "right": [
+          "bleu",
+          "vert"
+        ],
+        "heavier": "right"
+      },
+      {
+        "left": [
+          "vert"
+        ],
+        "right": [
+          "violet"
+        ],
+        "heavier": "left"
+      },
+      {
+        "left": [
+          "jaune"
+        ],
+        "right": [
+          "bleu"
+        ],
+        "heavier": "left"
+      },
+      {
+        "left": [
+          "bleu"
+        ],
+        "right": [
+          "rouge"
+        ],
+        "heavier": "left"
+      }
+    ],
+    "answer": "vert"
+  },
+  {
+    "id": 5,
+    "colors": [
+      "orange",
+      "violet",
+      "vert",
+      "jaune",
+      "rouge"
+    ],
+    "balances": [
+      {
+        "left": [
+          "rouge",
+          "violet"
+        ],
+        "right": [
+          "orange"
+        ],
+        "heavier": "left"
+      },
+      {
+        "left": [
+          "vert"
+        ],
+        "right": [
+          "jaune"
+        ],
+        "heavier": "left"
+      },
+      {
+        "left": [
+          "jaune"
+        ],
+        "right": [
+          "rouge"
+        ],
+        "heavier": "left"
+      },
+      {
+        "left": [
+          "orange"
+        ],
+        "right": [
+          "violet"
+        ],
+        "heavier": "left"
+      },
+      {
+        "left": [
+          "violet"
+        ],
+        "right": [
+          "vert"
+        ],
+        "heavier": "left"
+      }
+    ],
+    "answer": "orange"
+  },
+  {
+    "id": 6,
+    "colors": [
+      "orange",
+      "rouge",
+      "jaune",
+      "bleu",
+      "violet",
+      "vert"
+    ],
+    "balances": [
+      {
+        "left": [
+          "jaune"
+        ],
+        "right": [
+          "bleu"
+        ],
+        "heavier": "left"
+      },
+      {
+        "left": [
+          "orange",
+          "jaune"
+        ],
+        "right": [
+          "vert"
+        ],
+        "heavier": "left"
+      },
+      {
+        "left": [
+          "violet"
+        ],
+        "right": [
+          "vert"
+        ],
+        "heavier": "left"
+      },
+      {
+        "left": [
+          "jaune",
+          "bleu"
+        ],
+        "right": [
+          "orange"
+        ],
+        "heavier": "left"
+      },
+      {
+        "left": [
+          "rouge"
+        ],
+        "right": [
+          "jaune"
+        ],
+        "heavier": "left"
+      },
+      {
+        "left": [
+          "bleu"
+        ],
+        "right": [
+          "violet"
+        ],
+        "heavier": "left"
+      },
+      {
+        "left": [
+          "orange"
+        ],
+        "right": [
+          "rouge"
+        ],
+        "heavier": "left"
+      }
+    ],
+    "answer": "orange"
+  }
+]

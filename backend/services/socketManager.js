@@ -1,5 +1,5 @@
 const { randomUUID } = require('crypto');
-const { GAMES } = require('../config/games');
+const { GAMES, DIFFICULTIES } = require('../config/games');
 const { createRunner } = require('./gameService');
 const { computeRoundRanking, applyRoundToGlobal, computeLeaderboard } = require('./scoringService');
 const { recordGameResult, getGameHallOfFame } = require('./hallOfFameService');
@@ -28,7 +28,8 @@ function broadcastPartyUpdate(io, party) {
     code: party.code,
     players: publicPlayers(party),
     selectedGames: party.selectedGames,
-    phase: party.phase
+    phase: party.phase,
+    difficulty: party.difficulty
   });
 }
 
@@ -60,7 +61,7 @@ function runCurrentGame(io, party) {
     pseudo: p.pseudo
   }));
   party.phase = 'playing';
-  party.currentRunner = createRunner(gameId, players, io, party.code, (rawScores) => {
+  party.currentRunner = createRunner(gameId, party.difficulty, players, io, party.code, (rawScores) => {
     onGameFinish(io, party, gameId, rawScores);
   }, () => party.hostSocketId);
   io.to(party.code).emit('party:gameStart', { game: gameId, label: GAMES[gameId].label });
@@ -157,6 +158,7 @@ function attachSocketHandlers(io) {
         hostSocketId: socket.id,
         players: new Map(),
         selectedGames: [],
+        difficulty: 'normal',
         currentGameIndex: -1,
         currentRunner: null,
         globalScores: {},
@@ -221,6 +223,14 @@ function attachSocketHandlers(io) {
       const party = parties.get(code);
       if (!party || socket.id !== party.hostSocketId) return;
       party.selectedGames = gameIds.filter((id) => GAMES[id]);
+      broadcastPartyUpdate(io, party);
+    });
+
+    socket.on('host:setDifficulty', ({ code, difficulty }) => {
+      const party = parties.get(code);
+      if (!party || socket.id !== party.hostSocketId) return;
+      if (!DIFFICULTIES.includes(difficulty)) return;
+      party.difficulty = difficulty;
       broadcastPartyUpdate(io, party);
     });
 
@@ -297,6 +307,7 @@ function attachSocketHandlers(io) {
         hostSocketId: socket.id,
         players: new Map([[playerId, { id: playerId, pseudo: 'Testeur', socketId: socket.id, connected: true }]]),
         selectedGames: [gameId],
+        difficulty: 'normal',
         currentGameIndex: 0,
         currentRunner: null,
         globalScores: {},

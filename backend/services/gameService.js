@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { GAMES } = require('../config/games');
+const { resolveGameConfig } = require('../config/games');
 
 function loadData(fileName) {
   const filePath = path.join(__dirname, '..', 'data', fileName);
@@ -9,8 +9,8 @@ function loadData(fileName) {
 
 // Base class: handles broadcasting helpers shared by every runner.
 class BaseRunner {
-  constructor(gameId, players, io, room, onFinish, getHostSocketId) {
-    this.config = GAMES[gameId];
+  constructor(gameId, difficulty, players, io, room, onFinish, getHostSocketId) {
+    this.config = resolveGameConfig(gameId, difficulty);
     this.gameId = gameId;
     this.players = players; // [{ id, socketId, pseudo }]
     this.io = io;
@@ -106,6 +106,7 @@ class CalculsRunner extends BaseRunner {
     if (!question) return;
     const correct = String(value).trim() === String(question.answer).trim();
     if (correct) this.scores[playerId] += 1;
+    else if (this.config.wrongPenalty) this.scores[playerId] -= 1;
     this.emitFeedbackTo(playerId, correct, { questionId });
     this.emitScores();
   }
@@ -162,6 +163,8 @@ class TexteRunner extends BaseRunner {
     if (correct) {
       ps.found.add(matchKey);
       this.scores[playerId] += 1;
+    } else if (this.config.wrongPenalty) {
+      this.scores[playerId] -= 1;
     }
 
     this.emitFeedbackTo(playerId, correct, {
@@ -211,6 +214,7 @@ class MemoireRunner extends BaseRunner {
     this.answeredThisSeq.add(playerId);
     const correct = String(value).trim() === this.currentAnswer;
     if (correct) this.scores[playerId] += 1;
+    else if (this.config.wrongPenalty) this.scores[playerId] -= 1;
     this.emitFeedbackTo(playerId, correct);
     this.emitScores();
   }
@@ -331,25 +335,36 @@ class AnagrammeRunner extends BaseRunner {
     this.runWord();
   }
 
+  // Difficile mode allows two valid answers per scramble (word.answers);
+  // every other mode has a single word.answer.
+  validAnswers(word) {
+    if (this.config.multiAnswer && Array.isArray(word.answers)) return word.answers;
+    return [word[this.config.answerField]];
+  }
+
   runWord() {
     const word = this.words[this.wordIndex];
     this.winner = null;
     const progress = { index: this.wordIndex, total: this.words.length };
     this.emitPhase('play', { scrambled: word.scrambled }, this.config.perItemDuration, progress);
-    this.emitHostAnswer(`Mot : ${word[this.config.answerField]}`);
+    this.emitHostAnswer(`Mot : ${this.validAnswers(word).join(' / ')}`);
     this.itemTimer = this.schedule(() => this.endWord(null), this.config.perItemDuration * 1000);
   }
 
   handleAnswer(playerId, { value }) {
     if (this.winner) return; // frozen after a winner is found
     const word = this.words[this.wordIndex];
-    const correct = String(value).trim().toUpperCase() === String(word[this.config.answerField]).toUpperCase();
+    const guess = String(value).trim().toUpperCase();
+    const correct = this.validAnswers(word).some((a) => String(a).toUpperCase() === guess);
     this.emitFeedbackTo(playerId, correct);
     if (correct) {
       this.winner = playerId;
-      this.scores[playerId] += 1;
+      this.scores[playerId] += this.config.pointsCorrect || 1;
       clearTimeout(this.itemTimer);
       this.endWord(playerId);
+    } else if (this.config.wrongPenalty) {
+      this.scores[playerId] -= 1;
+      this.emitScores();
     }
   }
 
@@ -359,7 +374,7 @@ class AnagrammeRunner extends BaseRunner {
     this.emitPhase('result', {
       winnerId,
       winnerPseudo: player ? player.pseudo : null,
-      answer: word[this.config.answerField]
+      answer: this.validAnswers(word).join(' / ')
     }, this.config.transitionDuration);
     this.emitScores();
     this.schedule(() => {
@@ -413,11 +428,16 @@ class BalanceRunner extends BaseRunner {
       this.emitFeedbackTo(p.id, correct);
     });
 
-    correctEntries.sort((a, b) => a.time - b.time);
-    const speedPoints = [4, 3, 2];
-    correctEntries.forEach((entry, idx) => {
-      this.scores[entry.id] += idx < 3 ? speedPoints[idx] : 1;
-    });
+    if (this.config.pointsMode === 'fixed') {
+      const points = (this.config.fixedPoints && this.config.fixedPoints[this.puzzleIndex]) || 0;
+      correctEntries.forEach((entry) => { this.scores[entry.id] += points; });
+    } else {
+      correctEntries.sort((a, b) => a.time - b.time);
+      const speedPoints = [4, 3, 2];
+      correctEntries.forEach((entry, idx) => {
+        this.scores[entry.id] += idx < 3 ? speedPoints[idx] : 1;
+      });
+    }
     this.emitScores();
 
     const afterGrayout = () => {
@@ -447,11 +467,11 @@ const ENGINES = {
   balance: BalanceRunner
 };
 
-function createRunner(gameId, players, io, room, onFinish, getHostSocketId) {
-  const config = GAMES[gameId];
+function createRunner(gameId, difficulty, players, io, room, onFinish, getHostSocketId) {
+  const config = resolveGameConfig(gameId, difficulty);
   if (!config) throw new Error(`Unknown game: ${gameId}`);
   const Runner = ENGINES[config.engine];
-  return new Runner(gameId, players, io, room, onFinish, getHostSocketId);
+  return new Runner(gameId, difficulty, players, io, room, onFinish, getHostSocketId);
 }
 
 module.exports = { createRunner, loadData };

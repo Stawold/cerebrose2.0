@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getSocket } from '../services/socketService';
 import { useGame } from '../context/GameContext.jsx';
@@ -6,9 +5,9 @@ import Avatar from '../components/Common/Avatar.jsx';
 import { GAMES_LIST as ALL_GAMES } from '../services/gameLogic';
 
 const DIFFICULTIES = [
-  { id: 'moyen', label: 'Moyen', ready: true },
-  { id: 'difficile', label: 'Difficile', ready: false },
-  { id: 'hardcore', label: 'Hardcore', ready: false }
+  { id: 'normal', label: 'Moyen' },
+  { id: 'difficile', label: 'Difficile' },
+  { id: 'hardcore', label: 'Hardcore' }
 ];
 
 export default function HostDashboard() {
@@ -17,7 +16,7 @@ export default function HostDashboard() {
   const location = useLocation();
   const code = location.state?.code || state.party.code;
   const selected = state.party.selectedGames || [];
-  const [difficulty, setDifficulty] = useState('moyen');
+  const difficulty = state.party.difficulty || 'normal';
 
   function toggleGame(id) {
     const next = selected.includes(id) ? selected.filter((g) => g !== id) : [...selected, id];
@@ -29,6 +28,11 @@ export default function HostDashboard() {
     const next = ALL_GAMES.slice(0, count).map((g) => g.id);
     dispatch({ type: 'PARTY_UPDATE', payload: { selectedGames: next } });
     getSocket().emit('host:selectGames', { code, gameIds: next });
+  }
+
+  function selectDifficulty(id) {
+    dispatch({ type: 'PARTY_UPDATE', payload: { difficulty: id } });
+    getSocket().emit('host:setDifficulty', { code, difficulty: id });
   }
 
   function handleStart() {
@@ -76,25 +80,12 @@ export default function HostDashboard() {
             <button
               key={d.id}
               className={difficulty === d.id ? 'btn-pill-selected' : 'btn-secondary'}
-              onClick={() => setDifficulty(d.id)}
+              onClick={() => selectDifficulty(d.id)}
             >
-              {d.label}{!d.ready ? ' 🚧' : ''}
+              {d.label}
             </button>
           ))}
         </div>
-        {!DIFFICULTIES.find((d) => d.id === difficulty)?.ready && (
-          <p style={{
-            margin: '16px 0 0',
-            padding: '10px 14px',
-            borderRadius: 12,
-            background: 'var(--amber-dim)',
-            color: 'var(--amber)',
-            fontSize: '0.85rem',
-            fontWeight: 600
-          }}>
-            🚧 En cours de construction — la partie se jouera en mode Moyen pour l'instant.
-          </p>
-        )}
       </div>
 
       {/* Game selection */}

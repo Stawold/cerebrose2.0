@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const express = require('express');
-const { GAMES } = require('../config/games');
+const { GAMES, DIFFICULTIES, resolveGameConfig } = require('../config/games');
 const { verifyAdminPassword, isAdminPasswordConfigured } = require('../services/adminAuth');
 
 const DATA_DIR = path.join(__dirname, '..', 'data');
@@ -18,8 +18,12 @@ router.use((req, res, next) => {
   res.status(401).json({ error: 'Mot de passe admin invalide' });
 });
 
-function dataFilePath(gameId) {
-  const config = GAMES[gameId];
+function resolveDifficulty(req) {
+  return DIFFICULTIES.includes(req.query.difficulty) ? req.query.difficulty : 'normal';
+}
+
+function dataFilePath(gameId, difficulty) {
+  const config = resolveGameConfig(gameId, difficulty);
   if (!config) return null;
   const filePath = path.join(DATA_DIR, config.dataFile);
   // Guard against path traversal via unexpected config values.
@@ -32,18 +36,20 @@ router.get('/games', (_req, res) => {
 });
 
 router.get('/games/:id/data', (req, res) => {
-  const filePath = dataFilePath(req.params.id);
+  const difficulty = resolveDifficulty(req);
+  const filePath = dataFilePath(req.params.id, difficulty);
   if (!filePath) return res.status(404).json({ error: 'Jeu inconnu' });
   try {
     const raw = fs.readFileSync(filePath, 'utf-8');
-    res.json({ gameId: req.params.id, dataFile: GAMES[req.params.id].dataFile, content: JSON.parse(raw) });
+    res.json({ gameId: req.params.id, difficulty, dataFile: path.basename(filePath), content: JSON.parse(raw) });
   } catch (err) {
     res.status(500).json({ error: `Lecture impossible : ${err.message}` });
   }
 });
 
 router.put('/games/:id/data', (req, res) => {
-  const filePath = dataFilePath(req.params.id);
+  const difficulty = resolveDifficulty(req);
+  const filePath = dataFilePath(req.params.id, difficulty);
   if (!filePath) return res.status(404).json({ error: 'Jeu inconnu' });
 
   const { content } = req.body;

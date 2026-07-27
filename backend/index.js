@@ -7,7 +7,7 @@ const { Server } = require('socket.io');
 const { attachSocketHandlers } = require('./services/socketManager');
 const { loadData } = require('./services/gameService');
 const { getHallOfFame } = require('./services/hallOfFameService');
-const { GAMES } = require('./config/games');
+const { GAMES, DIFFICULTIES, resolveGameConfig } = require('./config/games');
 
 // Minimal .env loader (no extra dependency): lets ADMIN_PASSWORD etc. live
 // in a local, gitignored file instead of the source code.
@@ -24,15 +24,18 @@ app.use(cors());
 app.use(express.json());
 
 app.get('/health', (_req, res) => res.json({ ok: true }));
-app.get('/games', (_req, res) => {
+app.get('/games', (req, res) => {
   // Timing/scoring config only — safe to expose publicly, used by the
   // pre-game "Règles" recap so it stays in sync with the real server config.
-  res.json(Object.values(GAMES).map((g) => {
+  const difficulty = DIFFICULTIES.includes(req.query.difficulty) ? req.query.difficulty : 'normal';
+  res.json(Object.keys(GAMES).map((id) => {
+    const g = resolveGameConfig(id, difficulty);
     let itemCount = null;
     try { itemCount = loadData(g.dataFile).length; } catch { itemCount = null; }
     return {
       id: g.id,
       label: g.label,
+      difficulty,
       itemCount,
       totalDuration: g.totalDuration ?? null,
       perItemDuration: g.perItemDuration ?? null,

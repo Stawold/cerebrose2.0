@@ -1,0 +1,152 @@
+[
+  {
+    "id": 1,
+    "type1": "manual",
+    "value1": "04:10",
+    "type2": "manual",
+    "value2": "04:30",
+    "answerMinutes": [
+      20
+    ],
+    "answerMinutesAlt": [
+      700
+    ]
+  },
+  {
+    "id": 2,
+    "type1": "manual",
+    "value1": "07:25",
+    "type2": "manual",
+    "value2": "08:00",
+    "answerMinutes": [
+      35
+    ],
+    "answerMinutesAlt": [
+      685
+    ]
+  },
+  {
+    "id": 3,
+    "type1": "manual",
+    "value1": "01:30",
+    "type2": "manual",
+    "value2": "04:30",
+    "answerMinutes": [
+      180
+    ],
+    "answerMinutesAlt": [
+      540
+    ]
+  },
+  {
+    "id": 4,
+    "type1": "manual",
+    "value1": "09:00",
+    "type2": "manual",
+    "value2": "11:45",
+    "answerMinutes": [
+      165
+    ],
+    "answerMinutesAlt": []
+  },
+  {
+    "id": 5,
+    "type1": "manual",
+    "value1": "02:00",
+    "type2": "manual",
+    "value2": "06:00",
+    "answerMinutes": [
+      240
+    ],
+    "answerMinutesAlt": [
+      480
+    ]
+  },
+  {
+    "id": 6,
+    "type1": "manual",
+    "value1": "03:00",
+    "type2": "manual",
+    "value2": "06:30",
+    "answerMinutes": [
+      210
+    ],
+    "answerMinutesAlt": [
+      510
+    ]
+  },
+  {
+    "id": 7,
+    "type1": "manual",
+    "value1": "08:30",
+    "type2": "manual",
+    "value2": "09:30",
+    "answerMinutes": [
+      60
+    ],
+    "answerMinutesAlt": [
+      660
+    ]
+  },
+  {
+    "id": 8,
+    "type1": "manual",
+    "value1": "14:30",
+    "type2": "manual",
+    "value2": "16:00",
+    "answerMinutes": [
+      90
+    ],
+    "answerMinutesAlt": []
+  },
+  {
+    "id": 9,
+    "type1": "manual",
+    "value1": "07:00",
+    "type2": "manual",
+    "value2": "12:00",
+    "answerMinutes": [
+      300
+    ],
+    "answerMinutesAlt": [
+      420
+    ]
+  },
+  {
+    "id": 10,
+    "type1": "manual",
+    "value1": "03:10",
+    "type2": "manual",
+    "value2": "04:00",
+    "answerMinutes": [
+      50
+    ],
+    "answerMinutesAlt": [
+      670
+    ]
+  },
+  {
+    "id": 11,
+    "type1": "manual",
+    "value1": "04:30",
+    "type2": "manual",
+    "value2": "09:00",
+    "answerMinutes": [
+      270
+    ],
+    "answerMinutesAlt": [
+      450
+    ]
+  },
+  {
+    "id": 12,
+    "type1": "manual",
+    "value1": "18:25",
+    "type2": "manual",
+    "value2": "20:00",
+    "answerMinutes": [
+      95
+    ],
+    "answerMinutesAlt": []
+  }
+]

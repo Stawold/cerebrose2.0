@@ -1,0 +1,377 @@
+[
+  {
+    "id": 1,
+    "colors": [
+      "rouge",
+      "jaune",
+      "vert",
+      "orange"
+    ],
+    "balances": [
+      {
+        "left": [
+          "rouge"
+        ],
+        "right": [
+          "jaune",
+          "vert"
+        ],
+        "heavier": "right"
+      },
+      {
+        "left": [
+          "vert"
+        ],
+        "right": [
+          "orange"
+        ],
+        "heavier": "left"
+      },
+      {
+        "left": [
+          "jaune"
+        ],
+        "right": [
+          "vert"
+        ],
+        "heavier": "left"
+      },
+      {
+        "left": [
+          "rouge"
+        ],
+        "right": [
+          "jaune"
+        ],
+        "heavier": "left"
+      }
+    ],
+    "answer": "rouge"
+  },
+  {
+    "id": 2,
+    "colors": [
+      "orange",
+      "rouge",
+      "bleu",
+      "violet"
+    ],
+    "balances": [
+      {
+        "left": [
+          "bleu"
+        ],
+        "right": [
+          "violet"
+        ],
+        "heavier": "left"
+      },
+      {
+        "left": [
+          "bleu"
+        ],
+        "right": [
+          "violet"
+        ],
+        "heavier": "left"
+      },
+      {
+        "left": [
+          "orange"
+        ],
+        "right": [
+          "rouge"
+        ],
+        "heavier": "left"
+      },
+      {
+        "left": [
+          "rouge"
+        ],
+        "right": [
+          "bleu"
+        ],
+        "heavier": "left"
+      }
+    ],
+    "answer": "orange"
+  },
+  {
+    "id": 3,
+    "colors": [
+      "jaune",
+      "bleu",
+      "rouge",
+      "orange",
+      "violet"
+    ],
+    "balances": [
+      {
+        "left": [
+          "jaune"
+        ],
+        "right": [
+          "bleu"
+        ],
+        "heavier": "left"
+      },
+      {
+        "left": [
+          "rouge"
+        ],
+        "right": [
+          "orange"
+        ],
+        "heavier": "left"
+      },
+      {
+        "left": [
+          "bleu"
+        ],
+        "right": [
+          "rouge"
+        ],
+        "heavier": "left"
+      },
+      {
+        "left": [
+          "orange"
+        ],
+        "right": [
+          "violet"
+        ],
+        "heavier": "left"
+      },
+      {
+        "left": [
+          "orange",
+          "jaune"
+        ],
+        "right": [
+          "bleu"
+        ],
+        "heavier": "left"
+      }
+    ],
+    "answer": "jaune"
+  },
+  {
+    "id": 4,
+    "colors": [
+      "bleu",
+      "vert",
+      "jaune",
+      "rouge",
+      "violet"
+    ],
+    "balances": [
+      {
+        "left": [
+          "bleu"
+        ],
+        "right": [
+          "vert"
+        ],
+        "heavier": "left"
+      },
+      {
+        "left": [
+          "rouge"
+        ],
+        "right": [
+          "violet"
+        ],
+        "heavier": "left"
+      },
+      {
+        "left": [
+          "vert"
+        ],
+        "right": [
+          "jaune"
+        ],
+        "heavier": "left"
+      },
+      {
+        "left": [
+          "jaune"
+        ],
+        "right": [
+          "rouge"
+        ],
+        "heavier": "left"
+      },
+      {
+        "left": [
+          "bleu",
+          "violet"
+        ],
+        "right": [
+          "jaune",
+          "rouge"
+        ],
+        "heavier": "right"
+      }
+    ],
+    "answer": "bleu"
+  },
+  {
+    "id": 5,
+    "colors": [
+      "jaune",
+      "violet",
+      "bleu",
+      "rouge",
+      "vert",
+      "orange"
+    ],
+    "balances": [
+      {
+        "left": [
+          "rouge"
+        ],
+        "right": [
+          "vert"
+        ],
+        "heavier": "left"
+      },
+      {
+        "left": [
+          "bleu"
+        ],
+        "right": [
+          "rouge"
+        ],
+        "heavier": "left"
+      },
+      {
+        "left": [
+          "vert"
+        ],
+        "right": [
+          "orange"
+        ],
+        "heavier": "left"
+      },
+      {
+        "left": [
+          "violet"
+        ],
+        "right": [
+          "bleu"
+        ],
+        "heavier": "left"
+      },
+      {
+        "left": [
+          "vert",
+          "bleu"
+        ],
+        "right": [
+          "jaune"
+        ],
+        "heavier": "left"
+      },
+      {
+        "left": [
+          "jaune"
+        ],
+        "right": [
+          "violet"
+        ],
+        "heavier": "left"
+      },
+      {
+        "left": [
+          "vert",
+          "jaune"
+        ],
+        "right": [
+          "bleu",
+          "rouge"
+        ],
+        "heavier": "left"
+      }
+    ],
+    "answer": "jaune"
+  },
+  {
+    "id": 6,
+    "colors": [
+      "jaune",
+      "orange",
+      "rouge",
+      "bleu",
+      "vert",
+      "violet"
+    ],
+    "balances": [
+      {
+        "left": [
+          "vert"
+        ],
+        "right": [
+          "violet"
+        ],
+        "heavier": "left"
+      },
+      {
+        "left": [
+          "bleu",
+          "orange"
+        ],
+        "right": [
+          "jaune"
+        ],
+        "heavier": "left"
+      },
+      {
+        "left": [
+          "orange"
+        ],
+        "right": [
+          "rouge"
+        ],
+        "heavier": "left"
+      },
+      {
+        "left": [
+          "orange"
+        ],
+        "right": [
+          "bleu",
+          "jaune"
+        ],
+        "heavier": "right"
+      },
+      {
+        "left": [
+          "rouge"
+        ],
+        "right": [
+          "bleu"
+        ],
+        "heavier": "left"
+      },
+      {
+        "left": [
+          "bleu"
+        ],
+        "right": [
+          "vert"
+        ],
+        "heavier": "left"
+      },
+      {
+        "left": [
+          "jaune"
+        ],
+        "right": [
+          "orange"
+        ],
+        "heavier": "left"
+      }
+    ],
+    "answer": "jaune"
+  }
+]
