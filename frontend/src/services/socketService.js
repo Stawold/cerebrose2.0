@@ -22,3 +22,19 @@ export function emitWithAck(event, payload) {
     getSocket().emit(event, payload, (response) => resolve(response));
   });
 }
+
+// Host actions (host:startParty, host:beginGame, host:reveal*, host:nextRound...)
+// are authorized server-side against the host's current socket.id. That goes
+// stale the moment the host's socket reconnects (screen lock, wifi blip, a
+// dev-server reload) — the server then silently rejects the action and the
+// host appears frozen on the current screen. If the ack comes back !ok, this
+// re-announces the host via 'host:rejoinParty' (which refreshes the socket.id
+// the server trusts) and retries the action once before giving up.
+export async function hostAction(event, payload) {
+  let res = await emitWithAck(event, payload);
+  if (!res || !res.ok) {
+    await emitWithAck('host:rejoinParty', { code: payload.code });
+    res = await emitWithAck(event, payload);
+  }
+  return res;
+}

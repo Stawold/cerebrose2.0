@@ -1,5 +1,6 @@
+import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { getSocket } from '../services/socketService';
+import { hostAction } from '../services/socketService';
 import { useGame } from '../context/GameContext.jsx';
 import Avatar from '../components/Common/Avatar.jsx';
 import { GAMES_LIST as ALL_GAMES } from '../services/gameLogic';
@@ -17,27 +18,30 @@ export default function HostDashboard() {
   const code = location.state?.code || state.party.code;
   const selected = state.party.selectedGames || [];
   const difficulty = state.party.difficulty || 'normal';
+  const [startError, setStartError] = useState('');
 
   function toggleGame(id) {
     const next = selected.includes(id) ? selected.filter((g) => g !== id) : [...selected, id];
     dispatch({ type: 'PARTY_UPDATE', payload: { selectedGames: next } });
-    getSocket().emit('host:selectGames', { code, gameIds: next });
+    hostAction('host:selectGames', { code, gameIds: next });
   }
 
   function selectPreset(count) {
     const next = ALL_GAMES.slice(0, count).map((g) => g.id);
     dispatch({ type: 'PARTY_UPDATE', payload: { selectedGames: next } });
-    getSocket().emit('host:selectGames', { code, gameIds: next });
+    hostAction('host:selectGames', { code, gameIds: next });
   }
 
   function selectDifficulty(id) {
     dispatch({ type: 'PARTY_UPDATE', payload: { difficulty: id } });
-    getSocket().emit('host:setDifficulty', { code, difficulty: id });
+    hostAction('host:setDifficulty', { code, difficulty: id });
   }
 
-  function handleStart() {
-    getSocket().emit('host:startParty', { code });
-    navigate('/rules');
+  async function handleStart() {
+    setStartError('');
+    const res = await hostAction('host:startParty', { code });
+    if (res && res.ok) navigate('/rules');
+    else setStartError("Le lancement n'a pas abouti, réessayez.");
   }
 
   const playerCount = state.party.players?.length || 0;
@@ -128,6 +132,9 @@ export default function HostDashboard() {
         <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', margin: 0 }}>
           En attente de joueurs...
         </p>
+      )}
+      {startError && (
+        <p style={{ color: 'var(--coral)', fontSize: '0.85rem', margin: 0 }}>{startError}</p>
       )}
     </div>
   );

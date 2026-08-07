@@ -65,9 +65,9 @@ const GAMES = {
     answerField: 'correctAnswer',
     wrongPenalty: true,
     difficulties: {
-      normal: { dataFile: 'pfc.json', perItemDuration: 10 },
-      difficile: { dataFile: 'pfc.json', perItemDuration: 7 },
-      hardcore: { dataFile: 'pfc.json', perItemDuration: 4 }
+      normal: { dataFile: 'pfc.json', perItemDuration: 6 },
+      difficile: { dataFile: 'pfc.json', perItemDuration: 4 },
+      hardcore: { dataFile: 'pfc.json', perItemDuration: 2 }
     }
   },
   anagramme: {
@@ -89,7 +89,7 @@ const GAMES = {
     inputType: 'buttons',
     options: ['rouge', 'bleu', 'vert', 'jaune', 'violet', 'orange', 'blanc'],
     answerField: 'color',
-    perItemDuration: 7,
+    perItemDuration: 4,
     grayoutDuration: 3,
     wrongPenalty: true,
     noFeedback: true,

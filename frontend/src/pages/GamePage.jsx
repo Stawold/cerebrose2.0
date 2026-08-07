@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useGame } from '../context/GameContext.jsx';
-import { getSocket } from '../services/socketService';
+import { hostAction } from '../services/socketService';
 import RulesExplanation from './RulesExplanation.jsx';
 import HostDisplay from '../components/Displays/HostDisplay.jsx';
 import GameCalculs from '../components/Games/GameCalculs.jsx';
@@ -95,22 +95,22 @@ export default function GamePage() {
           <h1 className="title" style={{ color: 'var(--mint)' }}>Manche terminée : {game}</h1>
           <p className="section-label">Regardez l'écran de projection avec vos joueurs</p>
           {stage === 'pending' && (
-            <button onClick={() => getSocket().emit('host:revealRoundResults', { code })}>
+            <button onClick={() => hostAction('host:revealRoundResults', { code })}>
               Afficher les résultats →
             </button>
           )}
           {stage === 'results' && (
-            <button onClick={() => getSocket().emit('host:revealHallOfFame', { code })}>
+            <button onClick={() => hostAction('host:revealHallOfFame', { code })}>
               Afficher le Hall of Fame →
             </button>
           )}
           {stage === 'hallOfFame' && (
-            <button onClick={() => getSocket().emit('host:revealLeaderboard', { code })}>
+            <button onClick={() => hostAction('host:revealLeaderboard', { code })}>
               Afficher le classement général →
             </button>
           )}
           {stage === 'leaderboard' && (
-            <button onClick={() => getSocket().emit('host:nextRound', { code })}>
+            <button onClick={() => hostAction('host:nextRound', { code })}>
               Manche suivante →
             </button>
           )}

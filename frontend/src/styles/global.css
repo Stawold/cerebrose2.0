@@ -471,3 +471,48 @@ input[type='text']:focus, input[type='number']:focus {
   color: var(--text-muted);
   letter-spacing: 1px;
 }
+
+/* Projection screen: a projector/TV has a lot more real estate than a phone
+   in the host's hand, so scale everything up to fill it instead of leaving
+   the content marooned in a small centered column. No scrolling — sizes are
+   tuned to fit a standard 16:9 screen at a glance. */
+.projection-screen {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 100vh;
+}
+
+.projection-screen .page {
+  padding: 48px;
+  gap: 28px;
+}
+
+.projection-screen .card {
+  padding: 44px;
+}
+
+.projection-screen .title {
+  font-size: clamp(2.4rem, 4.2vw, 3.8rem);
+}
+
+.projection-screen .pill-badge {
+  font-size: 1.15rem;
+  padding: 10px 22px;
+}
+
+.projection-screen .section-label {
+  font-size: 1.6rem;
+}
+
+.projection-screen .podium {
+  max-width: 900px;
+}
+
+.projection-screen .podium-name {
+  font-size: 1.3rem;
+}
+
+.projection-screen .podium-score {
+  font-size: 1.1rem;
+}

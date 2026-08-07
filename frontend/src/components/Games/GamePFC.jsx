@@ -29,7 +29,10 @@ export default function GamePFC({ game }) {
     <div className="page">
       <Timer duration={duration} serverTime={serverTime} />
       <ProgressBadge progress={progress} />
-      <span className={`pill-badge ${instruction === 'win' ? 'mint' : 'coral'}`}>
+      <span
+        className={`pill-badge ${instruction === 'win' ? 'mint' : 'coral'}`}
+        style={{ fontSize: '1.6rem', padding: '12px 28px', fontWeight: 800 }}
+      >
         {instruction === 'win' ? 'Gagnez !' : 'Perdez !'}
       </span>
       <h1 className="title">Que choisissez-vous ?</h1>

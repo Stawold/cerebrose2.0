@@ -11,6 +11,7 @@ import TestLab from './pages/TestLab.jsx';
 import SecretTestLabLauncher from './components/Common/SecretTestLabLauncher.jsx';
 import MenuExitButton from './components/Common/MenuExitButton.jsx';
 import BrandMark from './components/Common/BrandMark.jsx';
+import LiveScore from './components/Common/LiveScore.jsx';
 
 export default function App() {
   return (
@@ -28,6 +29,7 @@ export default function App() {
           <Route path="/test-lab" element={<TestLab />} />
         </Routes>
         <BrandMark />
+        <LiveScore />
         <MenuExitButton />
         <SecretTestLabLauncher />
       </BrowserRouter>

@@ -74,4 +74,4 @@ export function colorHex(name) {
   return COLOR_HEX[String(name).toLowerCase()] || '#9b9b9b';
 }
 
-export const PFC_ICONS = { pierre: '🪨', feuille: '📄', ciseaux: '✂️' };
+export const PFC_ICONS = { pierre: '✊', feuille: '✋', ciseaux: '✌️' };

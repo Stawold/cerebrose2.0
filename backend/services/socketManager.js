@@ -219,59 +219,75 @@ function attachSocketHandlers(io) {
       replayPartyStateToSocket(socket, party);
     });
 
-    socket.on('host:selectGames', ({ code, gameIds }) => {
+    socket.on('host:selectGames', ({ code, gameIds }, ack) => {
       const party = parties.get(code);
-      if (!party || socket.id !== party.hostSocketId) return;
+      if (!party || socket.id !== party.hostSocketId) return ack && ack({ ok: false, error: 'Session animateur périmée' });
       party.selectedGames = gameIds.filter((id) => GAMES[id]);
       broadcastPartyUpdate(io, party);
+      if (ack) ack({ ok: true });
     });
 
-    socket.on('host:setDifficulty', ({ code, difficulty }) => {
+    socket.on('host:setDifficulty', ({ code, difficulty }, ack) => {
       const party = parties.get(code);
-      if (!party || socket.id !== party.hostSocketId) return;
-      if (!DIFFICULTIES.includes(difficulty)) return;
+      if (!party || socket.id !== party.hostSocketId) return ack && ack({ ok: false, error: 'Session animateur périmée' });
+      if (!DIFFICULTIES.includes(difficulty)) return ack && ack({ ok: false, error: 'Difficulté inconnue' });
       party.difficulty = difficulty;
       broadcastPartyUpdate(io, party);
+      if (ack) ack({ ok: true });
     });
 
-    socket.on('host:startParty', ({ code }) => {
+    // Host commands are gated on socket.id === party.hostSocketId, which goes
+    // stale the instant the host's socket reconnects (screen lock, wifi blip,
+    // dev-server HMR reload...) — a fresh connection means a new socket.id.
+    // 'host:rejoinParty' is what refreshes hostSocketId, but if this command
+    // was queued client-side before that rejoin lands (e.g. emitted while
+    // briefly offline), the server used to just silently drop it — the host
+    // would sit frozen on the current screen with no error and no retry.
+    // Acks let the client detect that and self-heal by rejoining then retrying.
+    socket.on('host:startParty', ({ code }, ack) => {
       const party = parties.get(code);
-      if (!party || socket.id !== party.hostSocketId) return;
-      if (!party.selectedGames.length) return;
+      if (!party || socket.id !== party.hostSocketId) return ack && ack({ ok: false, error: 'Session animateur périmée' });
+      if (!party.selectedGames.length) return ack && ack({ ok: false, error: 'Aucun jeu sélectionné' });
       party.currentGameIndex = -1;
       startNextGame(io, party);
+      if (ack) ack({ ok: true });
     });
 
-    socket.on('host:beginGame', ({ code }) => {
+    socket.on('host:beginGame', ({ code }, ack) => {
       const party = parties.get(code);
-      if (!party || socket.id !== party.hostSocketId) return;
+      if (!party || socket.id !== party.hostSocketId) return ack && ack({ ok: false, error: 'Session animateur périmée' });
       runCurrentGame(io, party);
+      if (ack) ack({ ok: true });
     });
 
-    socket.on('host:revealRoundResults', ({ code }) => {
+    socket.on('host:revealRoundResults', ({ code }, ack) => {
       const party = parties.get(code);
-      if (!party || socket.id !== party.hostSocketId || !party.pendingReveal) return;
+      if (!party || socket.id !== party.hostSocketId || !party.pendingReveal) return ack && ack({ ok: false, error: 'Session animateur périmée' });
       revealResults(io, party);
+      if (ack) ack({ ok: true });
     });
 
-    socket.on('host:revealHallOfFame', ({ code }) => {
+    socket.on('host:revealHallOfFame', ({ code }, ack) => {
       const party = parties.get(code);
-      if (!party || socket.id !== party.hostSocketId || !party.pendingReveal) return;
+      if (!party || socket.id !== party.hostSocketId || !party.pendingReveal) return ack && ack({ ok: false, error: 'Session animateur périmée' });
       revealHallOfFame(io, party);
+      if (ack) ack({ ok: true });
     });
 
-    socket.on('host:revealLeaderboard', ({ code }) => {
+    socket.on('host:revealLeaderboard', ({ code }, ack) => {
       const party = parties.get(code);
-      if (!party || socket.id !== party.hostSocketId || !party.pendingReveal) return;
+      if (!party || socket.id !== party.hostSocketId || !party.pendingReveal) return ack && ack({ ok: false, error: 'Session animateur périmée' });
       revealLeaderboard(io, party);
+      if (ack) ack({ ok: true });
     });
 
-    socket.on('host:nextRound', ({ code }) => {
+    socket.on('host:nextRound', ({ code }, ack) => {
       const party = parties.get(code);
-      if (!party || socket.id !== party.hostSocketId) return;
+      if (!party || socket.id !== party.hostSocketId) return ack && ack({ ok: false, error: 'Session animateur périmée' });
       party.pendingReveal = null;
       party.revealStage = null;
       startNextGame(io, party);
+      if (ack) ack({ ok: true });
     });
 
     socket.on('spectator:join', ({ code }, ack) => {

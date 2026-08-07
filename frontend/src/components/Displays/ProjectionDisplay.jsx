@@ -51,7 +51,7 @@ export default function ProjectionDisplay() {
   if (state.gameOver) {
     content = (
       <div className="page">
-        <h1 className="logo" style={{ fontSize: '2.6rem' }}>Podium final 🏆</h1>
+        <h1 className="logo" style={{ fontSize: '4rem' }}>Podium final 🏆</h1>
         <Podium leaderboard={state.gameOver.leaderboard} />
       </div>
     );
@@ -72,7 +72,7 @@ export default function ProjectionDisplay() {
       content = (
         <div className="page">
           <h1 className="title" style={{ marginBottom: 20 }}>Résultats : {gameLabel}</h1>
-          <RankReveal entries={entries} limit={10} valueLabel="pts" resetKey={`results-${game}`} />
+          <RankReveal entries={entries} limit={10} valueLabel="pts" resetKey={`results-${game}`} big />
         </div>
       );
     } else if (stage === 'hallOfFame') {
@@ -80,7 +80,7 @@ export default function ProjectionDisplay() {
       content = (
         <div className="page">
           <h1 className="title" style={{ marginBottom: 20 }}>🏆 Hall of Fame : {gameLabel}</h1>
-          <RankReveal entries={entries} limit={5} valueLabel="pts" resetKey={`hof-${game}`} />
+          <RankReveal entries={entries} limit={5} valueLabel="pts" resetKey={`hof-${game}`} big />
         </div>
       );
     } else if (stage === 'leaderboard') {
@@ -88,7 +88,7 @@ export default function ProjectionDisplay() {
       content = (
         <div className="page">
           <h1 className="title" style={{ marginBottom: 20 }}>Classement général</h1>
-          <RankReveal entries={entries} limit={10} valueLabel="pts" resetKey={`leaderboard-${game}`} />
+          <RankReveal entries={entries} limit={10} valueLabel="pts" resetKey={`leaderboard-${game}`} big />
         </div>
       );
     }
@@ -103,15 +103,15 @@ export default function ProjectionDisplay() {
   } else {
     content = (
       <div className="page">
-        <GameVisual game={state.game} />
+        <GameVisual game={state.game} big />
       </div>
     );
   }
 
   return (
-    <>
+    <div className="projection-screen">
       <ProjectionTitle />
       {content}
-    </>
+    </div>
   );
 }

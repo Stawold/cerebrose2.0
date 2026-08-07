@@ -1,8 +1,17 @@
+import { useState } from 'react';
 import { getRulesText } from '../services/gameLogic';
-import { getSocket } from '../services/socketService';
+import { hostAction } from '../services/socketService';
 
 export default function RulesExplanation({ rules, isHost, code }) {
+  const [error, setError] = useState('');
   if (!rules) return null;
+
+  async function begin() {
+    setError('');
+    const res = await hostAction('host:beginGame', { code });
+    if (!res || !res.ok) setError("Le lancement n'a pas abouti, réessayez.");
+  }
+
   return (
     <div className="page" style={{ gap: 20 }}>
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
@@ -20,12 +29,12 @@ export default function RulesExplanation({ rules, isHost, code }) {
       </div>
 
       {isHost ? (
-        <button
-          onClick={() => getSocket().emit('host:beginGame', { code })}
-          style={{ fontSize: '1.1rem', padding: '14px 40px' }}
-        >
-          C'est parti !
-        </button>
+        <>
+          <button onClick={begin} style={{ fontSize: '1.1rem', padding: '14px 40px' }}>
+            C'est parti !
+          </button>
+          {error && <p style={{ color: 'var(--coral)', fontSize: '0.85rem', margin: 0 }}>{error}</p>}
+        </>
       ) : (
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, background: 'rgba(255,255,255,0.04)', border: 'var(--chalk-border)', borderRadius: 999, padding: '10px 20px' }}>
           <span className="pulse-dot" />
