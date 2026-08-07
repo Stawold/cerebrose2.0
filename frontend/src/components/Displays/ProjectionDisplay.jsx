@@ -14,6 +14,19 @@ function ProjectionTitle() {
   );
 }
 
+// Kept visible at all times so latecomers can join without asking — the
+// projection screen is the one place everyone in the room can already see.
+function CodeCorner({ code }) {
+  if (!code) return null;
+  return (
+    <div style={{ position: 'fixed', bottom: 16, right: 20, zIndex: 400 }}>
+      <span className="pill-badge amber" style={{ fontSize: '1.1rem', fontWeight: 700, letterSpacing: 2 }}>
+        Code : {code}
+      </span>
+    </div>
+  );
+}
+
 export default function ProjectionDisplay() {
   const { state } = useGame();
   const [code, setCode] = useState('');
@@ -111,6 +124,7 @@ export default function ProjectionDisplay() {
   return (
     <div className="projection-screen">
       <ProjectionTitle />
+      <CodeCorner code={code} />
       {content}
     </div>
   );

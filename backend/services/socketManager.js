@@ -297,6 +297,11 @@ function attachSocketHandlers(io) {
       socket.data.role = 'spectator';
       socket.data.code = code;
       if (ack) ack({ ok: true });
+      // Without this, a projection screen that (re)joins mid-round — a
+      // reload, or opening it after the round already started — shows
+      // nothing until the next phase transition, since it missed the
+      // broadcasts sent before it joined.
+      replayPartyStateToSocket(socket, party);
     });
 
     socket.on('player:answer', (payload) => {
