@@ -13,13 +13,19 @@ export default function Timer({ duration, serverTime, width = 30, height = 130, 
       setRemaining(0);
       return;
     }
+    // Comparing Date.now() to the server's timestamp on every tick means
+    // any clock skew on the player's device (phones drift by several
+    // seconds all the time) gets baked into the countdown for the whole
+    // phase — it visibly runs long and then sits at "1" until the real,
+    // server-side timeout fires and yanks the screen to the next question.
+    // Fix: use serverTime only once, to work out how far in we are if we
+    // joined mid-phase, then tick using this device's own monotonic clock
+    // (performance.now()) from then on — immune to wall-clock skew.
+    const initialElapsed = Math.max(0, (Date.now() - (serverTime || Date.now())) / 1000);
+    const localStart = performance.now();
     const tick = () => {
-      // Clamp to 0: if the client's clock is even slightly behind the
-      // server's (or this fires a beat before serverTime, which happens),
-      // a negative elapsed would inflate the very first tick past
-      // `duration` — the "starts one number too high" bug.
-      const elapsed = Math.max(0, (Date.now() - (serverTime || Date.now())) / 1000);
-      setRemaining(Math.max(0, Math.ceil(duration - elapsed)));
+      const localElapsed = (performance.now() - localStart) / 1000;
+      setRemaining(Math.max(0, Math.ceil(duration - initialElapsed - localElapsed)));
     };
     tick();
     const interval = setInterval(tick, 250);
