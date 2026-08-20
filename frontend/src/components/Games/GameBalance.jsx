@@ -18,9 +18,9 @@ export default function GameBalance({ game }) {
     setSent(false);
   }, [payload?.puzzle?.id]);
 
-  // The answer buttons appear as soon as the 'answer' phase starts, but
-  // stay unclickable for the first `answerDelay` seconds — the server
-  // enforces this too, so a locked click can't sneak through either way.
+  // One single timer runs for the whole puzzle — the buttons are visible
+  // from the start but stay unclickable for the first `answerDelay`
+  // seconds (server enforces this too, so a locked click can't sneak in).
   useEffect(() => {
     const delay = payload?.answerDelay || 0;
     if (phase !== 'answer' || !delay) {
@@ -34,24 +34,14 @@ export default function GameBalance({ game }) {
     return () => clearTimeout(t);
   }, [phase, payload?.puzzle?.id, payload?.answerDelay, serverTime]);
 
-  if (phase === 'observe') {
+  if (phase === 'grayout') {
     return (
       <div className="page">
-        <Timer duration={duration} serverTime={serverTime} />
-        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center' }}>
-          <ProgressBadge progress={progress} />
-          <MyScore />
-        </div>
-        <span className="pulse-dot" />
-        <h1 className="title">Observez les balances à l'écran...</h1>
-        <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
-          Déduisez quelle boule est la plus lourde
-        </p>
+        <MyScore />
+        <AnswerFeedback feedback={feedback} correctLabel="Bonne réponse !" wrongLabel="Mauvaise réponse" />
       </div>
     );
   }
-
-  if (phase === 'grayout') return <div className="page" />;
 
   function submit(color) {
     if (sent || locked) return;
@@ -71,9 +61,12 @@ export default function GameBalance({ game }) {
         <MyScore />
       </div>
       <h1 className="title">Quelle boule est la plus lourde ?</h1>
+      <p style={{ color: 'var(--ink-66)', fontSize: '0.9rem' }}>
+        Observez les balances sur l'écran de projection
+      </p>
       {locked && (
-        <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
-          Patientez, la sélection s'ouvre dans un instant...
+        <p className="pill-badge amber">
+          Réponse possible dans un instant...
         </p>
       )}
 

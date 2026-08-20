@@ -14,7 +14,11 @@ export default function Timer({ duration, serverTime, width = 30, height = 130, 
       return;
     }
     const tick = () => {
-      const elapsed = (Date.now() - (serverTime || Date.now())) / 1000;
+      // Clamp to 0: if the client's clock is even slightly behind the
+      // server's (or this fires a beat before serverTime, which happens),
+      // a negative elapsed would inflate the very first tick past
+      // `duration` — the "starts one number too high" bug.
+      const elapsed = Math.max(0, (Date.now() - (serverTime || Date.now())) / 1000);
       setRemaining(Math.max(0, Math.ceil(duration - elapsed)));
     };
     tick();

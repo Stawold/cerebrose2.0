@@ -411,20 +411,19 @@ class BalanceRunner extends BaseRunner {
     this.runPuzzle();
   }
 
+  // Single continuous timer for the whole puzzle — the balances stay on
+  // screen throughout totalDuration; answering just unlocks answerDelay
+  // seconds in. Previously this was two back-to-back timers (an
+  // observe-only phase, then a separate answer phase), which read as two
+  // different countdowns instead of the one the design calls for.
   runPuzzle() {
     const puzzle = this.puzzles[this.puzzleIndex];
     this.answers = {};
-    const progress = { index: this.puzzleIndex, total: this.puzzles.length };
-    this.emitPhase('observe', { puzzle }, this.config.observeDuration, progress);
-    this.emitHostAnswer(`Boule la plus lourde : ${puzzle.answer}`);
-    this.schedule(() => this.openAnswer(puzzle), this.config.observeDuration * 1000);
-  }
-
-  openAnswer(puzzle) {
-    const progress = { index: this.puzzleIndex, total: this.puzzles.length };
     this.answerPhaseStart = Date.now();
-    this.emitPhase('answer', { puzzle, answerDelay: this.config.answerDelay || 0 }, this.config.perItemDuration, progress);
-    this.schedule(() => this.resolvePuzzle(puzzle), this.config.perItemDuration * 1000);
+    const progress = { index: this.puzzleIndex, total: this.puzzles.length };
+    this.emitPhase('answer', { puzzle, answerDelay: this.config.answerDelay || 0 }, this.config.totalDuration, progress);
+    this.emitHostAnswer(`Boule la plus lourde : ${puzzle.answer}`);
+    this.schedule(() => this.resolvePuzzle(puzzle), this.config.totalDuration * 1000);
   }
 
   handleAnswer(playerId, { value }) {

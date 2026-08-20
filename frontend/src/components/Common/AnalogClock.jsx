@@ -15,14 +15,14 @@ export default function AnalogClock({ time, size = 120 }) {
 
   return (
     <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-      <circle cx={r} cy={r} r={r - 4} fill="var(--chalk-surface)" stroke="var(--chalk-line-strong)" strokeWidth="4" />
+      <circle cx={r} cy={r} r={r - 4} fill="#ffffff" stroke="var(--ink)" strokeWidth="2" />
       {Array.from({ length: 12 }).map((_, i) => {
         const [tx, ty] = handPoint(i * 30, r * 0.85);
-        return <circle key={i} cx={tx} cy={ty} r={2} fill="var(--text-faint)" />;
+        return <circle key={i} cx={tx} cy={ty} r={2} fill="var(--ink-38)" />;
       })}
-      <line x1={r} y1={r} x2={hx} y2={hy} stroke="var(--text)" strokeWidth="5" strokeLinecap="round" />
-      <line x1={r} y1={r} x2={mx} y2={my} stroke="var(--violet)" strokeWidth="3" strokeLinecap="round" />
-      <circle cx={r} cy={r} r={4} fill="var(--violet-dark)" />
+      <line x1={r} y1={r} x2={hx} y2={hy} stroke="var(--ink-50)" strokeWidth="5" strokeLinecap="round" />
+      <line x1={r} y1={r} x2={mx} y2={my} stroke="var(--cobalt)" strokeWidth="3" strokeLinecap="round" />
+      <circle cx={r} cy={r} r={4} fill="var(--cobalt-dark)" />
     </svg>
   );
 }

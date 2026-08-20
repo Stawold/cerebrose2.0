@@ -12,12 +12,21 @@ const CHOICES = ['pierre', 'feuille', 'ciseaux'];
 export default function GamePFC({ game }) {
   const { state } = useGame();
   const feedback = state.feedback;
-  const { payload, duration, serverTime, progress } = game;
+  const { phase, payload, duration, serverTime, progress } = game;
   const [sent, setSent] = useState(false);
 
   useEffect(() => {
     setSent(false);
   }, [payload?.item?.id]);
+
+  if (phase === 'grayout') {
+    return (
+      <div className="page">
+        <MyScore />
+        <AnswerFeedback feedback={feedback} correctLabel="Bonne réponse !" wrongLabel="Mauvaise réponse" />
+      </div>
+    );
+  }
 
   function submit(choice) {
     if (sent) return;

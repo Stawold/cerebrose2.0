@@ -37,10 +37,13 @@ const GAMES = {
     id: 'balance',
     label: 'Balance',
     engine: 'balance',
+    // One continuous timer per puzzle (totalDuration) — the balances are on
+    // screen the whole time, answering just unlocks after answerDelay
+    // seconds into it. Not two back-to-back timers.
     difficulties: {
-      normal: { dataFile: 'balance.json', observeDuration: 35, perItemDuration: 15, answerDelay: 5, grayoutDuration: 3, pointsMode: 'speed' },
-      difficile: { dataFile: 'balance_difficile.json', observeDuration: 20, perItemDuration: 15, grayoutDuration: 3, pointsMode: 'fixed', fixedPoints: [4, 1, 2, 4, 1, 2] },
-      hardcore: { dataFile: 'balance_hardcore.json', observeDuration: 20, perItemDuration: 15, grayoutDuration: 3, pointsMode: 'fixed', fixedPoints: [3, 3, 3, 3, 3, 3] }
+      normal: { dataFile: 'balance.json', totalDuration: 35, answerDelay: 5, grayoutDuration: 3, pointsMode: 'speed' },
+      difficile: { dataFile: 'balance_difficile.json', totalDuration: 35, answerDelay: 20, grayoutDuration: 3, pointsMode: 'fixed', fixedPoints: [4, 1, 2, 4, 1, 2] },
+      hardcore: { dataFile: 'balance_hardcore.json', totalDuration: 35, answerDelay: 20, grayoutDuration: 3, pointsMode: 'fixed', fixedPoints: [3, 3, 3, 3, 3, 3] }
     }
   },
   heures: {
@@ -64,6 +67,7 @@ const GAMES = {
     options: ['pierre', 'feuille', 'ciseaux'],
     answerField: 'correctAnswer',
     wrongPenalty: true,
+    grayoutDuration: 1,
     difficulties: {
       normal: { dataFile: 'pfc.json', perItemDuration: 6, perItemDurationStages: [{ count: 10, duration: 6 }, { count: 10, duration: 4 }] },
       difficile: { dataFile: 'pfc.json', perItemDuration: 4 },

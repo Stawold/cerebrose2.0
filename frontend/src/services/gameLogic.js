@@ -2,7 +2,7 @@ export const RULES_TEXT = {
   calculs: 'Résolvez le plus de calculs possible en 200 secondes, à votre rythme. +1 point par bonne réponse.',
   texte: 'Deux textes truffés de fautes (10 chacun). Repérez le mot fautif et tapez-le corrigé, bien orthographié. +1 si juste, -1 si faux. 90s par texte.',
   memoire: 'Mémorisez la suite de chiffres affichée à l\'écran (12s), puis retapez-la de mémoire (10s). +1 si exact.',
-  balance: 'Plusieurs balances montrent les poids relatifs de boules colorées. Déduisez quelle boule est la plus lourde et appuyez sur sa couleur. Plus vous êtes rapide, plus vous gagnez de points (4/3/2/1).',
+  balance: 'Plusieurs balances montrent les poids relatifs de boules colorées, affichées 35 secondes. Déduisez quelle boule est la plus lourde et appuyez sur sa couleur — la réponse ne s\'ouvre qu\'au bout de 5 secondes. Plus vous êtes rapide, plus vous gagnez de points (4/3/2/1).',
   heures: 'Observez les deux horloges (6s) puis indiquez la différence en minutes — vous avez 6 secondes pour répondre.',
   pfc: 'Une image impose de "Gagner" ou "Perdre" contre la forme affichée : cliquez sur le bon choix. +1 si juste, -1 si faux.',
   anagramme: 'Trouvez le mot caché derrière les lettres mélangées. Le premier à valider gagne le point !',
@@ -51,7 +51,7 @@ export const FAMILY_COLOR = {
 // endpoint, so it can't drift out of sync with the real server config.
 export function describeGameStats(gameId, stats) {
   if (!stats) return '';
-  const { itemCount, totalDuration, perItemDuration, perTextDuration, displayDuration, inputDuration, observeDuration } = stats;
+  const { itemCount, totalDuration, perItemDuration, perTextDuration, displayDuration, inputDuration, observeDuration, answerDelay } = stats;
   switch (gameId) {
     case 'calculs':
       return `${itemCount} calculs disponibles — ${totalDuration}s au total`;
@@ -60,7 +60,7 @@ export function describeGameStats(gameId, stats) {
     case 'memoire':
       return `${itemCount} séquences — ${displayDuration}s d'observation puis ${inputDuration}s de saisie`;
     case 'balance':
-      return `${itemCount} balances — ${observeDuration}s d'observation puis ${perItemDuration}s de réponse`;
+      return `${itemCount} balances — ${totalDuration}s chacune, réponse possible au bout de ${answerDelay}s`;
     case 'heures':
       return `${itemCount} paires d'horloges — ${observeDuration}s d'observation puis ${perItemDuration}s de réponse`;
     default:

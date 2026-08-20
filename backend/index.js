@@ -42,7 +42,8 @@ app.get('/games', (req, res) => {
       perTextDuration: g.perTextDuration ?? null,
       displayDuration: g.displayDuration ?? null,
       inputDuration: g.inputDuration ?? null,
-      observeDuration: g.observeDuration ?? null
+      observeDuration: g.observeDuration ?? null,
+      answerDelay: g.answerDelay ?? null
     };
   }));
 });
