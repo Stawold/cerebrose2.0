@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { GAMES_LIST } from '../services/gameLogic';
+import GameIcon from '../components/Common/GameIcon.jsx';
 
 const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:4000';
 
@@ -24,13 +25,13 @@ export default function HallOfFame() {
   }, []);
 
   return (
-    <div className="page" style={{ gap: 20, alignItems: 'stretch', maxWidth: 720, margin: '0 auto' }}>
+    <div className="page" style={{ gap: 16, alignItems: 'stretch', maxWidth: 640, margin: '0 auto' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap', gap: 8 }}>
         <div>
-          <h1 className="logo" style={{ fontSize: '2rem', marginBottom: 4 }}>🏆 Hall of Fame</h1>
+          <h1 className="title" style={{ fontSize: '1.9rem', marginBottom: 4 }}>Records</h1>
           <p className="section-label">Le top 5 all-time de chaque jeu</p>
         </div>
-        <Link to="/" style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>← Retour au menu</Link>
+        <Link to="/" className="mono" style={{ color: 'var(--ink-66)', fontSize: '0.75rem', textDecoration: 'underline' }}>← Retour au menu</Link>
       </div>
 
       {error && <p style={{ color: 'var(--coral)' }}>{error}</p>}
@@ -38,40 +39,43 @@ export default function HallOfFame() {
       {GAMES_LIST.map((g) => {
         const entries = records[g.id] || [];
         return (
-          <div key={g.id} className="card" style={{ width: '100%', textAlign: 'left' }}>
-            <h2 style={{ color: 'var(--amber)', margin: '0 0 12px' }}>{g.label}</h2>
-            {entries.length === 0 ? (
-              <p style={{ color: 'var(--text-muted)', margin: 0, fontStyle: 'italic' }}>
-                Aucun record pour l'instant — soyez les premiers !
-              </p>
-            ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                {entries.map((e, i) => (
-                  <div
-                    key={i}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 12,
-                      padding: '6px 10px',
-                      borderRadius: 8,
-                      background: i === 0 ? 'var(--amber-dim)' : 'transparent'
-                    }}
-                  >
-                    <span style={{ fontWeight: 700, color: 'var(--amber)', width: 20 }}>{i + 1}.</span>
-                    <span style={{ flex: 1, fontWeight: 600 }}>{e.pseudo}</span>
-                    <span style={{ fontWeight: 700 }}>{e.score} pts</span>
-                    <span style={{ color: 'var(--text-faint)', fontSize: '0.8rem' }}>{formatDate(e.date)}</span>
-                  </div>
-                ))}
-              </div>
-            )}
+          <div key={g.id} className="card" style={{ width: '100%', textAlign: 'left', display: 'flex', gap: 16 }}>
+            <GameIcon gameId={g.id} size={56} />
+            <div style={{ flex: 1 }}>
+              <h2 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: '1.1rem', letterSpacing: '-0.03em', margin: '0 0 10px' }}>{g.label}</h2>
+              {entries.length === 0 ? (
+                <p style={{ color: 'var(--ink-66)', margin: 0, fontStyle: 'italic', fontSize: '0.9rem' }}>
+                  Aucun record pour l'instant — soyez les premiers !
+                </p>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  {entries.map((e, i) => (
+                    <div
+                      key={i}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 12,
+                        padding: '6px 10px',
+                        borderRadius: 4,
+                        background: i === 0 ? 'var(--amber-dim)' : 'transparent'
+                      }}
+                    >
+                      <span className="mono" style={{ fontWeight: 600, color: 'var(--amber)', width: 20 }}>{i + 1}.</span>
+                      <span style={{ flex: 1, fontWeight: 600 }}>{e.pseudo}</span>
+                      <span className="mono" style={{ fontWeight: 600 }}>{e.score} pts</span>
+                      <span className="mono" style={{ color: 'var(--ink-38)', fontSize: '0.75rem' }}>{formatDate(e.date)}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         );
       })}
 
       <Link to="/" style={{ alignSelf: 'center', marginTop: 8 }}>
-        <button>← Retour au menu</button>
+        <button className="btn-secondary">← Retour au menu</button>
       </Link>
     </div>
   );

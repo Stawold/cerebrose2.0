@@ -33,7 +33,8 @@ export default function GameGrille({ game }) {
             key={c}
             disabled={sent}
             onClick={() => submit(c)}
-            style={{ background: colorHex(c), boxShadow: `0 6px 16px ${colorHex(c)}55`, minWidth: 100 }}
+            className="color-btn"
+            style={{ background: colorHex(c) }}
           >
             &nbsp;
           </button>

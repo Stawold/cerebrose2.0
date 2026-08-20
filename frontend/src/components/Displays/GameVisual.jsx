@@ -4,21 +4,30 @@ import ProgressBadge from '../Common/ProgressBadge.jsx';
 import { colorHex, PFC_ICONS } from '../../services/gameLogic';
 
 // Big-screen visualisation shared by the host dashboard and the projection
-// screen. `big` is set only from the projection screen, which has a whole
-// projector/TV to fill instead of a phone/tablet in the host's hand.
+// screen. `big` is set only from the projection screen, which already
+// shows the game identity + chrono in its left column — so in big mode
+// this renders just the stage content, no card/heading/timer of its own.
 export default function GameVisual({ game, big = false }) {
-  if (!game || !game.type) return <p style={{ color: 'var(--text-muted)' }}>En attente...</p>;
+  if (!game || !game.type) return <p style={{ color: 'var(--ink-66)' }}>En attente...</p>;
   const { type, phase, payload, duration, serverTime, progress } = game;
-  const cardWidth = type === 'texte'
-    ? (big ? 'min(96vw, 1700px)' : 'min(94vw, 1100px)')
-    : (big ? 'min(92vw, 1400px)' : 800);
+
+  if (big) {
+    return (
+      <>
+        <ProgressBadge progress={progress} />
+        {renderByType(type, phase, payload, big)}
+      </>
+    );
+  }
 
   return (
-    <div className="card" style={{ maxWidth: cardWidth }}>
-      <h2>{type}</h2>
-      <ProgressBadge progress={progress} />
-      {duration > 0 && <Timer duration={duration} serverTime={serverTime} />}
-      {renderByType(type, phase, payload, big)}
+    <div className="card" style={{ maxWidth: type === 'texte' ? 'min(94vw, 640px)' : 440 }}>
+      <span className="section-label">{type}</span>
+      <div style={{ margin: '10px 0' }}>
+        <ProgressBadge progress={progress} />
+      </div>
+      {duration > 0 && <Timer duration={duration} serverTime={serverTime} width={44} height={110} />}
+      <div style={{ marginTop: 14 }}>{renderByType(type, phase, payload, big)}</div>
     </div>
   );
 }
@@ -31,12 +40,13 @@ function renderByType(type, phase, payload, big) {
     case 'texte':
       return (
         <div>
-          <p style={{ color: 'var(--text-muted)', fontSize: big ? '1.1rem' : '0.85rem', margin: '0 0 12px', textAlign: 'center' }}>
+          <p style={{ color: 'var(--ink-66)', fontSize: big ? '1.1rem' : '0.85rem', margin: '0 0 12px', textAlign: 'center' }}>
             {payload.title} — repérez les {payload.faultyIndices?.length} fautes et corrigez-les sur votre téléphone
           </p>
           <p style={{
             lineHeight: 1.7,
             textAlign: 'center',
+            fontFamily: "'IBM Plex Sans', sans-serif",
             fontSize: big ? 'clamp(1.6rem, 3vw, 2.6rem)' : 'clamp(1rem, 2vw, 1.5rem)',
             wordSpacing: '0.15em',
             overflowWrap: 'break-word'
@@ -46,7 +56,35 @@ function renderByType(type, phase, payload, big) {
         </div>
       );
     case 'memoire':
-      if (phase === 'display') return <h1 style={{ fontSize: big ? '5.5rem' : '3rem', letterSpacing: 8 }}>{payload.sequence}</h1>;
+      if (phase === 'display') {
+        return (
+          <div style={{ display: 'flex', gap: big ? 10 : 6, justifyContent: 'center', flexWrap: 'wrap' }}>
+            {String(payload.sequence).split('').map((d, i) => (
+              <div
+                key={i}
+                className="pop-in"
+                style={{
+                  width: big ? 96 : 46,
+                  height: big ? 126 : 60,
+                  borderRadius: 6,
+                  background: 'var(--ink)',
+                  color: 'var(--paper)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontFamily: "'Space Grotesk', sans-serif",
+                  fontWeight: 700,
+                  fontSize: big ? '3.6rem' : '1.8rem',
+                  letterSpacing: '-0.03em',
+                  animationDelay: `${i * 60}ms`
+                }}
+              >
+                {d}
+              </div>
+            ))}
+          </div>
+        );
+      }
       return <p>Saisissez la séquence sur votre téléphone...</p>;
     case 'balance':
       if (phase === 'observe' || phase === 'answer') {
@@ -54,7 +92,12 @@ function renderByType(type, phase, payload, big) {
       }
       return null;
     case 'anagramme':
-      if (phase === 'play') return <h1 style={{ fontSize: big ? '4.5rem' : '2.5rem', letterSpacing: 6 }}>{payload.scrambled}</h1>;
+      if (phase === 'play')
+        return (
+          <h1 style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: big ? '4.5rem' : '2.5rem', letterSpacing: 6 }}>
+            {payload.scrambled}
+          </h1>
+        );
       if (phase === 'result')
         return (
           <p>
@@ -70,14 +113,14 @@ function renderByType(type, phase, payload, big) {
       if (phase === 'grayout' && type === 'grille' && payload.answer) {
         return (
           <div>
-            <p className="section-label" style={{ marginBottom: 10 }}>Bonne réponse</p>
+            <span className="section-label">Bonne réponse</span>
             <div style={{
               width: big ? 100 : 64,
               height: big ? 100 : 64,
-              borderRadius: 14,
+              borderRadius: 8,
               background: colorHex(payload.answer),
-              margin: '0 auto',
-              border: '2px dashed rgba(255,255,255,0.3)'
+              margin: '10px auto 0',
+              border: '1px solid var(--ink-border)'
             }} />
             <p style={{ marginTop: 10, fontSize: big ? '1.3rem' : '1rem', textTransform: 'capitalize' }}>{payload.answer}</p>
           </div>
@@ -94,22 +137,23 @@ function GenericVisual({ type, item, big }) {
     return (
       <div>
         <div style={{ fontSize: big ? '9rem' : '5rem' }}>{PFC_ICONS[item.shape]}</div>
-        <span
-          className={`pill-badge ${item.instruction === 'win' ? 'mint' : 'coral'}`}
-          style={big ? { fontSize: '1.6rem', padding: '12px 28px', fontWeight: 800 } : undefined}
-        >
+        <span className={`pill-badge ${item.instruction === 'win' ? 'mint' : 'coral'}`} style={big ? { fontSize: '1.1rem', padding: '10px 18px' } : undefined}>
           Consigne : {item.instruction === 'win' ? 'Gagnez' : 'Perdez'}
         </span>
       </div>
     );
   if (type === 'couleurs')
-    return <h1 style={{ color: colorHex(item.color), fontSize: big ? '7rem' : '3.5rem' }}>{item.word.toUpperCase()}</h1>;
+    return (
+      <h1 style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, color: colorHex(item.color), fontSize: big ? '11rem' : '3.5rem', letterSpacing: '-0.05em' }}>
+        {item.word.toUpperCase()}
+      </h1>
+    );
   if (type === 'grille') {
     const cell = big ? 40 : 28;
     return (
-      <div style={{ display: 'grid', gridTemplateColumns: `repeat(9, ${cell}px)`, gap: big ? 6 : 4, justifyContent: 'center' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: `repeat(9, ${cell}px)`, gap: big ? 4 : 3, justifyContent: 'center' }}>
         {item.grid.flat().map((c, i) => (
-          <div key={i} style={{ width: cell, height: cell, borderRadius: 6, background: colorHex(c) }} />
+          <div key={i} style={{ width: cell, height: cell, borderRadius: 3, background: colorHex(c) }} />
         ))}
       </div>
     );
@@ -123,7 +167,7 @@ function MultiBalanceVisual({ puzzle, phase, big }) {
   return (
     <div>
       {phase === 'answer' && (
-        <p className="section-label" style={{ marginBottom: 16, fontSize: big ? '1.5rem' : '1.2rem' }}>
+        <p className="section-label" style={{ marginBottom: 16 }}>
           Choisissez la boule la plus lourde sur votre téléphone
         </p>
       )}
@@ -149,10 +193,10 @@ function SingleBalance({ balance, big }) {
 
   return (
     <div style={{
-      border: 'var(--chalk-border)',
-      borderRadius: 12,
+      border: '1px solid var(--ink-border)',
+      borderRadius: 6,
       padding: big ? '22px 28px' : '14px 18px',
-      background: 'rgba(255,255,255,0.03)',
+      background: 'var(--surface)',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
@@ -161,7 +205,7 @@ function SingleBalance({ balance, big }) {
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: big ? 24 : 16 }}>
         <Pan balls={left} down={tiltLeft} up={tiltRight} big={big} lift={lift} />
-        <div style={{ fontSize: big ? '2.6rem' : '1.6rem', lineHeight: 1 }}>⚖️</div>
+        <div style={{ width: big ? 34 : 22, height: 1, background: 'var(--ink-border)' }} />
         <Pan balls={right} down={tiltRight} up={tiltLeft} big={big} lift={lift} />
       </div>
     </div>
@@ -181,14 +225,14 @@ function Pan({ balls, down, up, big, lift }) {
           <div
             key={i}
             style={{
-              width: ballSize, height: ballSize, borderRadius: '50%',
+              width: ballSize, height: ballSize, borderRadius: 4,
               background: colorHex(c),
-              boxShadow: `0 2px 6px ${colorHex(c)}66`
+              border: '1px solid rgba(16,24,32,.1)'
             }}
           />
         ))}
       </div>
-      <div style={{ width: big ? 80 : 56, height: 2, background: 'rgba(240,236,224,0.45)', borderRadius: 1 }} />
+      <div style={{ width: big ? 80 : 56, height: 1, background: 'var(--ink-border)' }} />
     </div>
   );
 }
@@ -208,9 +252,9 @@ function ClockFace({ label, type, value, big }) {
       {type === 'manual' ? (
         <AnalogClock time={value} size={big ? 220 : 120} />
       ) : (
-        <div className="pin-display" style={{ fontSize: big ? '2.8rem' : '1.8rem', padding: big ? '18px 30px' : '12px 20px' }}>{value}</div>
+        <div className="pin-display" style={{ background: 'var(--ink)', fontSize: big ? '2.4rem' : '1.6rem', padding: big ? '16px 26px' : '10px 18px' }}>{value}</div>
       )}
-      <span className="pill-badge" style={big ? { fontSize: '1.1rem', padding: '8px 20px' } : undefined}>{label}</span>
+      <span className="pill-badge" style={big ? { fontSize: '0.9rem' } : undefined}>{label}</span>
     </div>
   );
 }

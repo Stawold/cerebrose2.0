@@ -45,7 +45,7 @@ export default function GameCalculs({ game }) {
         onKeyDown={(e) => e.key === 'Enter' && submit()}
       />
       <br />
-      <button onClick={submit}>Valider</button>
+      <button onClick={submit} className="btn-validate">Valider</button>
     </div>
   );
 }

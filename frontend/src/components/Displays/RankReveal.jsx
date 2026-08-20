@@ -29,28 +29,31 @@ export default function RankReveal({ entries, limit, valueLabel, resetKey, big =
 
   const rowStyle = big ? { fontSize: '1.5rem', padding: '18px 26px' } : undefined;
   const listStyle = big ? { maxWidth: 'min(90vw, 900px)' } : undefined;
+  const maxValue = Math.max(1, ...entries.map((e) => e.value));
 
   return (
     <div>
       <div className="rank-list" style={listStyle}>
         {shown.map((e) => (
-          <div className="rank-row pop-in" key={e.rank} style={rowStyle}>
+          <div className={`rank-row pop-in${e.rank === 1 ? ' rank-first' : ''}`} key={e.rank} style={rowStyle}>
             <span className="rank-number">{e.rank}</span>
-            <span style={{ flex: 1, textAlign: 'left' }}>{e.pseudo}</span>
+            <span className="name" style={{ flex: 1, textAlign: 'left' }}>{e.pseudo}</span>
             <span className="score">{e.value} {valueLabel}</span>
+            <div className="score-bar" style={{ width: `${Math.max(4, (e.value / maxValue) * 100)}%` }} />
           </div>
         ))}
       </div>
 
       {rest.length > 0 && revealedCount >= top.length && (
         <div style={{ marginTop: 16 }}>
-          <p className="section-label" style={big ? { marginBottom: 8, fontSize: '1.5rem' } : { marginBottom: 8 }}>Reste du classement</p>
+          <p className="section-label" style={big ? { marginBottom: 8, fontSize: '1rem' } : { marginBottom: 8 }}>Reste du classement</p>
           <div className="rank-list" style={listStyle}>
             {rest.map((e) => (
-              <div className="rank-row" key={e.rank} style={{ opacity: 0.6, ...rowStyle }}>
+              <div className="rank-row" key={e.rank} style={{ opacity: 0.7, ...rowStyle }}>
                 <span className="rank-number">{e.rank}</span>
-                <span style={{ flex: 1, textAlign: 'left' }}>{e.pseudo}</span>
+                <span className="name" style={{ flex: 1, textAlign: 'left' }}>{e.pseudo}</span>
                 <span className="score">{e.value} {valueLabel}</span>
+                <div className="score-bar" style={{ width: `${Math.max(4, (e.value / maxValue) * 100)}%` }} />
               </div>
             ))}
           </div>

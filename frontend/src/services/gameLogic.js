@@ -26,6 +26,27 @@ export const GAMES_LIST = [
   { id: 'grille', label: 'Grille spatiale' }
 ];
 
+// The one iconography system of the app: each game is a two-digit number, a
+// two-letter symbol, and a family color. Logique = cobalt, Langage = corail,
+// Perception = ambre.
+export const GAME_ICONS = {
+  calculs: { number: '01', symbol: 'Ca', family: 'logique' },
+  texte: { number: '02', symbol: 'Tx', family: 'langage' },
+  memoire: { number: '03', symbol: 'Mé', family: 'perception' },
+  balance: { number: '04', symbol: 'Ba', family: 'logique' },
+  heures: { number: '05', symbol: 'Hr', family: 'perception' },
+  pfc: { number: '06', symbol: 'Pf', family: 'perception' },
+  anagramme: { number: '07', symbol: 'An', family: 'langage' },
+  couleurs: { number: '08', symbol: 'Cl', family: 'perception' },
+  grille: { number: '09', symbol: 'Gr', family: 'logique' }
+};
+
+export const FAMILY_COLOR = {
+  logique: 'var(--cobalt)',
+  langage: 'var(--coral)',
+  perception: 'var(--amber)'
+};
+
 // Human-readable timing/scoring summary built from the public /games stats
 // endpoint, so it can't drift out of sync with the real server config.
 export function describeGameStats(gameId, stats) {
@@ -47,7 +68,8 @@ export function describeGameStats(gameId, stats) {
   }
 }
 
-const AVATAR_COLORS = ['#6366f1', '#fb7185', '#34d399', '#f59e0b', '#0ea5e9', '#a855f7'];
+// Player pastilles cycle cobalt -> corail -> ambre -> vert, per the design system.
+const AVATAR_COLORS = ['#1f4fff', '#ff5a3c', '#ffb020', '#0f9b8e'];
 
 export function avatarColor(seed) {
   const str = String(seed || '');
@@ -67,7 +89,7 @@ const COLOR_HEX = {
   yellow: '#f59e0b', jaune: '#f59e0b',
   purple: '#a855f7', violet: '#a855f7',
   orange: '#f97316',
-  blanc: '#f0ece0'
+  blanc: '#ffffff'
 };
 
 export function colorHex(name) {

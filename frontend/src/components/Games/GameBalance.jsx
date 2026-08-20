@@ -75,16 +75,10 @@ export default function GameBalance({ game }) {
             key={c}
             disabled={disabled}
             onClick={() => submit(c)}
+            className="color-btn"
             style={{
               background: colorHex(c),
-              boxShadow: disabled ? 'none' : `0 6px 16px ${colorHex(c)}55`,
-              minWidth: 100,
-              minHeight: 52,
-              border: 'none',
-              borderRadius: 12,
-              cursor: disabled ? 'default' : 'pointer',
-              opacity: disabled ? 0.6 : 1,
-              transition: 'opacity 0.2s'
+              opacity: disabled ? 0.5 : 1
             }}
           />
         ))}

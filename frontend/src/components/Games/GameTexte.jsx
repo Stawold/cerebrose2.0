@@ -89,12 +89,12 @@ export default function GameTexte({ game }) {
             onKeyDown={(e) => e.key === 'Enter' && submit()}
             placeholder="Mot corrigé…"
             className={flash}
-            style={{ background: '#fff', color: '#1b2e1b', borderStyle: 'solid', borderColor: 'var(--chalk-line-strong)' }}
           />
           <button
             onClick={submit}
             disabled={done}
-            style={{ width: '100%', marginTop: 12 }}
+            className="btn-validate"
+            style={{ marginTop: 12 }}
           >
             Valider
           </button>
@@ -110,21 +110,22 @@ export default function GameTexte({ game }) {
             maxHeight: 260,
             overflowY: 'auto',
             paddingLeft: 16,
-            borderLeft: '2px dashed var(--chalk-line-strong)'
+            borderLeft: '1px solid var(--ink-border)'
           }}>
             {history.map((entry, i) => (
               <span
                 key={i}
                 style={{
-                  padding: '4px 14px',
-                  borderRadius: 999,
-                  fontSize: '0.9rem',
-                  fontWeight: 700,
-                  textAlign: 'center',
+                  padding: '4px 12px',
+                  borderRadius: 4,
+                  borderLeft: `3px solid ${entry.correct ? 'var(--mint)' : 'var(--coral)'}`,
+                  fontFamily: "'IBM Plex Sans', sans-serif",
+                  fontSize: '0.85rem',
+                  fontWeight: 600,
+                  textAlign: 'left',
                   background: entry.correct ? 'var(--mint-dim)' : 'var(--coral-dim)',
-                  color: entry.correct ? 'var(--mint)' : 'var(--coral)',
-                  border: `1px dashed ${entry.correct ? 'var(--mint)' : 'var(--coral)'}`,
-                  opacity: i === 0 ? 1 : 0.6 + (history.length - i) * 0.04
+                  color: 'var(--ink)',
+                  opacity: i === 0 ? 1 : 0.55 + (history.length - i) * 0.04
                 }}
               >
                 {entry.word}

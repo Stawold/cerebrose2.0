@@ -28,20 +28,20 @@ export default function MenuExitButton() {
         top: 10,
         right: 10,
         zIndex: 500,
-        width: 36,
-        height: 36,
-        borderRadius: '50%',
+        width: 32,
+        height: 32,
+        borderRadius: 4,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         padding: 0,
-        fontSize: '1.1rem',
-        background: 'rgba(14, 24, 14, 0.75)',
-        border: '2px dashed var(--chalk-line-strong)',
-        boxShadow: 'none'
+        fontSize: '0.95rem',
+        background: '#fff',
+        color: 'var(--ink)',
+        border: '1px solid var(--ink-border)'
       }}
     >
-      ↩️
+      ↩
     </button>
   );
 }

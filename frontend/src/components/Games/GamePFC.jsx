@@ -29,16 +29,26 @@ export default function GamePFC({ game }) {
     <div className="page">
       <Timer duration={duration} serverTime={serverTime} />
       <ProgressBadge progress={progress} />
-      <span
-        className={`pill-badge ${instruction === 'win' ? 'mint' : 'coral'}`}
-        style={{ fontSize: '1.6rem', padding: '12px 28px', fontWeight: 800 }}
+      <div
+        style={{
+          width: '100%',
+          borderRadius: 6,
+          padding: '20px 16px',
+          background: instruction === 'win' ? 'var(--green)' : 'var(--coral)',
+          color: '#fff',
+          fontFamily: "'Space Grotesk', sans-serif",
+          fontWeight: 700,
+          fontSize: '2.6rem',
+          letterSpacing: '-0.03em',
+          textTransform: 'uppercase'
+        }}
       >
-        {instruction === 'win' ? 'Gagnez !' : 'Perdez !'}
-      </span>
+        {instruction === 'win' ? 'Gagnez' : 'Perdez'}
+      </div>
       <h1 className="title">Que choisissez-vous ?</h1>
       <div className="button-grid">
         {CHOICES.map((c) => (
-          <button key={c} disabled={sent} onClick={() => submit(c)} style={{ fontSize: '1.6rem', padding: '16px 24px' }}>
+          <button key={c} disabled={sent} onClick={() => submit(c)} style={{ fontSize: '1.1rem', padding: '22px 24px' }}>
             {PFC_ICONS[c]} {c}
           </button>
         ))}

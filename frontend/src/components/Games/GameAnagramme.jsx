@@ -49,7 +49,29 @@ export default function GameAnagramme({ game }) {
     <div className="page">
       <Timer duration={duration} serverTime={serverTime} />
       <ProgressBadge progress={progress} />
-      <h1 className="title" style={{ letterSpacing: 6 }}>{payload?.scrambled}</h1>
+      <div style={{ display: 'flex', gap: 6, justifyContent: 'center', flexWrap: 'wrap' }}>
+        {String(payload?.scrambled || '').split('').map((letter, i) => (
+          <div
+            key={i}
+            style={{
+              width: 44,
+              height: 56,
+              borderRadius: 4,
+              background: 'var(--ink)',
+              color: 'var(--paper)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontWeight: 700,
+              fontSize: '1.6rem',
+              letterSpacing: '-0.03em'
+            }}
+          >
+            {letter}
+          </div>
+        ))}
+      </div>
       <input
         type="text"
         autoFocus
@@ -58,12 +80,13 @@ export default function GameAnagramme({ game }) {
         autoCapitalize="off"
         spellCheck={false}
         className={flash}
+        style={{ textTransform: 'uppercase' }}
         value={value}
         onChange={(e) => setValue(e.target.value)}
         onKeyDown={(e) => e.key === 'Enter' && submit()}
       />
       <br />
-      <button onClick={submit}>Envoyer</button>
+      <button onClick={submit} className="btn-validate">Envoyer</button>
     </div>
   );
 }

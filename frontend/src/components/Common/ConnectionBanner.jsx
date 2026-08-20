@@ -7,11 +7,12 @@ export default function ConnectionBanner() {
     <div style={{
       position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1000,
       background: 'var(--coral)',
-      color: '#0e180e',
+      color: '#fff',
       padding: '10px 16px', textAlign: 'center',
-      fontSize: '0.9rem', fontWeight: 700,
-      boxShadow: '0 2px 16px rgba(252,165,165,0.4)',
-      letterSpacing: '0.5px'
+      fontFamily: "'IBM Plex Mono', monospace",
+      fontSize: '0.78rem', fontWeight: 500,
+      letterSpacing: '0.1em',
+      textTransform: 'uppercase'
     }}>
       Connexion perdue — reconnexion en cours...
     </div>

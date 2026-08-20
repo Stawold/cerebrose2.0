@@ -1,32 +1,48 @@
+/* Cérébr'Ose — "Labo de sciences" visual system.
+   Graph paper, cobalt/coral/amber/green with a strict meaning each, Space
+   Grotesk for numbers and titles, IBM Plex Sans for body text, IBM Plex
+   Mono for data only (counters, chronos, codes). No decorative shadows. */
+
 :root {
-  --bg: #0e180e;
-  --chalk-surface: #1b2e1b;
-  --chalk-deep: #162614;
-  --violet: #a5b4fc;
-  --violet-dark: #818cf8;
-  --violet-dim: rgba(165, 180, 252, 0.18);
-  --coral: #fca5a5;
-  --coral-dark: #f87171;
-  --coral-dim: rgba(252, 165, 165, 0.18);
-  --mint: #86efac;
-  --mint-dark: #4ade80;
-  --mint-dim: rgba(134, 239, 172, 0.18);
-  --amber: #fcd34d;
-  --amber-dark: #fbbf24;
-  --amber-dim: rgba(252, 211, 77, 0.18);
-  --text: #f0ece0;
-  --text-muted: rgba(240, 236, 224, 0.55);
-  --text-faint: rgba(240, 236, 224, 0.3);
-  --chalk-line: rgba(240, 236, 224, 0.18);
-  --chalk-line-strong: rgba(240, 236, 224, 0.35);
-  --green: var(--mint-dark);
-  --red: var(--coral);
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.5);
-  --shadow-glow-violet: 0 0 20px rgba(165, 180, 252, 0.25);
-  --shadow-glow-coral: 0 0 20px rgba(252, 165, 165, 0.25);
-  --shadow-glow-mint: 0 0 20px rgba(134, 239, 172, 0.25);
-  --chalk-border: 2px dashed var(--chalk-line-strong);
+  --ink: #101820;
+  --paper: #f5f6f2;
+  --surface: #ffffff;
+  --grid: #dfe3dc;
+  --grid-projection: #e4e8e0;
+  --cobalt: #1f4fff;
+  --cobalt-dark: #0f3ce0;
+  --coral: #ff5a3c;
+  --amber: #ffb020;
+  --green: #0f9b8e;
+
+  --ink-70: rgba(16, 24, 32, 0.8);
+  --ink-66: rgba(16, 24, 32, 0.66);
+  --ink-50: rgba(16, 24, 32, 0.5);
+  --ink-38: rgba(16, 24, 32, 0.38);
+  --ink-border: rgba(16, 24, 32, 0.16);
+  --ink-border-field: rgba(16, 24, 32, 0.2);
+
+  --paper-70: rgba(245, 246, 242, 0.7);
+  --paper-60: rgba(245, 246, 242, 0.6);
+  --paper-55: rgba(245, 246, 242, 0.55);
+  --paper-40: rgba(245, 246, 242, 0.4);
+
+  /* Legacy aliases still referenced from a few call sites — same tokens,
+     kept so nothing silently falls back to an unstyled default. */
+  --text: var(--ink);
+  --text-muted: var(--ink-66);
+  --text-faint: var(--ink-38);
+  --chalk-line: var(--ink-border);
+  --chalk-line-strong: var(--ink-border);
+  --violet: var(--cobalt);
+  --violet-dark: var(--cobalt-dark);
+  --violet-dim: rgba(31, 79, 255, 0.12);
+  --coral-dim: rgba(255, 90, 60, 0.12);
+  --mint: var(--green);
+  --mint-dark: var(--green);
+  --mint-dim: rgba(15, 155, 142, 0.12);
+  --amber-dim: rgba(255, 176, 32, 0.16);
+  --green-dim: rgba(15, 155, 142, 0.12);
 }
 
 * {
@@ -36,9 +52,12 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Poppins', sans-serif;
+  background-color: var(--paper);
+  background-image:
+    repeating-linear-gradient(var(--paper) 0 23px, var(--grid) 23px 24px),
+    repeating-linear-gradient(90deg, var(--paper) 0 23px, var(--grid) 23px 24px);
+  color: var(--ink);
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
   font-size: 16px;
 }
 
@@ -53,91 +72,122 @@ h1, h2, h3 {
   font-weight: 700;
 }
 
+.mono {
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+/* Wordmark: "Cérébr'Ose" in Space Grotesk with a coral full stop. Used via
+   the <Logo/> component so the period always gets its own color. */
 .logo {
-  font-family: 'Caveat', cursive;
+  font-family: 'Space Grotesk', sans-serif;
   font-weight: 700;
-  color: var(--violet);
-  text-shadow: 0 0 24px rgba(165, 180, 252, 0.4);
-  letter-spacing: 1px;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+
+.logo.on-ink {
+  color: var(--paper);
+}
+
+.logo .dot {
+  color: var(--coral);
 }
 
 button {
-  font-family: inherit;
+  font-family: 'IBM Plex Sans', sans-serif;
   cursor: pointer;
   border: none;
-  background: var(--violet);
-  color: #0e180e;
-  border-radius: 999px;
-  padding: 12px 28px;
-  font-size: 1rem;
-  font-weight: 700;
-  transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
-  box-shadow: 0 4px 16px rgba(165, 180, 252, 0.3);
+  background: var(--cobalt);
+  color: #fff;
+  border-radius: 4px;
+  padding: 14px 20px;
+  font-size: 15px;
+  font-weight: 600;
+  transition: background-color 0.15s ease;
 }
 
 button:hover:not(:disabled) {
-  transform: translateY(-2px);
-  background: var(--violet-dark);
-  box-shadow: 0 6px 20px rgba(165, 180, 252, 0.45);
+  background: var(--cobalt-dark);
 }
 
 button:active:not(:disabled) {
-  transform: translateY(0);
+  background: var(--cobalt-dark);
 }
 
 button:disabled {
-  opacity: 0.3;
+  background: #fff;
+  color: var(--ink-38);
+  border: 1px solid var(--ink-border-field);
   cursor: not-allowed;
-  box-shadow: none;
 }
 
 button.btn-secondary {
   background: transparent;
-  color: var(--text);
-  border: 2px dashed var(--chalk-line-strong);
+  color: var(--ink);
+  border: 1px solid var(--ink);
   box-shadow: none;
   font-weight: 600;
 }
 
 button.btn-secondary:hover:not(:disabled) {
-  background: rgba(240, 236, 224, 0.08);
-  border-color: var(--text);
-  box-shadow: none;
+  background: var(--ink);
+  color: #fff;
 }
 
 button.btn-pill-selected {
-  background: var(--mint);
-  color: #0e180e;
+  background: var(--cobalt);
+  color: #fff;
   border: none;
-  box-shadow: 0 4px 16px rgba(134, 239, 172, 0.35);
 }
 
 button.btn-pill-selected:hover:not(:disabled) {
-  background: var(--mint-dark);
-  box-shadow: 0 6px 20px rgba(134, 239, 172, 0.5);
+  background: var(--cobalt-dark);
 }
 
-input[type='text'], input[type='number'] {
-  font-family: inherit;
-  font-size: 1.1rem;
-  padding: 12px 16px;
-  border-radius: 12px;
-  border: 2px dashed var(--chalk-line-strong);
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--text);
-  transition: border-color 0.2s, box-shadow 0.2s;
+/* Validation button in-game: a little taller than the default, per spec. */
+button.btn-validate {
+  padding: 20px;
+  font-size: 16px;
   width: 100%;
 }
 
+/* Colored answer buttons (Stroop, Grille, Balance) */
+button.color-btn {
+  height: 74px;
+  min-width: 100px;
+  border-radius: 5px;
+  border: none;
+}
+
+button.color-btn:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+input[type='text'], input[type='number'] {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 1rem;
+  padding: 14px 16px;
+  border-radius: 4px;
+  border: 1px solid var(--ink-border-field);
+  border-bottom: 1px solid var(--ink-border-field);
+  background: var(--surface);
+  color: var(--ink);
+  transition: border-color 0.15s ease, border-bottom-width 0.15s ease;
+  width: 100%;
+}
+
+input[type='number'] {
+  font-family: 'IBM Plex Mono', monospace;
+}
+
 input[type='text']::placeholder, input[type='number']::placeholder {
-  color: var(--text-faint);
+  color: var(--ink-38);
+  font-family: 'IBM Plex Sans', sans-serif;
 }
 
 input[type='text']:focus, input[type='number']:focus {
   outline: none;
-  border-color: var(--violet);
-  border-style: solid;
-  box-shadow: 0 0 0 3px var(--violet-dim);
+  border-bottom: 3px solid var(--cobalt);
 }
 
 .page {
@@ -146,70 +196,69 @@ input[type='text']:focus, input[type='number']:focus {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 24px;
+  padding: 22px;
   text-align: center;
   gap: 16px;
-  /* Faint chalk doodles (brain, globe, numbers, letters) scattered over the
-     chalkboard gradient — decorative only, kept very low-opacity so it never
-     competes with real content. */
-  background:
-    url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27600%27%20height%3D%27600%27%20viewBox%3D%270%200%20600%20600%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27rgba%28240%2C236%2C224%2C0.07%29%27%20stroke-width%3D%272.5%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M80%2090c-15-20%2010-35%2025-25c5-15%2030-15%2032%202c18-8%2030%2012%2018%2024c12%2010%202%2028-12%2026c-2%2014-22%2016-28%204c-16%206-30-10-20-22c-10-4-12-18-2-22%27/%3E%3Cline%20x1%3D%27103%27%20y1%3D%2768%27%20x2%3D%27103%27%20y2%3D%27108%27/%3E%3Ccircle%20cx%3D%27430%27%20cy%3D%27110%27%20r%3D%2734%27/%3E%3Cellipse%20cx%3D%27430%27%20cy%3D%27110%27%20rx%3D%2734%27%20ry%3D%2713%27/%3E%3Cline%20x1%3D%27396%27%20y1%3D%27110%27%20x2%3D%27464%27%20y2%3D%27110%27/%3E%3Cline%20x1%3D%27430%27%20y1%3D%2776%27%20x2%3D%27430%27%20y2%3D%27144%27/%3E%3C/g%3E%3Cg%20fill%3D%27rgba%28240%2C236%2C224%2C0.07%29%27%20font-family%3D%27Georgia%2Cserif%27%3E%3Ctext%20x%3D%27150%27%20y%3D%27330%27%20font-size%3D%2762%27%3E7%3C/text%3E%3Ctext%20x%3D%27250%27%20y%3D%27440%27%20font-size%3D%2746%27%3E42%3C/text%3E%3Ctext%20x%3D%27420%27%20y%3D%27300%27%20font-size%3D%2760%27%3EA%3C/text%3E%3Ctext%20x%3D%27480%27%20y%3D%27470%27%20font-size%3D%2748%27%3EZ%3C/text%3E%3Ctext%20x%3D%2740%27%20y%3D%27500%27%20font-size%3D%2758%27%3E%3F%3C/text%3E%3C/g%3E%3C/svg%3E") repeat,
-    linear-gradient(160deg, #1b2e1b 0%, #162614 100%);
   min-height: 100vh;
 }
 
 .title {
-  color: var(--text);
-  font-size: 2rem;
+  color: var(--ink);
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  font-size: 1.9rem;
   margin: 0;
 }
 
+/* Field validation state: bottom border only, no ring. */
 .flash-correct {
-  border-color: var(--mint) !important;
-  border-style: solid !important;
-  box-shadow: 0 0 0 3px var(--mint-dim) !important;
+  border-bottom: 3px solid var(--green) !important;
 }
 
 .flash-wrong {
-  border-color: var(--coral) !important;
-  border-style: solid !important;
-  box-shadow: 0 0 0 3px var(--coral-dim) !important;
+  border-bottom: 3px solid var(--coral) !important;
 }
 
 .card {
-  background: rgba(255, 255, 255, 0.04);
-  border: var(--chalk-border);
-  border-radius: 20px;
-  padding: 28px;
+  background: var(--surface);
+  border: 1px solid var(--ink-border);
+  border-radius: 6px;
+  padding: 24px;
   width: 100%;
-  max-width: 520px;
-  box-shadow: var(--shadow-md);
-  backdrop-filter: blur(4px);
+  max-width: 480px;
+  box-shadow: none;
 }
 
 /* Test-lab: game components normally render a full-viewport ".page" wrapper.
    Neutralize that here so two of them can sit in separate, clearly bounded
    panels instead of each fighting for the full screen height. */
 .test-lab-screen {
-  border: var(--chalk-border);
-  border-radius: 16px;
-  background: rgba(0, 0, 0, 0.18);
+  border: 1px solid var(--ink-border);
+  border-radius: 6px;
+  background: var(--surface);
   overflow: hidden;
 }
 
 .test-lab-screen-label {
   display: block;
   padding: 10px 16px;
-  background: rgba(255, 255, 255, 0.06);
-  border-bottom: var(--chalk-border);
-  font-weight: 700;
+  background: var(--ink);
+  color: var(--paper-70);
+  border-bottom: 1px solid var(--ink-border);
+  font-weight: 600;
   letter-spacing: 0.02em;
+  font-size: 0.85rem;
 }
 
 .test-lab-screen-body {
   max-height: 70vh;
   overflow: auto;
   padding: 8px;
+  background-color: var(--paper);
+  background-image:
+    repeating-linear-gradient(var(--paper) 0 23px, var(--grid) 23px 24px),
+    repeating-linear-gradient(90deg, var(--paper) 0 23px, var(--grid) 23px 24px);
 }
 
 .test-lab-screen-body .page {
@@ -223,20 +272,20 @@ input[type='text']:focus, input[type='number']:focus {
 .button-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 10px;
   justify-content: center;
 }
 
 .button-grid.grayed button {
-  opacity: 0.25;
+  opacity: 0.3;
   pointer-events: none;
 }
 
 .scoreboard {
   width: 100%;
-  max-width: 480px;
+  max-width: 460px;
   text-align: left;
-  padding: 12px;
+  padding: 6px;
 }
 
 .scoreboard-row {
@@ -244,7 +293,7 @@ input[type='text']:focus, input[type='number']:focus {
   align-items: center;
   gap: 12px;
   padding: 10px 12px;
-  border-bottom: 1px dashed var(--chalk-line);
+  border-bottom: 1px solid var(--ink-border);
 }
 
 .scoreboard-row:last-child {
@@ -253,112 +302,128 @@ input[type='text']:focus, input[type='number']:focus {
 
 .scoreboard-row .score {
   margin-left: auto;
+  font-family: 'Space Grotesk', sans-serif;
   font-weight: 700;
-  color: var(--violet);
+  color: var(--amber);
 }
 
+/* Player pastille — square, not round. The player is a case of the table too. */
 .avatar {
   width: 36px;
   height: 36px;
   min-width: 36px;
-  border-radius: 50%;
+  border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
-  color: #0e180e;
-  font-size: 0.95rem;
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 600;
+  color: #fff;
+  font-size: 0.8rem;
 }
 
 .avatar.disconnected {
-  opacity: 0.3;
+  background: rgba(16, 24, 32, 0.15) !important;
+  color: rgba(16, 24, 32, 0.45);
 }
 
-/* SVG ring timer */
-.timer-ring-wrap {
-  position: relative;
-  width: 88px;
-  height: 88px;
+/* Chrono-éprouvette: a graduated vial, liquid fill from the bottom. */
+.vial-wrap {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 12px;
 }
 
-.timer-ring-wrap svg {
-  transform: rotate(-90deg);
+.vial-wrap.stacked {
+  flex-direction: column;
 }
 
-.timer-ring-bg {
-  fill: none;
-  stroke: var(--chalk-line);
-  stroke-width: 8;
+.vial {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid rgba(16, 24, 32, 0.35);
+  overflow: hidden;
+  flex: none;
 }
 
-.timer-ring-fg {
-  fill: none;
-  stroke: var(--violet);
-  stroke-width: 8;
-  stroke-linecap: round;
-  transition: stroke-dashoffset 0.2s linear, stroke 0.3s;
-}
-
-.timer-ring-fg.urgent {
-  stroke: var(--coral);
-}
-
-.timer-ring-label {
+.vial-fill {
   position: absolute;
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: var(--text);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--cobalt);
+  transition: height 0.3s linear, background-color 0.3s;
 }
 
-/* Podium */
-.podium {
+.vial-fill.urgent {
+  background: var(--coral);
+}
+
+.vial-label {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.03em;
+}
+
+.vial-label.on-ink {
+  color: var(--paper);
+}
+
+/* Podium / results table */
+.podium-top3 {
   display: flex;
-  align-items: flex-end;
+  align-items: stretch;
   justify-content: center;
-  gap: 16px;
+  gap: 12px;
   width: 100%;
-  max-width: 560px;
+  max-width: 900px;
   margin: 8px 0;
 }
 
-.podium-step {
+.podium-card {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--ink-border);
+  border-radius: 6px;
+  padding: 18px 14px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  flex: 1;
 }
 
-.podium-bar {
-  width: 100%;
-  border-radius: 12px 12px 0 0;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  padding-top: 10px;
-  font-weight: 800;
-  font-size: 1.3rem;
-  border: 2px dashed rgba(255,255,255,0.25);
-  border-bottom: none;
+.podium-card.rank-1 {
+  background: var(--amber);
+  border-color: var(--amber);
 }
 
-.podium-step.rank-1 .podium-bar { height: 140px; background: rgba(252, 211, 77, 0.2); color: var(--amber); }
-.podium-step.rank-2 .podium-bar { height: 104px; background: rgba(165, 180, 252, 0.2); color: var(--violet); }
-.podium-step.rank-3 .podium-bar { height: 76px; background: rgba(252, 165, 165, 0.2); color: var(--coral); }
-.podium-step.rank-other .podium-bar { height: 48px; background: rgba(240, 236, 224, 0.08); color: var(--text-muted); }
+.podium-card .rank-tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  color: var(--ink-50);
+}
 
-.podium-name {
+.podium-card.rank-1 .rank-tag {
+  color: rgba(16, 24, 32, 0.6);
+}
+
+.podium-card .podium-name {
+  font-family: 'Space Grotesk', sans-serif;
   font-weight: 700;
-  font-size: 0.95rem;
-  color: var(--text);
+  font-size: 1.1rem;
+  letter-spacing: -0.03em;
 }
 
-.podium-score {
-  color: var(--text-muted);
+.podium-card .podium-score {
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 0.85rem;
+  color: var(--ink-66);
+}
+
+.podium-card.rank-1 .podium-score {
+  color: rgba(16, 24, 32, 0.7);
 }
 
 .rank-list {
@@ -367,152 +432,317 @@ input[type='text']:focus, input[type='number']:focus {
   text-align: left;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .rank-row {
   display: flex;
   align-items: center;
   gap: 12px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px dashed var(--chalk-line-strong);
-  border-radius: 12px;
-  padding: 10px 16px;
+  background: var(--surface);
+  border: 1px solid var(--ink-border);
+  border-radius: 6px;
+  padding: 10px 14px;
+  position: relative;
+  overflow: hidden;
+}
+
+.rank-row.rank-first {
+  background: var(--amber);
+  border-color: var(--amber);
 }
 
 .rank-row .rank-number {
-  font-weight: 800;
-  color: var(--violet);
-  width: 28px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 600;
+  color: var(--ink-50);
+  width: 24px;
+}
+
+.rank-row.rank-first .rank-number {
+  color: rgba(16, 24, 32, 0.6);
+}
+
+.rank-row .name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  position: relative;
+  z-index: 1;
 }
 
 .rank-row .score {
   margin-left: auto;
-  font-weight: 700;
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 600;
+  color: var(--ink);
+  position: relative;
+  z-index: 1;
+}
+
+.rank-row .score-bar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  background: rgba(31, 79, 255, 0.08);
+  transition: width 0.4s ease-out;
+}
+
+.rank-row.rank-first .score-bar {
+  background: rgba(16, 24, 32, 0.08);
+}
+
+/* "It's you" row — inverted onto ink, rank in amber. */
+.rank-row.mine {
+  background: var(--ink);
+  border-color: var(--ink);
+}
+
+.rank-row.mine .rank-number {
   color: var(--amber);
 }
 
+.rank-row.mine .name,
+.rank-row.mine .score {
+  color: var(--paper);
+}
+
+.rank-row.mine .score-bar {
+  background: rgba(245, 246, 242, 0.1);
+}
+
+/* B3 reveal-pilot step list */
+.step-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+}
+
+.step-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 4px;
+  font-size: 0.9rem;
+  color: var(--ink-66);
+}
+
+.step-row .step-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+  flex-shrink: 0;
+  background: var(--ink-border);
+}
+
+.step-row.done .step-dot { background: var(--green); }
+.step-row.current .step-dot { background: var(--cobalt); }
+.step-row.current { color: var(--ink); font-weight: 600; }
+.step-row.done { color: var(--ink-50); }
+
+/* Labels — IBM Plex Mono, capitals, tight box */
 .pill-badge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  border-radius: 999px;
-  padding: 6px 16px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  background: var(--violet-dim);
-  color: var(--violet);
-  border: 1px solid rgba(165, 180, 252, 0.3);
+  border-radius: 3px;
+  padding: 5px 10px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  background: transparent;
+  color: var(--cobalt);
+  border: 1px solid var(--cobalt);
 }
 
-.pill-badge.coral { background: var(--coral-dim); color: var(--coral); border-color: rgba(252,165,165,0.3); }
-.pill-badge.mint { background: var(--mint-dim); color: var(--mint); border-color: rgba(134,239,172,0.3); }
-.pill-badge.amber { background: var(--amber-dim); color: var(--amber); border-color: rgba(252,211,77,0.3); }
+.pill-badge.coral { background: var(--coral); color: #fff; border-color: var(--coral); }
+.pill-badge.mint { background: var(--green); color: #fff; border-color: var(--green); }
+.pill-badge.amber { background: var(--amber); color: var(--ink); border-color: var(--amber); }
+.pill-badge.waiting { background: transparent; color: var(--ink-66); border-color: rgba(16, 24, 32, 0.25); }
+.pill-badge.on-ink { border-color: var(--paper-40); color: var(--paper-70); }
 
-@keyframes pulse-dot {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(0.85); }
+@keyframes blip {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
 }
 
 .pulse-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--violet);
-  animation: pulse-dot 1.2s ease-in-out infinite;
-  box-shadow: 0 0 8px rgba(165, 180, 252, 0.6);
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+  background: var(--cobalt);
+  animation: blip 1.4s ease-in-out infinite;
 }
 
 @keyframes pop-in {
-  0% { transform: scale(0.6); opacity: 0; }
-  70% { transform: scale(1.08); opacity: 1; }
-  100% { transform: scale(1); }
+  0% { transform: scale(0.94); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
 }
 
 .pop-in {
-  animation: pop-in 0.4s ease-out;
+  animation: pop-in 0.3s ease-out;
 }
 
+@keyframes score-scale-in {
+  0% { transform: scale(0.94); }
+  100% { transform: scale(1); }
+}
+
+/* Party code, big display (host dashboard) */
 .pin-display {
-  font-family: 'Caveat', cursive;
+  font-family: 'Space Grotesk', sans-serif;
   font-weight: 700;
-  font-size: 3rem;
-  letter-spacing: 12px;
+  font-size: 2.4rem;
+  letter-spacing: 0.05em;
   color: var(--amber);
-  background: var(--amber-dim);
-  border: 2px dashed rgba(252, 211, 77, 0.4);
-  border-radius: 16px;
-  padding: 12px 28px;
-  text-shadow: 0 0 16px rgba(252, 211, 77, 0.4);
+  background: var(--ink);
+  border-radius: 6px;
+  padding: 14px 24px;
 }
 
-/* Chalk underline decoration */
-.chalk-underline {
-  position: relative;
-  display: inline-block;
+/* Six-box code entry */
+.code-digits {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 5px;
+  width: 100%;
+  max-width: 320px;
 }
 
-.chalk-underline::after {
-  content: '';
-  position: absolute;
-  bottom: -4px;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: var(--coral);
-  border-radius: 2px;
-  opacity: 0.7;
+.code-digit {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 16px;
+  font-weight: 600;
+  background: var(--surface);
+  border: 1px solid var(--ink-border-field);
+  color: var(--ink-38);
 }
 
-/* Section label Caveat style */
+.code-digit.filled {
+  border-color: var(--cobalt);
+  color: var(--cobalt);
+}
+
+.code-digit.on-ink {
+  background: transparent;
+}
+
+/* Section label: small mono caption used above a block */
 .section-label {
-  font-family: 'Caveat', cursive;
-  font-size: 1.2rem;
-  color: var(--text-muted);
-  letter-spacing: 1px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-50);
 }
 
-/* Projection screen: a projector/TV has a lot more real estate than a phone
-   in the host's hand, so scale everything up to fill it instead of leaving
-   the content marooned in a small centered column. No scrolling — sizes are
-   tuned to fit a standard 16:9 screen at a glance. */
+.section-label.on-ink {
+  color: var(--paper-55);
+}
+
+/* Projection screen: ink identity column (left) + graph-paper stage (right).
+   Fixed 1920x1080 target, no responsive — meant for a single dedicated
+   display, not a browser window someone resizes. */
 .projection-screen {
   display: flex;
-  flex-direction: column;
-  flex: 1;
   min-height: 100vh;
+  flex: 1;
+  background: var(--paper);
+  color: var(--ink);
 }
 
-.projection-screen .page {
-  padding: 48px;
-  gap: 28px;
+.projection-column {
+  width: 320px;
+  min-width: 320px;
+  background: var(--ink);
+  color: var(--paper-70);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 34px 26px;
 }
 
-.projection-screen .card {
-  padding: 44px;
+.projection-column.wide {
+  width: 360px;
+  min-width: 360px;
 }
 
-.projection-screen .title {
-  font-size: clamp(2.4rem, 4.2vw, 3.8rem);
+.projection-stage {
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 46px;
+  background-color: var(--paper);
+  background-image:
+    repeating-linear-gradient(var(--paper) 0 31px, var(--grid-projection) 31px 32px),
+    repeating-linear-gradient(90deg, var(--paper) 0 31px, var(--grid-projection) 31px 32px);
+  gap: 26px;
 }
 
-.projection-screen .pill-badge {
-  font-size: 1.15rem;
-  padding: 10px 22px;
+.projection-wordmark {
+  position: absolute;
+  bottom: 19px;
+  right: 22px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 19px;
+  color: var(--ink);
 }
 
-.projection-screen .section-label {
-  font-size: 1.6rem;
+.projection-wordmark .dot {
+  color: var(--coral);
 }
 
-.projection-screen .podium {
+.projection-stage .title {
+  font-size: clamp(2.4rem, 4vw, 4.4rem);
+}
+
+.projection-stage .pill-badge {
+  font-size: 0.95rem;
+  padding: 8px 16px;
+}
+
+.projection-stage .section-label {
+  font-size: 1rem;
+}
+
+.projection-stage .rank-row {
+  font-size: 1.25rem;
+  padding: 16px 24px;
+}
+
+.projection-stage .rank-list {
+  max-width: min(90vw, 900px);
+}
+
+.projection-stage .podium-top3 {
   max-width: 900px;
 }
 
-.projection-screen .podium-name {
+.projection-stage .podium-name {
   font-size: 1.3rem;
 }
 
-.projection-screen .podium-score {
-  font-size: 1.1rem;
+.projection-stage .podium-score {
+  font-size: 1.05rem;
+}
+
+.projection-stage .card {
+  border: none;
+  background: transparent;
+  padding: 0;
+  max-width: 96vw;
 }

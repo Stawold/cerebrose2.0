@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 
-const RADIUS = 36;
-const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
-
-// Server-driven countdown: duration (s) + serverTime (ms when phase started) keep all clients in sync.
-export default function Timer({ duration, serverTime }) {
+// Chrono-éprouvette: a graduated vial that empties as time runs out.
+// Server-driven countdown: duration (s) + serverTime (ms when phase
+// started) keep all clients in sync.
+// `stacked` puts the number below the vial (mobile) instead of beside it
+// (host dashboard / projection column).
+export default function Timer({ duration, serverTime, width = 30, height = 130, stacked = true, onInk = false }) {
   const [remaining, setRemaining] = useState(duration);
 
   useEffect(() => {
@@ -23,23 +24,15 @@ export default function Timer({ duration, serverTime }) {
 
   if (!duration) return null;
   const ratio = Math.max(0, Math.min(1, remaining / duration));
-  const offset = CIRCUMFERENCE * (1 - ratio);
   const urgent = remaining <= duration * 0.2;
+  const label = remaining >= 60 ? `${Math.floor(remaining / 60)}:${String(remaining % 60).padStart(2, '0')}` : String(remaining);
 
   return (
-    <div className="timer-ring-wrap">
-      <svg width="88" height="88" viewBox="0 0 88 88">
-        <circle className="timer-ring-bg" cx="44" cy="44" r={RADIUS} />
-        <circle
-          className={`timer-ring-fg${urgent ? ' urgent' : ''}`}
-          cx="44"
-          cy="44"
-          r={RADIUS}
-          strokeDasharray={CIRCUMFERENCE}
-          strokeDashoffset={offset}
-        />
-      </svg>
-      <span className="timer-ring-label">{remaining}</span>
+    <div className={`vial-wrap${stacked ? ' stacked' : ''}`}>
+      <div className="vial" style={{ width, height, borderRadius: width / 2 }}>
+        <div className={`vial-fill${urgent ? ' urgent' : ''}`} style={{ height: `${ratio * 100}%` }} />
+      </div>
+      <span className={`vial-label${onInk ? ' on-ink' : ''}`} style={{ fontSize: Math.max(18, height * 0.16) }}>{label}</span>
     </div>
   );
 }

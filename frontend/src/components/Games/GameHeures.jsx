@@ -56,7 +56,7 @@ export default function GameHeures({ game }) {
         onKeyDown={(e) => e.key === 'Enter' && submit()}
       />
       <br />
-      <button onClick={submit} disabled={sent}>Valider</button>
+      <button onClick={submit} disabled={sent} className="btn-validate">Valider</button>
     </div>
   );
 }

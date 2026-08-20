@@ -14,6 +14,8 @@ import GameCouleurs from '../components/Games/GameCouleurs.jsx';
 import GameGrille from '../components/Games/GameGrille.jsx';
 import GameAnagramme from '../components/Games/GameAnagramme.jsx';
 import Podium from '../components/Common/Podium.jsx';
+import GameIcon from '../components/Common/GameIcon.jsx';
+import PlayerGameHeader from '../components/Common/PlayerGameHeader.jsx';
 
 const PLAYER_COMPONENTS = {
   calculs: GameCalculs,
@@ -26,6 +28,13 @@ const PLAYER_COMPONENTS = {
   couleurs: GameCouleurs,
   grille: GameGrille
 };
+
+const REVEAL_STEPS = [
+  { key: 'results', label: 'Résultats de manche' },
+  { key: 'hallOfFame', label: 'Hall of fame du jeu' },
+  { key: 'leaderboard', label: 'Classement général' },
+  { key: 'next', label: 'Manche suivante' }
+];
 
 export default function GamePage() {
   const { state, dispatch } = useGame();
@@ -53,18 +62,18 @@ export default function GamePage() {
       : null;
 
     return (
-      <div className="page" style={{ gap: 20 }}>
+      <div className="page" style={{ gap: 20, maxWidth: 560, margin: '0 auto' }}>
         <div>
-          <h1 className="logo" style={{ fontSize: '3rem' }}>
+          <span className="section-label">Rapport consolidé</span>
+          <h1 className="title" style={{ fontSize: '2.2rem', marginTop: 8 }}>
             {round ? `Résultats : ${round.game}` : 'Podium final'}
           </h1>
-          {!round && <p className="section-label">Bravo à tous les participants !</p>}
         </div>
 
         <Podium leaderboard={round ? roundLeaderboard : state.gameOver.leaderboard} />
 
         {roundHistory.length > 0 && (
-          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center' }}>
+          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', justifyContent: 'center' }}>
             <button
               className={reviewRound === null ? '' : 'btn-secondary'}
               onClick={() => setReviewRound(null)}
@@ -76,7 +85,7 @@ export default function GamePage() {
                 key={i}
                 className={reviewRound === i ? '' : 'btn-secondary'}
                 onClick={() => setReviewRound(i)}
-                style={{ fontSize: '0.85rem' }}
+                style={{ fontSize: '0.8rem' }}
               >
                 {i + 1}. {r.game}
               </button>
@@ -84,7 +93,7 @@ export default function GamePage() {
           </div>
         )}
 
-        <button onClick={backToMenu} style={{ marginTop: 8 }}>← Retour au menu</button>
+        <button className="btn-secondary" onClick={backToMenu} style={{ marginTop: 8 }}>← Retour au menu</button>
       </div>
     );
   }
@@ -94,28 +103,35 @@ export default function GamePage() {
     const myId = state.ui.playerId;
 
     if (isHost) {
+      const stepIndex = { pending: -1, results: 0, hallOfFame: 1, leaderboard: 2 }[stage] ?? -1;
+      const actions = {
+        pending: ['host:revealRoundResults', 'Afficher les résultats'],
+        results: ['host:revealHallOfFame', 'Afficher le Hall of Fame'],
+        hallOfFame: ['host:revealLeaderboard', 'Afficher le classement général'],
+        leaderboard: ['host:nextRound', 'Manche suivante']
+      };
+      const [event, label] = actions[stage] || [];
+
       return (
-        <div className="page" style={{ gap: 20 }}>
-          <h1 className="title" style={{ color: 'var(--mint)' }}>Manche terminée : {game}</h1>
+        <div className="page" style={{ gap: 20, maxWidth: 420, margin: '0 auto' }}>
+          <GameIcon gameId={game} size={64} showName />
           <p className="section-label">Regardez l'écran de projection avec vos joueurs</p>
-          {stage === 'pending' && (
-            <button onClick={() => hostAction('host:revealRoundResults', { code })}>
-              Afficher les résultats →
-            </button>
-          )}
-          {stage === 'results' && (
-            <button onClick={() => hostAction('host:revealHallOfFame', { code })}>
-              Afficher le Hall of Fame →
-            </button>
-          )}
-          {stage === 'hallOfFame' && (
-            <button onClick={() => hostAction('host:revealLeaderboard', { code })}>
-              Afficher le classement général →
-            </button>
-          )}
-          {stage === 'leaderboard' && (
-            <button onClick={() => hostAction('host:nextRound', { code })}>
-              Manche suivante →
+
+          <div className="step-list">
+            {REVEAL_STEPS.map((step, i) => {
+              const status = i <= stepIndex ? 'done' : i === stepIndex + 1 ? 'current' : '';
+              return (
+                <div key={step.key} className={`step-row ${status}`}>
+                  <span className="step-dot" />
+                  <span>{step.label}</span>
+                </div>
+              );
+            })}
+          </div>
+
+          {event && (
+            <button onClick={() => hostAction(event, { code })} className="btn-validate">
+              {label} →
             </button>
           )}
         </div>
@@ -126,7 +142,9 @@ export default function GamePage() {
       return (
         <div className="page">
           <span className="pulse-dot" />
-          <p style={{ color: 'var(--text-muted)', marginTop: 12 }}>Manche terminée, en attente de l'animateur...</p>
+          <p className="mono" style={{ color: 'var(--ink-66)', marginTop: 12, fontSize: '0.75rem', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+            Manche terminée, en attente de l'animateur
+          </p>
         </div>
       );
     }
@@ -136,18 +154,20 @@ export default function GamePage() {
     if (stage === 'results' || stage === 'hallOfFame') {
       const mine = (ranking || []).find((r) => r.id === myId);
       return (
-        <div className="page" style={{ gap: 16 }}>
-          <h1 className="title" style={{ color: 'var(--mint)' }}>Votre score</h1>
+        <div className="page" style={{ gap: 14 }}>
+          <span className="section-label">Relevé personnel</span>
           {mine ? (
             <>
-              <p style={{ fontSize: '3rem', fontWeight: 800, margin: 0 }}>{mine.rawScore} pts</p>
-              <p className="section-label">
+              <p style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, letterSpacing: '-0.04em', fontSize: '5rem', margin: 0, lineHeight: 1 }}>
+                {mine.rawScore}
+              </p>
+              <p style={{ color: 'var(--ink-66)', margin: 0, fontSize: '0.95rem' }}>
                 Vous êtes {mine.rank}{mine.rank === 1 ? 'er' : 'e'} sur {ranking.length}
               </p>
               <span className="pill-badge amber">+{mine.points} points de classement</span>
             </>
           ) : (
-            <p style={{ color: 'var(--text-muted)' }}>Score indisponible</p>
+            <p style={{ color: 'var(--ink-66)' }}>Score indisponible</p>
           )}
         </div>
       );
@@ -156,17 +176,29 @@ export default function GamePage() {
     if (stage === 'leaderboard') {
       const rank = (leaderboard || []).findIndex((p) => p.id === myId) + 1;
       const mine = (leaderboard || []).find((p) => p.id === myId);
+      const maxTotal = Math.max(1, ...((leaderboard || []).map((p) => p.total)));
       return (
-        <div className="page" style={{ gap: 16 }}>
-          <h1 className="title" style={{ color: 'var(--violet)' }}>Classement général</h1>
+        <div className="page" style={{ gap: 14, maxWidth: 440, margin: '0 auto' }}>
+          <span className="section-label">Classement général</span>
           {mine ? (
-            <>
-              <p style={{ fontSize: '3rem', fontWeight: 800, margin: 0 }}>{mine.total} pts</p>
-              <p className="section-label">Vous êtes {rank}{rank === 1 ? 'er' : 'e'} sur {leaderboard.length}</p>
-            </>
+            <div style={{ width: '100%', background: 'var(--amber)', borderRadius: 6, padding: '18px 22px', display: 'flex', flexDirection: 'column', gap: 4 }}>
+              <span className="mono" style={{ fontSize: '0.68rem', letterSpacing: '0.14em', color: 'rgba(16,24,32,.6)' }}>VOTRE POSITION</span>
+              <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: '3.2rem', letterSpacing: '-0.04em', lineHeight: 1 }}>{rank}</span>
+              <span className="mono" style={{ fontSize: '0.8rem', color: 'rgba(16,24,32,.7)' }}>{mine.total} pts</span>
+            </div>
           ) : (
-            <p style={{ color: 'var(--text-muted)' }}>Classement indisponible</p>
+            <p style={{ color: 'var(--ink-66)' }}>Classement indisponible</p>
           )}
+          <div className="rank-list">
+            {(leaderboard || []).slice(0, 5).map((p, i) => (
+              <div key={p.id} className={`rank-row${p.id === myId ? ' mine' : ''}`}>
+                <span className="rank-number">{i + 1}</span>
+                <span className="name" style={{ flex: 1, textAlign: 'left' }}>{p.pseudo}</span>
+                <span className="score">{p.total} pts</span>
+                <div className="score-bar" style={{ width: `${Math.max(4, (p.total / maxTotal) * 100)}%` }} />
+              </div>
+            ))}
+          </div>
         </div>
       );
     }
@@ -179,13 +211,20 @@ export default function GamePage() {
   if (state.game.type && state.game.phase) {
     if (isHost) return <HostDisplay game={state.game} players={state.party.players} />;
     const PlayerComponent = PLAYER_COMPONENTS[state.game.type];
-    if (PlayerComponent) return <PlayerComponent game={state.game} />;
+    if (PlayerComponent) {
+      return (
+        <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: '100vh' }}>
+          <PlayerGameHeader gameId={state.game.type} />
+          <PlayerComponent game={state.game} />
+        </div>
+      );
+    }
   }
 
   return (
     <div className="page">
       <span className="pulse-dot" />
-      <p style={{ color: 'var(--text-muted)', marginTop: 12 }}>En attente...</p>
+      <p className="mono" style={{ color: 'var(--ink-66)', marginTop: 12, fontSize: '0.75rem', letterSpacing: '0.06em', textTransform: 'uppercase' }}>En attente...</p>
     </div>
   );
 }
