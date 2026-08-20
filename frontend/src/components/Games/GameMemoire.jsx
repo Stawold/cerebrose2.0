@@ -4,6 +4,8 @@ import { useGame } from '../../context/GameContext.jsx';
 import { feedbackClass } from '../Common/Feedback.jsx';
 import Timer from '../Common/Timer.jsx';
 import ProgressBadge from '../Common/ProgressBadge.jsx';
+import MyScore from '../Common/MyScore.jsx';
+import AnswerFeedback from '../Common/AnswerFeedback.jsx';
 import { useAutoSubmitOnExpiry } from '../../services/useAutoSubmitOnExpiry';
 
 export default function GameMemoire({ game }) {
@@ -30,7 +32,10 @@ export default function GameMemoire({ game }) {
     return (
       <div className="page">
         <Timer duration={duration} serverTime={serverTime} />
-        <ProgressBadge progress={progress} />
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center' }}>
+          <ProgressBadge progress={progress} />
+          <MyScore />
+        </div>
         <h1 className="title">Regardez l'écran !</h1>
         <p>Mémorisez la séquence de {payload?.length} chiffres affichée sur l'écran de projection.</p>
       </div>
@@ -40,7 +45,10 @@ export default function GameMemoire({ game }) {
   return (
     <div className="page">
       <Timer duration={duration} serverTime={serverTime} />
-      <ProgressBadge progress={progress} />
+      <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center' }}>
+        <ProgressBadge progress={progress} />
+        <MyScore />
+      </div>
       <h1 className="title">À vous !</h1>
       <input
         type="text"
@@ -58,6 +66,7 @@ export default function GameMemoire({ game }) {
       />
       <br />
       <button onClick={submit} disabled={sent} className="btn-validate">Valider</button>
+      <AnswerFeedback feedback={feedback} />
     </div>
   );
 }

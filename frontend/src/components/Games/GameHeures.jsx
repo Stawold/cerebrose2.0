@@ -4,6 +4,8 @@ import { useGame } from '../../context/GameContext.jsx';
 import { feedbackClass } from '../Common/Feedback.jsx';
 import Timer from '../Common/Timer.jsx';
 import ProgressBadge from '../Common/ProgressBadge.jsx';
+import MyScore from '../Common/MyScore.jsx';
+import AnswerFeedback from '../Common/AnswerFeedback.jsx';
 import { useAutoSubmitOnExpiry } from '../../services/useAutoSubmitOnExpiry';
 
 export default function GameHeures({ game }) {
@@ -24,7 +26,10 @@ export default function GameHeures({ game }) {
     return (
       <div className="page">
         <Timer duration={duration} serverTime={serverTime} />
-        <ProgressBadge progress={progress} />
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center' }}>
+          <ProgressBadge progress={progress} />
+          <MyScore />
+        </div>
         <span className="pulse-dot" />
         <h1 className="title">Observez les deux horloges à l'écran...</h1>
       </div>
@@ -40,7 +45,10 @@ export default function GameHeures({ game }) {
   return (
     <div className="page">
       <Timer duration={duration} serverTime={serverTime} />
-      <ProgressBadge progress={progress} />
+      <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center' }}>
+        <ProgressBadge progress={progress} />
+        <MyScore />
+      </div>
       <h1 className="title">Quelle est la différence, en minutes ?</h1>
       <input
         type="number"
@@ -57,6 +65,7 @@ export default function GameHeures({ game }) {
       />
       <br />
       <button onClick={submit} disabled={sent} className="btn-validate">Valider</button>
+      <AnswerFeedback feedback={feedback} />
     </div>
   );
 }

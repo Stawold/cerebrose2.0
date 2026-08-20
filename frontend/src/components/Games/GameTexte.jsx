@@ -3,6 +3,8 @@ import { getSocket } from '../../services/socketService';
 import { useGame } from '../../context/GameContext.jsx';
 import Timer from '../Common/Timer.jsx';
 import ProgressBadge from '../Common/ProgressBadge.jsx';
+import MyScore from '../Common/MyScore.jsx';
+import AnswerFeedback from '../Common/AnswerFeedback.jsx';
 import { useAutoSubmitOnExpiry } from '../../services/useAutoSubmitOnExpiry';
 
 const MAX_ATTEMPTS = 10;
@@ -17,6 +19,7 @@ export default function GameTexte({ game }) {
   const [attemptsLeft, setAttemptsLeft] = useState(MAX_ATTEMPTS);
   const [foundCount, setFoundCount] = useState(0);
   const [flash, setFlash] = useState('');
+  const [flashResult, setFlashResult] = useState(null);
   const lastWord = useRef('');
 
   const totalCorrections = payload?.totalCorrections || 10;
@@ -38,7 +41,8 @@ export default function GameTexte({ game }) {
     if (feedback.attemptsLeft !== undefined) setAttemptsLeft(feedback.attemptsLeft);
     if (feedback.correct && feedback.foundCount !== undefined) setFoundCount(feedback.foundCount);
     setFlash(feedback.correct ? 'flash-correct' : 'flash-wrong');
-    const t = setTimeout(() => setFlash(''), 500);
+    setFlashResult(feedback);
+    const t = setTimeout(() => { setFlash(''); setFlashResult(null); }, 900);
     lastWord.current = '';
     return () => clearTimeout(t);
   }, [feedback]);
@@ -58,11 +62,13 @@ export default function GameTexte({ game }) {
 
       <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center' }}>
         <ProgressBadge progress={progress} />
+        <MyScore />
         <span className="pill-badge mint">{foundCount} / {totalCorrections} trouvées</span>
         <span className={`pill-badge ${attemptsLeft <= 3 ? 'coral' : 'amber'}`}>
           {attemptsLeft} tentative{attemptsLeft !== 1 ? 's' : ''} restante{attemptsLeft !== 1 ? 's' : ''}
         </span>
       </div>
+      <AnswerFeedback feedback={flashResult} wrongLabel="Faux, réessayez" />
 
       <div className="card" style={{ maxWidth: 640, width: '100%', display: 'flex', gap: 20, flexWrap: 'wrap', alignItems: 'flex-start' }}>
         <div style={{ flex: '1 1 260px', minWidth: 220 }}>

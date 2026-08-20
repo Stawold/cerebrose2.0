@@ -3,6 +3,8 @@ import { getSocket } from '../../services/socketService';
 import { useGame } from '../../context/GameContext.jsx';
 import Timer from '../Common/Timer.jsx';
 import ProgressBadge from '../Common/ProgressBadge.jsx';
+import MyScore from '../Common/MyScore.jsx';
+import AnswerFeedback from '../Common/AnswerFeedback.jsx';
 import { useAutoSubmitOnExpiry } from '../../services/useAutoSubmitOnExpiry';
 
 export default function GameAnagramme({ game }) {
@@ -11,10 +13,12 @@ export default function GameAnagramme({ game }) {
   const { phase, payload, duration, serverTime, progress } = game;
   const [value, setValue] = useState('');
   const [flash, setFlash] = useState('');
+  const [wrongPill, setWrongPill] = useState(false);
 
   useEffect(() => {
     setValue('');
     setFlash('');
+    setWrongPill(false);
   }, [payload?.scrambled]);
 
   // Wrong guess: brief red flash, then clear the field so the player retypes.
@@ -23,7 +27,8 @@ export default function GameAnagramme({ game }) {
     if (!feedback) return undefined;
     if (feedback.correct === false) setValue('');
     setFlash(feedback.correct ? 'flash-correct' : 'flash-wrong');
-    const t = setTimeout(() => setFlash(''), 400);
+    setWrongPill(feedback.correct === false);
+    const t = setTimeout(() => { setFlash(''); setWrongPill(false); }, 900);
     return () => clearTimeout(t);
   }, [feedback]);
 
@@ -37,6 +42,7 @@ export default function GameAnagramme({ game }) {
   if (phase === 'result') {
     return (
       <div className="page">
+        <MyScore />
         <h1 className="title">
           {payload.winnerPseudo ? `${payload.winnerPseudo} a trouvé !` : 'Personne n\'a trouvé...'}
         </h1>
@@ -48,7 +54,10 @@ export default function GameAnagramme({ game }) {
   return (
     <div className="page">
       <Timer duration={duration} serverTime={serverTime} />
-      <ProgressBadge progress={progress} />
+      <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center' }}>
+        <ProgressBadge progress={progress} />
+        <MyScore />
+      </div>
       <div style={{ display: 'flex', gap: 6, justifyContent: 'center', flexWrap: 'wrap' }}>
         {String(payload?.scrambled || '').split('').map((letter, i) => (
           <div
@@ -87,6 +96,7 @@ export default function GameAnagramme({ game }) {
       />
       <br />
       <button onClick={submit} className="btn-validate">Envoyer</button>
+      {wrongPill && <AnswerFeedback feedback={{ correct: false }} wrongLabel="Refusé — réessayez" />}
     </div>
   );
 }

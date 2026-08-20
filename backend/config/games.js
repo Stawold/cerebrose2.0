@@ -130,9 +130,10 @@ function resolveGameConfig(gameId, difficulty) {
   return { ...base, difficulty: diff, ...(difficulties && difficulties[diff]) };
 }
 
-// Rank 1 → 100, rank 2 → 80, ... rank 14 → 5. Rank 15 and beyond → RANKING_POINTS_DEFAULT.
-const RANKING_POINTS = [100, 80, 70, 60, 50, 45, 40, 35, 30, 25, 20, 15, 10, 5];
-const RANKING_POINTS_DEFAULT = 1;
+// Rank 1 → 100, rank 2 → 80, rank 3 → 70, rank 4 → 50, then -5 per rank
+// down to a floor of 5 (rank 13 onward, and RANKING_POINTS_DEFAULT beyond).
+const RANKING_POINTS = [100, 80, 70, 50, 45, 40, 35, 30, 25, 20, 15, 10, 5];
+const RANKING_POINTS_DEFAULT = 5;
 
 function pointsForRank(rank) {
   if (rank >= 1 && rank <= RANKING_POINTS.length) return RANKING_POINTS[rank - 1];

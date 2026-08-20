@@ -1,12 +1,17 @@
 import { useEffect, useState } from 'react';
 import { getSocket } from '../../services/socketService';
+import { useGame } from '../../context/GameContext.jsx';
 import { colorHex } from '../../services/gameLogic';
 import Timer from '../Common/Timer.jsx';
 import ProgressBadge from '../Common/ProgressBadge.jsx';
+import MyScore from '../Common/MyScore.jsx';
+import AnswerFeedback from '../Common/AnswerFeedback.jsx';
 
 const CHOICES = ['rouge', 'bleu', 'vert', 'jaune', 'violet', 'orange', 'blanc'];
 
 export default function GameCouleurs({ game }) {
+  const { state } = useGame();
+  const feedback = state.feedback;
   const { phase, payload, duration, serverTime, progress } = game;
   const [sent, setSent] = useState(false);
 
@@ -14,7 +19,14 @@ export default function GameCouleurs({ game }) {
     setSent(false);
   }, [payload?.item?.id]);
 
-  if (phase === 'grayout') return <div className="page" />;
+  if (phase === 'grayout') {
+    return (
+      <div className="page">
+        <MyScore />
+        <AnswerFeedback feedback={feedback} />
+      </div>
+    );
+  }
 
   function submit(color) {
     if (sent) return;
@@ -25,7 +37,10 @@ export default function GameCouleurs({ game }) {
   return (
     <div className="page">
       <Timer duration={duration} serverTime={serverTime} />
-      <ProgressBadge progress={progress} />
+      <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center' }}>
+        <ProgressBadge progress={progress} />
+        <MyScore />
+      </div>
       <h1 className="title">Dans quelle couleur le mot est-il écrit ?</h1>
       <div className="button-grid">
         {CHOICES.map((c) => (

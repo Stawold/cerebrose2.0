@@ -4,6 +4,8 @@ import { useGame } from '../../context/GameContext.jsx';
 import { colorHex } from '../../services/gameLogic';
 import Timer from '../Common/Timer.jsx';
 import ProgressBadge from '../Common/ProgressBadge.jsx';
+import MyScore from '../Common/MyScore.jsx';
+import AnswerFeedback from '../Common/AnswerFeedback.jsx';
 
 export default function GameBalance({ game }) {
   const { state } = useGame();
@@ -36,7 +38,10 @@ export default function GameBalance({ game }) {
     return (
       <div className="page">
         <Timer duration={duration} serverTime={serverTime} />
-        <ProgressBadge progress={progress} />
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center' }}>
+          <ProgressBadge progress={progress} />
+          <MyScore />
+        </div>
         <span className="pulse-dot" />
         <h1 className="title">Observez les balances à l'écran...</h1>
         <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
@@ -61,7 +66,10 @@ export default function GameBalance({ game }) {
   return (
     <div className="page" style={{ gap: 20 }}>
       <Timer duration={duration} serverTime={serverTime} />
-      <ProgressBadge progress={progress} />
+      <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center' }}>
+        <ProgressBadge progress={progress} />
+        <MyScore />
+      </div>
       <h1 className="title">Quelle boule est la plus lourde ?</h1>
       {locked && (
         <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
@@ -84,11 +92,7 @@ export default function GameBalance({ game }) {
         ))}
       </div>
 
-      {feedback && (
-        <span className={`pill-badge ${feedback.correct ? 'mint' : 'coral'}`}>
-          {feedback.correct ? 'Bonne réponse !' : 'Mauvaise réponse'}
-        </span>
-      )}
+      <AnswerFeedback feedback={feedback} correctLabel="Bonne réponse !" wrongLabel="Mauvaise réponse" />
     </div>
   );
 }
