@@ -245,6 +245,20 @@ class GenericRunner extends BaseRunner {
     return String(item[this.config.answerField]);
   }
 
+  // Some games speed up mid-round instead of using one fixed answer window
+  // (e.g. PFC: 6s for the first 10 prompts, 4s for the next 10). Falls back
+  // to the flat perItemDuration when no stages are configured.
+  currentPerItemDuration() {
+    const stages = this.config.perItemDurationStages;
+    if (!stages) return this.config.perItemDuration;
+    let idx = this.itemIndex;
+    for (const stage of stages) {
+      if (idx < stage.count) return stage.duration;
+      idx -= stage.count;
+    }
+    return this.config.perItemDuration;
+  }
+
   runItem() {
     const item = this.items[this.itemIndex];
     this.answers = {}; // playerId -> { value, time }
@@ -260,12 +274,13 @@ class GenericRunner extends BaseRunner {
 
   openAnswering(item) {
     const progress = { index: this.itemIndex, total: this.items.length };
+    const duration = this.currentPerItemDuration();
     this.emitPhase('answer', {
       item,
       inputType: this.config.inputType,
       options: this.config.options || null
-    }, this.config.perItemDuration, progress);
-    this.schedule(() => this.resolveItem(item), this.config.perItemDuration * 1000);
+    }, duration, progress);
+    this.schedule(() => this.resolveItem(item), duration * 1000);
   }
 
   handleAnswer(playerId, { value }) {
@@ -320,7 +335,8 @@ class GenericRunner extends BaseRunner {
     };
 
     if (this.config.grayoutDuration) {
-      this.emitPhase('grayout', {}, this.config.grayoutDuration);
+      const grayoutPayload = this.config.revealAnswerOnGrayout ? { answer: item[this.config.answerField] } : {};
+      this.emitPhase('grayout', grayoutPayload, this.config.grayoutDuration);
       this.schedule(afterGrayout, this.config.grayoutDuration * 1000);
     } else {
       afterGrayout();
@@ -406,12 +422,17 @@ class BalanceRunner extends BaseRunner {
 
   openAnswer(puzzle) {
     const progress = { index: this.puzzleIndex, total: this.puzzles.length };
-    this.emitPhase('answer', { puzzle }, this.config.perItemDuration, progress);
+    this.answerPhaseStart = Date.now();
+    this.emitPhase('answer', { puzzle, answerDelay: this.config.answerDelay || 0 }, this.config.perItemDuration, progress);
     this.schedule(() => this.resolvePuzzle(puzzle), this.config.perItemDuration * 1000);
   }
 
   handleAnswer(playerId, { value }) {
     if (this.answers[playerId]) return;
+    // Belt-and-suspenders: the client already disables the buttons for
+    // answerDelay seconds, but a direct socket emit could skip that — drop
+    // (not just ignore) early answers so a genuine later click still counts.
+    if (this.config.answerDelay && Date.now() - this.answerPhaseStart < this.config.answerDelay * 1000) return;
     this.answers[playerId] = { value, time: Date.now() };
   }
 

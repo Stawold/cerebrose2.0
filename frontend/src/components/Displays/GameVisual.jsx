@@ -67,6 +67,22 @@ function renderByType(type, phase, payload, big) {
       if (phase === 'observe' || phase === 'answer') {
         return <GenericVisual type={type} item={payload.item} big={big} />;
       }
+      if (phase === 'grayout' && type === 'grille' && payload.answer) {
+        return (
+          <div>
+            <p className="section-label" style={{ marginBottom: 10 }}>Bonne réponse</p>
+            <div style={{
+              width: big ? 100 : 64,
+              height: big ? 100 : 64,
+              borderRadius: 14,
+              background: colorHex(payload.answer),
+              margin: '0 auto',
+              border: '2px dashed rgba(255,255,255,0.3)'
+            }} />
+            <p style={{ marginTop: 10, fontSize: big ? '1.3rem' : '1rem', textTransform: 'capitalize' }}>{payload.answer}</p>
+          </div>
+        );
+      }
       return null;
   }
 }

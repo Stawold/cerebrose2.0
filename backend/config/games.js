@@ -8,7 +8,7 @@ const GAMES = {
     label: 'Calculs mentaux',
     engine: 'calculs',
     difficulties: {
-      normal: { dataFile: 'calculs.json', totalDuration: 240, wrongPenalty: false },
+      normal: { dataFile: 'calculs.json', totalDuration: 200, wrongPenalty: false },
       difficile: { dataFile: 'calculs_difficile.json', totalDuration: 180, wrongPenalty: true },
       hardcore: { dataFile: 'calculs_hardcore.json', totalDuration: 120, wrongPenalty: true }
     }
@@ -28,7 +28,7 @@ const GAMES = {
     label: 'Mémoire des chiffres',
     engine: 'memoire',
     difficulties: {
-      normal: { dataFile: 'memoire.json', displayDuration: 20, inputDuration: 10, wrongPenalty: false },
+      normal: { dataFile: 'memoire.json', displayDuration: 12, inputDuration: 10, wrongPenalty: false },
       difficile: { dataFile: 'memoire_difficile.json', displayDuration: 20, inputDuration: 10, wrongPenalty: false },
       hardcore: { dataFile: 'memoire_hardcore.json', displayDuration: 20, inputDuration: 10, wrongPenalty: true }
     }
@@ -38,7 +38,7 @@ const GAMES = {
     label: 'Balance',
     engine: 'balance',
     difficulties: {
-      normal: { dataFile: 'balance.json', observeDuration: 20, perItemDuration: 15, grayoutDuration: 3, pointsMode: 'speed' },
+      normal: { dataFile: 'balance.json', observeDuration: 35, perItemDuration: 15, answerDelay: 5, grayoutDuration: 3, pointsMode: 'speed' },
       difficile: { dataFile: 'balance_difficile.json', observeDuration: 20, perItemDuration: 15, grayoutDuration: 3, pointsMode: 'fixed', fixedPoints: [4, 1, 2, 4, 1, 2] },
       hardcore: { dataFile: 'balance_hardcore.json', observeDuration: 20, perItemDuration: 15, grayoutDuration: 3, pointsMode: 'fixed', fixedPoints: [3, 3, 3, 3, 3, 3] }
     }
@@ -51,7 +51,7 @@ const GAMES = {
     answerField: 'answerMinutes',
     altAnswerField: 'answerMinutesAlt',
     difficulties: {
-      normal: { dataFile: 'heures_normal.json', observeDuration: 6, perItemDuration: 20, wrongPenalty: false },
+      normal: { dataFile: 'heures_normal.json', observeDuration: 6, perItemDuration: 6, wrongPenalty: false },
       difficile: { dataFile: 'heures_avance.json', observeDuration: 6, perItemDuration: 20, wrongPenalty: true },
       hardcore: { dataFile: 'heures_avance.json', observeDuration: 6, perItemDuration: 20, wrongPenalty: true }
     }
@@ -65,7 +65,7 @@ const GAMES = {
     answerField: 'correctAnswer',
     wrongPenalty: true,
     difficulties: {
-      normal: { dataFile: 'pfc.json', perItemDuration: 6 },
+      normal: { dataFile: 'pfc.json', perItemDuration: 6, perItemDurationStages: [{ count: 10, duration: 6 }, { count: 10, duration: 4 }] },
       difficile: { dataFile: 'pfc.json', perItemDuration: 4 },
       hardcore: { dataFile: 'pfc.json', perItemDuration: 2 }
     }
@@ -89,8 +89,8 @@ const GAMES = {
     inputType: 'buttons',
     options: ['rouge', 'bleu', 'vert', 'jaune', 'violet', 'orange', 'blanc'],
     answerField: 'color',
-    perItemDuration: 4,
-    grayoutDuration: 3,
+    perItemDuration: 3,
+    grayoutDuration: 1,
     wrongPenalty: true,
     noFeedback: true,
     difficulties: {
@@ -109,6 +109,7 @@ const GAMES = {
     perItemDuration: 10,
     grayoutDuration: 3,
     noFeedback: true,
+    revealAnswerOnGrayout: true,
     difficulties: {
       normal: { dataFile: 'grille.json' },
       difficile: { dataFile: 'grille.json' },

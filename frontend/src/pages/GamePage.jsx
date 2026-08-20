@@ -28,7 +28,7 @@ const PLAYER_COMPONENTS = {
 };
 
 export default function GamePage() {
-  const { state } = useGame();
+  const { state, dispatch } = useGame();
   const location = useLocation();
   const navigate = useNavigate();
   const code = location.state?.code || state.party.code;
@@ -38,6 +38,10 @@ export default function GamePage() {
   function backToMenu() {
     localStorage.removeItem('cerebrose_host');
     localStorage.removeItem('cerebrose_player');
+    // Without this, state.gameOver from the just-finished party stays set
+    // forever (only a RESET clears it) — starting a new party without a
+    // full page reload would land everyone back on this same final podium.
+    dispatch({ type: 'RESET' });
     navigate('/');
   }
 
